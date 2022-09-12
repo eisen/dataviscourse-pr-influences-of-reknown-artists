@@ -1,0 +1,29 @@
+{
+  "name": "@datavis/root",
+  "version": "0.0.0",
+  "main": "index.js",
+  "author": "eisen.montalvo@v@utah.edu",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf package-lock.json node_modules",
+    "clean:lerna": "npm lerna clean",
+    "clean:root": "rm -rf node_modules package-lock.json",
+    "clean:app": "rm -rf packages/app/node_modules",
+    "clean:full": "npm clean:lerna && npm clean:root && npm clean:app",
+    "test": "lerna exec --no-bail --concurrency 1 -- npm run test",
+    "echo": "echo @datavis/root",
+    "eco": "pm2 start configs/ecosystem.config.js && pm2 monit",
+    "status": "pm2 status",
+    "kill": "pm2 kill",
+    "logs": "pm2 logs",
+    "bootstrap": "npm install && npm lerna bootstrap",
+    "reset": "npm clean:full && npm bootstrap",
+    "bs": "npm bootstrap"
+  },
+  "devDependencies": {
+    "jest": "26.6.0",
+    "lerna": "^5.5.1",
+    "rollup": "^2.52.7"
+  }
+}
