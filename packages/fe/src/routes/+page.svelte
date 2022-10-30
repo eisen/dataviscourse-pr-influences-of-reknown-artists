@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { geoGraticule, geoMercator, geoPath } from 'd3-geo'
+  import { geoGraticule, geoEquirectangular, geoPath } from 'd3-geo'
   import { json } from 'd3-fetch'
   import { feature } from 'topojson'
   import { onMount } from 'svelte'
@@ -11,7 +11,7 @@
   const graticuleUle = graticuleGen.lines()
   const graticuleOutline = graticuleGen.outline()
 
-  const projection = geoMercator().scale(150)
+  const projection = geoEquirectangular()
   const path = geoPath().projection(projection)
 
   onMount(async () => {
@@ -21,14 +21,11 @@
 </script>
 
 <div class="absolute inset-0">
-  <svg id="map" width="100%" height="100%">
+  <svg id="map" viewBox="0 0 1420 710">
     <g id="graticules">
       {#each graticuleUle as line}
         <path d={path(line)} fill="none" stroke="lightgray" />
       {/each}
-      <g id="outline">
-        <path d={path(graticuleOutline)} fill="none" stroke="black" stroke-width="2" />
-      </g>
     </g>
     <g id="countries">
       {#if data}
@@ -36,6 +33,9 @@
           <path id={feature.id} d={path(feature)} stroke="lightgray" fill="none" />
         {/each}
       {/if}
+    </g>
+    <g id="outline">
+      <path d={path(graticuleOutline)} fill="none" stroke="black" stroke-width="2" />
     </g>
   </svg>
 </div>
