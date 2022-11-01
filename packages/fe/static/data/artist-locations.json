@@ -1,0 +1,908 @@
+[
+    {
+        "artist": "Alberto Giacometti",
+        "year": "1901",
+        "city": "Saint Moritz",
+        "country": "Switzerland"
+    },
+    {
+        "artist": "Alberto Giacometti",
+        "year": "1966",
+        "city": "Chur",
+        "country": "Switzerland"
+    },
+    {
+        "artist": "Amrita Sher-Gil",
+        "year": "1941",
+        "city": "Lahore",
+        "country": "Pakistan"
+    },
+    {
+        "artist": "Amrita Sher-Gil",
+        "year": "1913",
+        "city": "Budapest",
+        "country": "Hungary"
+    },
+    {
+        "artist": "Andy Warhol",
+        "year": "1928",
+        "city": "Pittsburgh",
+        "country": "United States"
+    },
+    {
+        "artist": "Andy Warhol",
+        "year": "1987",
+        "city": "New York",
+        "country": "United States"
+    },
+    {
+        "artist": "Antoni Tàpies",
+        "year": "1923",
+        "city": "Barcelona",
+        "country": "Spain"
+    },
+    {
+        "artist": "Antoni Tàpies",
+        "year": "2012",
+        "city": "Barcelona",
+        "country": "Spain"
+    },
+    {
+        "artist": "Arpita Singh",
+        "year": "1937",
+        "city": "Barangar",
+        "country": "India"
+    },
+    {
+        "artist": "Brett Whiteley",
+        "year": "1939",
+        "city": "Sydney",
+        "country": "Australia"
+    },
+    {
+        "artist": "Brett Whiteley",
+        "year": "1992",
+        "city": "Thirroul",
+        "country": "Australia"
+    },
+    {
+        "artist": "Christian Krohg",
+        "year": "1852",
+        "city": "Oslo",
+        "country": "Norway"
+    },
+    {
+        "artist": "Christian Krohg",
+        "year": "1925",
+        "city": "Oslo",
+        "country": "Norway"
+    },
+    {
+        "artist": "Claude Monet",
+        "year": "1840",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Claude Monet",
+        "year": "1926",
+        "city": "Giverny",
+        "country": "France"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "year": "1876",
+        "city": "Hobita",
+        "country": "Romania"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "year": "1857",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Damien Hirst",
+        "year": "1965",
+        "city": "Bristol",
+        "country": "United Kingdom"
+    },
+    {
+        "artist": "David Alfaro Siqueiros",
+        "year": "1896",
+        "city": "Camargo",
+        "country": "Mexico"
+    },
+    {
+        "artist": "David Alfaro Siqueiros",
+        "year": "1974",
+        "city": "Cuernavaca",
+        "country": "Mexico"
+    },
+    {
+        "artist": "Diego Rivera",
+        "year": "1886",
+        "city": "Guanajuato",
+        "country": "Mexico"
+    },
+    {
+        "artist": "Diego Rivera",
+        "year": "1957",
+        "city": "Mexico City",
+        "country": "Mexico"
+    },
+    {
+        "artist": "Diego Velázquez",
+        "year": "1599",
+        "city": "Seville",
+        "country": "Spain"
+    },
+    {
+        "artist": "Diego Velázquez",
+        "year": "1660",
+        "city": "Madrid",
+        "country": "Spain"
+    },
+    {
+        "artist": "Donatello",
+        "year": "1386",
+        "city": "Florence",
+        "country": "Italy"
+    },
+    {
+        "artist": "Donatello",
+        "year": "1466",
+        "city": "Florence",
+        "country": "Italy"
+    },
+    {
+        "artist": "Edgar Degas",
+        "year": "1834",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Edgar Degas",
+        "year": "1917",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Édouard Manet",
+        "year": "1832",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Édouard Manet",
+        "year": "1883",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Edvard Munch",
+        "year": "1863",
+        "city": "Adalsbruk",
+        "country": "Norway"
+    },
+    {
+        "artist": "Edvard Munch",
+        "year": "1944",
+        "city": "Oslo",
+        "country": "Norway"
+    },
+    {
+        "artist": "Egon Schiele",
+        "year": "1890",
+        "city": "Tulln",
+        "country": "Austria"
+    },
+    {
+        "artist": "Egon Schiele",
+        "year": "1918",
+        "city": "Vienna",
+        "country": "Austria"
+    },
+    {
+        "artist": "El Greco",
+        "year": "1541",
+        "city": "Heraklion",
+        "country": "Greece"
+    },
+    {
+        "artist": "El Greco",
+        "year": "1614",
+        "city": "Toledo",
+        "country": "Spain"
+    },
+    {
+        "artist": "Emil Nolde",
+        "year": "1867",
+        "city": "Schleswig",
+        "country": "Germany"
+    },
+    {
+        "artist": "Emil Nolde",
+        "year": "1956",
+        "city": "Neukirchen",
+        "country": "Germany"
+    },
+    {
+        "artist": "Erich Heckel",
+        "year": "1883",
+        "city": "Döbeln",
+        "country": "Germany"
+    },
+    {
+        "artist": "Erich Heckel",
+        "year": "1970",
+        "city": "Radolfzell",
+        "country": "Germany"
+    },
+    {
+        "artist": "Francis Bacon",
+        "year": "1909",
+        "city": "Dublin",
+        "country": "Ireland"
+    },
+    {
+        "artist": "Francis Bacon",
+        "year": "1992",
+        "city": "Madrid",
+        "country": "Spain"
+    },
+    {
+        "artist": "Frida Kahlo",
+        "year": "1907",
+        "city": "Mexico City",
+        "country": "Mexico"
+    },
+    {
+        "artist": "Frida Kahlo",
+        "year": "1954",
+        "city": "Mexico City",
+        "country": "Mexico"
+    },
+    {
+        "artist": "Georges Seurat",
+        "year": "1859",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Georges Seurat",
+        "year": "1891",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Ghiberthi",
+        "year": "1378",
+        "city": "Pelago",
+        "country": "Italy"
+    },
+    {
+        "artist": "Ghiberthi",
+        "year": "1455",
+        "city": "Florence",
+        "country": "Italy"
+    },
+    {
+        "artist": "Giorgio de Chirico",
+        "year": "1888",
+        "city": "Volos",
+        "country": "Greece"
+    },
+    {
+        "artist": "Giorgio de Chirico",
+        "year": "1978",
+        "city": "Rome",
+        "country": "Italy"
+    },
+    {
+        "artist": "Gustav Klimt",
+        "year": "1862",
+        "city": "Vienna",
+        "country": "Austria"
+    },
+    {
+        "artist": "Gustav Klimt",
+        "year": "1918",
+        "city": "Vienna",
+        "country": "Austria"
+    },
+    {
+        "artist": "Henri de Toulouse-Lautrec",
+        "year": "1864",
+        "city": "Albi",
+        "country": "France"
+    },
+    {
+        "artist": "Henri de Toulouse-Lautrec",
+        "year": "1901",
+        "city": "Bordeaux",
+        "country": "France"
+    },
+    {
+        "artist": "Henri Émile Benoît Matisse",
+        "year": "1869",
+        "city": "Lille",
+        "country": "France"
+    },
+    {
+        "artist": "Henri Émile Benoît Matisse",
+        "year": "1954",
+        "city": "Nice",
+        "country": "France"
+    },
+    {
+        "artist": "J.M.W Turner",
+        "year": "1775",
+        "city": "London",
+        "country": "United Kingdom"
+    },
+    {
+        "artist": "J.M.W Turner",
+        "year": "1851",
+        "city": "London",
+        "country": "United Kingdom"
+    },
+    {
+        "artist": "Jasper Johns",
+        "year": "1930",
+        "city": "Augusta",
+        "country": "United States"
+    },
+    {
+        "artist": "Jean Dubuffet",
+        "year": "1901",
+        "city": "Rouen",
+        "country": "France"
+    },
+    {
+        "artist": "Jean Dubuffet",
+        "year": "1985",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Jean-Antoine Watteau",
+        "year": "1684",
+        "city": "Valenciennes",
+        "country": "France"
+    },
+    {
+        "artist": "Jean-Antoine Watteau",
+        "year": "1721",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Jeong Seon",
+        "year": "1676",
+        "city": "Seoul",
+        "country": "South Korea"
+    },
+    {
+        "artist": "Jeong Seon",
+        "year": "1759",
+        "city": "Seoul",
+        "country": "South Korea"
+    },
+    {
+        "artist": "John Baldessari",
+        "year": "1931",
+        "city": "National City",
+        "country": "United States"
+    },
+    {
+        "artist": "John Baldessari",
+        "year": "2020",
+        "city": "Los Angeles",
+        "country": "United States"
+    },
+    {
+        "artist": "John Olsen",
+        "year": "1928",
+        "city": "Newcastle",
+        "country": "Australia"
+    },
+    {
+        "artist": "John Singleton Copley",
+        "year": "1738",
+        "city": "Boston",
+        "country": "United States"
+    },
+    {
+        "artist": "John Singleton Copley",
+        "year": "1815",
+        "city": "London",
+        "country": "United Kingdom"
+    },
+    {
+        "artist": "John Smibert",
+        "year": "1688",
+        "city": "Edinburgh",
+        "country": "United Kingdom"
+    },
+    {
+        "artist": "John Smibert",
+        "year": "1751",
+        "city": "Boston",
+        "country": "United States"
+    },
+    {
+        "artist": "Julian Schnabel",
+        "year": "1951",
+        "city": "New York",
+        "country": "United States"
+    },
+    {
+        "artist": "Katsushika Hokusai",
+        "year": "1760",
+        "city": "Tokyo",
+        "country": "Japan"
+    },
+    {
+        "artist": "Katsushika Hokusai",
+        "year": "1849",
+        "city": "Tokyo",
+        "country": "Japan"
+    },
+    {
+        "artist": "Kitagawa Utamaro",
+        "year": "1753",
+        "city": "Tokyo",
+        "country": "Japan"
+    },
+    {
+        "artist": "Kitagawa Utamaro",
+        "year": "1806",
+        "city": "Tokyo",
+        "country": "Japan"
+    },
+    {
+        "artist": "Leonardo da Vinci",
+        "year": "1452",
+        "city": "Florence",
+        "country": "Italy"
+    },
+    {
+        "artist": "Leonardo da Vinci",
+        "year": "1519",
+        "city": "Tours",
+        "country": "France"
+    },
+    {
+        "artist": "Malevich",
+        "year": "1879",
+        "city": "Kyiv",
+        "country": "Ukraine"
+    },
+    {
+        "artist": "Malevich",
+        "year": "1935",
+        "city": "Saint Petersburg",
+        "country": "Russia"
+    },
+    {
+        "artist": "Marcel Duchamp",
+        "year": "1887",
+        "city": "Rouen",
+        "country": "France"
+    },
+    {
+        "artist": "Marcel Duchamp",
+        "year": "1968",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Margaret Rose Preston",
+        "year": "1875",
+        "city": "Port Adelaide",
+        "country": "Australia"
+    },
+    {
+        "artist": "Margaret Rose Preston",
+        "year": "1963",
+        "city": "Mosman",
+        "country": "Australia"
+    },
+    {
+        "artist": "Mary Stevenson Cassatt",
+        "year": "1844",
+        "city": "Pittsburgh",
+        "country": "United States"
+    },
+    {
+        "artist": "Mary Stevenson Cassatt",
+        "year": "1926",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Max Beckmann",
+        "year": "1884",
+        "city": "Leipzig",
+        "country": "Germany"
+    },
+    {
+        "artist": "Max Beckmann",
+        "year": "1950",
+        "city": "New York",
+        "country": "United States"
+    },
+    {
+        "artist": "Max Ernst",
+        "year": "1891",
+        "city": "Brühl",
+        "country": "Germany"
+    },
+    {
+        "artist": "Max Ernst",
+        "year": "1976",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Max Jacob",
+        "year": "1876",
+        "city": "Quimper",
+        "country": "France"
+    },
+    {
+        "artist": "Max Jacob",
+        "year": "1944",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Mi Fu",
+        "year": "1051",
+        "city": "Taiyuan",
+        "country": "China"
+    },
+    {
+        "artist": "Mi Fu",
+        "year": "1107",
+        "city": "Wuhan",
+        "country": "China"
+    },
+    {
+        "artist": "Michelangelo",
+        "year": "1475",
+        "city": "Arezzo",
+        "country": "Italy"
+    },
+    {
+        "artist": "Michelangelo",
+        "year": "1564",
+        "city": "Rome",
+        "country": "Italy"
+    },
+    {
+        "artist": "Miró",
+        "year": "1893",
+        "city": "Barcelona",
+        "country": "Spain"
+    },
+    {
+        "artist": "Miró",
+        "year": "1983",
+        "city": "Palma",
+        "country": "Spain"
+    },
+    {
+        "artist": "Modigliani",
+        "year": "1884",
+        "city": "Livorno",
+        "country": "Italty"
+    },
+    {
+        "artist": "Modigliani",
+        "year": "1920",
+        "city": "Saint-Étienne",
+        "country": "France"
+    },
+    {
+        "artist": "Oscar-Claude Monet",
+        "year": "1840",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Oscar-Claude Monet",
+        "year": "1926",
+        "city": "Rouen",
+        "country": "France"
+    },
+    {
+        "artist": "Oskar Kokoschka",
+        "year": "1886",
+        "city": "Pöchlarn",
+        "country": "Austria"
+    },
+    {
+        "artist": "Oskar Kokoschka",
+        "year": "1980",
+        "city": "Montreux",
+        "country": "Switzerland"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "year": "1881",
+        "city": "Málaga",
+        "country": "Spain"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "year": "1973",
+        "city": "Marseille",
+        "country": "France"
+    },
+    {
+        "artist": "Paul Cezanne",
+        "year": "1839",
+        "city": "Marseille",
+        "country": "France"
+    },
+    {
+        "artist": "Paul Cezanne",
+        "year": "1906",
+        "city": "Marseille",
+        "country": "France"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "year": "1848",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "year": "1903",
+        "city": "Taiohae",
+        "country": "France"
+    },
+    {
+        "artist": "Paul Klee",
+        "year": "1879",
+        "city": "Bern",
+        "country": "Switzerland"
+    },
+    {
+        "artist": "Paul Klee",
+        "year": "1940",
+        "city": "Locarno",
+        "country": "Switzerland"
+    },
+    {
+        "artist": "Peter Pelham",
+        "year": "1695",
+        "city": "London",
+        "country": "United Kingdom"
+    },
+    {
+        "artist": "Peter Pelham",
+        "year": "1751",
+        "city": "Boston",
+        "country": "United States"
+    },
+    {
+        "artist": "Raphael",
+        "year": "1483",
+        "city": "Urbino",
+        "country": "Italy"
+    },
+    {
+        "artist": "Raphael",
+        "year": "1520",
+        "city": "Rome",
+        "country": "Italy"
+    },
+    {
+        "artist": "Rembrandt van Rijn",
+        "year": "1606",
+        "city": "Leiden",
+        "country": "Netherlands"
+    },
+    {
+        "artist": "Rembrandt van Rijn",
+        "year": "1669",
+        "city": "Amsterdam",
+        "country": "Netherlands"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "year": "1898",
+        "city": "Lessines",
+        "country": "Belgium"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "year": "1967",
+        "city": "Brussels",
+        "country": "Belgium"
+    },
+    {
+        "artist": "Renoir",
+        "year": "1841",
+        "city": "Limoges",
+        "country": "France"
+    },
+    {
+        "artist": "Renoir",
+        "year": "1919",
+        "city": "Cagnes-sur-Mer",
+        "country": "France"
+    },
+    {
+        "artist": "S. H. Raza",
+        "year": "1922",
+        "city": "Mandla",
+        "country": "India"
+    },
+    {
+        "artist": "S. H. Raza",
+        "year": "2016",
+        "city": "New Delhi",
+        "country": "India"
+    },
+    {
+        "artist": "Salvador Dali",
+        "year": "1904",
+        "city": "Figueres",
+        "country": "Spain"
+    },
+    {
+        "artist": "Salvador Dali",
+        "year": "1989",
+        "city": "Figueres",
+        "country": "Spain"
+    },
+    {
+        "artist": "SATISH GUJRAL",
+        "year": "1925",
+        "city": "Jhelum",
+        "country": "Pakistan"
+    },
+    {
+        "artist": "SATISH GUJRAL",
+        "year": "2020",
+        "city": "New Delhi",
+        "country": "India"
+    },
+    {
+        "artist": "Shen Zhou",
+        "year": "1427",
+        "city": "Xiangcheng",
+        "country": "China"
+    },
+    {
+        "artist": "Shen Zhou",
+        "year": "1509",
+        "city": "Xiangcheng",
+        "country": "China"
+    },
+    {
+        "artist": "Titian",
+        "year": "1489",
+        "city": "Venice",
+        "country": "Italy"
+    },
+    {
+        "artist": "Titian",
+        "year": "1576",
+        "city": "Venice",
+        "country": "Italy"
+    },
+    {
+        "artist": "Tyeb Mehta",
+        "year": "1925",
+        "city": "Kapadvanj",
+        "country": "India"
+    },
+    {
+        "artist": "Tyeb Mehta",
+        "year": "2009",
+        "city": "Mumbai",
+        "country": "India"
+    },
+    {
+        "artist": "Utagawa Hiroshige",
+        "year": "1797",
+        "city": "Tokyo",
+        "country": "Japan"
+    },
+    {
+        "artist": "Utagawa Hiroshige",
+        "year": "1858",
+        "city": "Tokyo",
+        "country": "Japan"
+    },
+    {
+        "artist": "Vermeer",
+        "year": "1632",
+        "city": "Delft",
+        "country": "Netherlands"
+    },
+    {
+        "artist": "Vermeer",
+        "year": "1675",
+        "city": "Delft",
+        "country": "Netherlands"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "year": "1853",
+        "city": "Zundert",
+        "country": "Netherlands"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "year": "1890",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Wang Hui",
+        "year": "1632",
+        "city": "Changshu",
+        "country": "China"
+    },
+    {
+        "artist": "Wang Hui",
+        "year": "1717",
+        "city": "Changshu",
+        "country": "China"
+    },
+    {
+        "artist": "Wang Shimin",
+        "year": "1592",
+        "city": "Taicang",
+        "country": "China"
+    },
+    {
+        "artist": "Wang Shimin",
+        "year": "1680",
+        "city": "Taicang",
+        "country": "China"
+    },
+    {
+        "artist": "Wassily Kandinsky",
+        "year": "1866",
+        "city": "Moscow",
+        "country": "Russia"
+    },
+    {
+        "artist": "Wassily Kandinsky",
+        "year": "1944",
+        "city": "Paris",
+        "country": "France"
+    },
+    {
+        "artist": "Wen Zhengming",
+        "year": "1470",
+        "city": "Suzhou",
+        "country": "China"
+    },
+    {
+        "artist": "Wen Zhengming",
+        "year": "1559",
+        "city": "Suzhou",
+        "country": "China"
+    },
+    {
+        "artist": "Xia Chang",
+        "year": "1388",
+        "city": "Kunshan",
+        "country": "China"
+    },
+    {
+        "artist": "Xia Chang",
+        "year": "1470",
+        "city": "Beijing",
+        "country": "China"
+    }
+]
