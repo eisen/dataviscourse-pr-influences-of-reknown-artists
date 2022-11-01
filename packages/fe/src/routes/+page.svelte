@@ -30,7 +30,7 @@
     <g id="countries">
       {#if data}
         {#each data.features as feature}
-          <path id={feature.id} d={path(feature)} stroke="lightgray" fill="none" />
+          <path id={feature.id} d={path(feature)} stroke="lightgray" fill="white" />
         {/each}
       {/if}
     </g>
