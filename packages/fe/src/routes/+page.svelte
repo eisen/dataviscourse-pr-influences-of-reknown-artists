@@ -11,6 +11,7 @@
     type AxisScale,
     type NumberValue,
     type ScaleLinear,
+    groups,
   } from 'd3'
   import { json } from 'd3-fetch'
   import { feature } from 'topojson'
@@ -24,6 +25,8 @@
     year: number
     city: string
     country: string
+    lat: number
+    lon: number
   }
 
   let svg: SVGSVGElement
@@ -33,14 +36,18 @@
   let data: any
   $: data = null
 
-  let locations: InternMap<string, ArtistLocation[]>
-  $: locations = new InternMap<string, ArtistLocation[]>()
+  let allLocations: [string, ArtistLocation[]][]
+  $: allLocations = []
+  let locations: [string, ArtistLocation[]][]
+  $: locations = []
 
   $: tl_pos = ''
   $: map_pos = 'translate(20, 20)'
   $: cursor_pos = 'translate(9, 38)'
   $: dragging = false
+  let oldestYear: number | undefined
   $: oldestYear = 0
+  let youngestYear: number | undefined
   $: youngestYear = 2100
 
   const graticuleGen = geoGraticule()
@@ -63,11 +70,12 @@
   const drag = (ev: { offsetX: number }) => {
     if (dragging) {
       let year = tl_x_scale!.invert(Number(ev.offsetX - 9))
+      filterLocations(year!)
       let pos = ev.offsetX - 9
-      if (year < oldestYear) {
-        pos = tl_x_scale!(oldestYear) + 9
-      } else if (year > youngestYear) {
-        pos = tl_x_scale!(youngestYear) + 9
+      if (year < oldestYear!) {
+        pos = tl_x_scale!(oldestYear!) + 9
+      } else if (year > youngestYear!) {
+        pos = tl_x_scale!(youngestYear!) + 9
       }
       cursor_pos = `translate(${pos}, 38)`
     }
@@ -75,6 +83,36 @@
 
   const stopDrag = () => {
     dragging = false
+  }
+
+  const filterLocations = (year: number) => {
+    locations = allLocations.filter(([, locations]) => {
+      if (locations.length > 1) {
+        return locations[0].year <= year && locations[1].year > year
+      } else {
+        return locations[0].year <= year
+      }
+    })
+  }
+
+  const getXfromLatLon = (
+    loc: {
+      lat: number
+      lon: number
+    }[]
+  ) => {
+    const pos = projection([loc[0].lon, loc[0].lat])!
+    return pos[0]
+  }
+
+  const getYfromLatLon = (
+    loc: {
+      lat: number
+      lon: number
+    }[]
+  ) => {
+    const pos = projection([loc[0].lon, loc[0].lat])!
+    return pos[1]
   }
 
   onMount(async () => {
@@ -87,9 +125,10 @@
 
     const locs: ArtistLocation[] | undefined = await json(`${server_url}/data/artist-locations.json`)
     if (locs) {
-      locations = group(locs, d => d.artist)
       oldestYear = min(locs, d => d.year)
       youngestYear = max(locs, d => d.year)
+      allLocations = groups(locs, d => d.artist)
+      filterLocations(oldestYear!)
 
       tl_x_scale = scaleLinear().domain([oldestYear!, youngestYear!]).range([0, bbox.width])
       tl_x_axis = axisBottom(tl_x_scale)
@@ -118,6 +157,20 @@
             <path id={feature.id} d={path(feature)} stroke="lightgray" fill="white" />
           {/each}
         {/if}
+      </g>
+      <g id="artists">
+        {#each locations as location}
+          <circle
+            cx={getXfromLatLon(location[1])}
+            cy={getYfromLatLon(location[1])}
+            r="10"
+            stroke="black"
+            fill="white"
+          />
+          <text x={getXfromLatLon(location[1])} y={getYfromLatLon(location[1]) + 25} text-anchor="middle"
+            >{location[0]}</text
+          >
+        {/each}
       </g>
       <g id="outline">
         <path d={path(graticuleOutline)} fill="none" stroke="black" stroke-width="2" />
