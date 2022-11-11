@@ -116,5 +116,5 @@ You can also go to `localhost:.../chords` to see our work in progress for our ch
 - [ ] Data - So far, this is just the appropriate sections from our proposal pasted together. Note that we have most of our data together and the strutcure implemented with all of our tables, even if they do now have all of their rows yet!
 - [x] Exploratory Data Analysis - Fully up to date with our progress so far
 - [x] Design Evolution - Fully up to date with our progress so far  
-- [x] Implementation - Not yet written
-- [x] Evaluation - Not yet written
+- [ ] Implementation - Not yet written
+- [ ] Evaluation - Not yet written
