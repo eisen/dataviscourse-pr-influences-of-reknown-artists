@@ -8,6 +8,7 @@
 
   const port = 5173
   const server_url = `http://localhost:${port}`
+  const CURSOR_HALF_WIDTH = 9
 
   type ArtistLocation = {
     artist: string
@@ -45,7 +46,7 @@
 
   $: tl_pos = ''
   $: map_pos = 'translate(20, 20)'
-  $: cursor_pos = 'translate(-9, -22)'
+  $: cursor_pos = `translate(-${CURSOR_HALF_WIDTH}, -22)`
   $: dragging = false
   let oldestYear: number | undefined
   $: oldestYear = 0
@@ -84,7 +85,7 @@
         year = youngestYear!
         pos = tl_x_scale!(youngestYear!)
       }
-      cursor_pos = `translate(${pos - 9}, -22)`
+      cursor_pos = `translate(${pos - CURSOR_HALF_WIDTH}, -22)`
     }
   }
 
@@ -180,7 +181,7 @@
     const locs: ArtistLocation[] | undefined = await json(`${server_url}/data/artist-locations.json`)
     if (locs) {
       oldestYear = min(locs, d => d.year)
-      year = oldestYear
+      year = oldestYear!
       youngestYear = max(locs, d => d.year)
       allLocations = groups(locs, d => d.artist)
       filterLocations(oldestYear!)
@@ -217,11 +218,12 @@
         {#if showInfluences}
           {#each influences as location}
             <g
-              id={location.artist.replace(/\s/g, '') + '-group'}
-              on:focus={ev => OnMouseOver('#' + location.artist.replace(/\s/g, ''))}
-              on:mouseover={ev => OnMouseOver('#' + location.artist.replace(/\s/g, ''))}
-              on:blur={ev => OnMouseOut('#' + location.artist.replace(/\s/g, ''))}
-              on:mouseout={ev => OnMouseOut('#' + location.artist.replace(/\s/g, ''))}
+              id={location.artist.replace(/[[\s\.]]/g, '') + '-group'}
+              style="cursor: pointer"
+              on:focus={ev => OnMouseOver('#' + location.artist.replace(/[\s\.]/g, ''))}
+              on:mouseover={ev => OnMouseOver('#' + location.artist.replace(/[\s\.]/g, ''))}
+              on:blur={ev => OnMouseOut('#' + location.artist.replace(/[\s\.]/g, ''))}
+              on:mouseout={ev => OnMouseOut('#' + location.artist.replace(/[\s\.]/g, ''))}
             >
               <circle
                 cx={getXfromLatLon([location])}
@@ -231,7 +233,7 @@
                 fill="white"
               />
               <text
-                id={location.artist.replace(/\s/g, '') + '-text'}
+                id={location.artist.replace(/[\s\.]/g, '') + '-text'}
                 opacity="0"
                 x={getXfromLatLon([location])}
                 y={getYfromLatLon([location]) + 25}
@@ -242,11 +244,11 @@
         {:else}
           {#each locations as location}
             <g
-              id={location[0].replace(/\s/g, '') + '-group'}
-              on:focus={ev => OnMouseOver('#' + location[0].replace(/\s/g, ''))}
-              on:mouseover={ev => OnMouseOver('#' + location[0].replace(/\s/g, ''))}
-              on:blur={ev => OnMouseOut('#' + location[0].replace(/\s/g, ''))}
-              on:mouseout={ev => OnMouseOut('#' + location[0].replace(/\s/g, ''))}
+              id={location[0].replace(/[\s\.]/g, '') + '-group'}
+              on:focus={ev => OnMouseOver('#' + location[0].replace(/[\s\.]/g, ''))}
+              on:mouseover={ev => OnMouseOver('#' + location[0].replace(/[\s\.]/g, ''))}
+              on:blur={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
+              on:mouseout={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
             >
               <circle
                 cx={getXfromLatLon(location[1])}
@@ -259,7 +261,7 @@
                 }}
               />
               <text
-                id={location[0].replace(/\s/g, '') + '-text'}
+                id={location[0].replace(/[\s\.]/g, '') + '-text'}
                 opacity="0"
                 x={getXfromLatLon(location[1])}
                 y={getYfromLatLon(location[1]) + 25}
@@ -285,7 +287,7 @@
           d="M9.3,19.8H8.7c-1.4,0-2.5-1-2.7-2.4l-1.4-10C4.5,6.6,4.7,5.8,5.2,5.2c0.5-0.6,1.3-0.9,2.1-0.9h3.4c0.8,0,1.6,0.3,2.1,0.9c0.5,0.6,0.8,1.4,0.6,2.2l-1.4,10C11.8,18.7,10.6,19.8,9.3,19.8z M7.3,5.8c-0.4,0-0.7,0.2-0.9,0.4C6.1,6.5,6,6.8,6.1,7.2l1.4,10c0.1,0.6,0.6,1.1,1.2,1.1h0.5c0.6,0,1.1-0.5,1.2-1.1l1.4-10c0.1-0.4-0.1-0.7-0.3-1c-0.2-0.3-0.6-0.4-0.9-0.4H7.3z"
         />
         <text
-          transform="translate(9,0)"
+          transform="translate({CURSOR_HALF_WIDTH},0)"
           stroke="black"
           font-weight="lighter"
           text-anchor="middle"
