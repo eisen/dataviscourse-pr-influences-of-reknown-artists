@@ -201,6 +201,14 @@
 
 <div class="absolute inset-0 select-none" on:mousemove={drag} on:mouseup={stopDrag}>
   <svg id="svg" bind:this={svg} class="block w-full h-full">
+    <style>
+      .pointer {
+        cursor: pointer;
+      }
+      .slider {
+        cursor: ew-resize;
+      }
+    </style>
     <g id="map" bind:this={map} transform={map_pos}>
       <g id="graticules">
         {#each graticuleUle as line}
@@ -219,7 +227,7 @@
           {#each influences as location}
             <g
               id={location.artist.replace(/[[\s\.]]/g, '') + '-group'}
-              style="cursor: pointer"
+              class="pointer"
               on:focus={ev => OnMouseOver('#' + location.artist.replace(/[\s\.]/g, ''))}
               on:mouseover={ev => OnMouseOver('#' + location.artist.replace(/[\s\.]/g, ''))}
               on:blur={ev => OnMouseOut('#' + location.artist.replace(/[\s\.]/g, ''))}
@@ -244,6 +252,7 @@
         {:else}
           {#each locations as location}
             <g
+              class="pointer"
               id={location[0].replace(/[\s\.]/g, '') + '-group'}
               on:focus={ev => OnMouseOver('#' + location[0].replace(/[\s\.]/g, ''))}
               on:mouseover={ev => OnMouseOver('#' + location[0].replace(/[\s\.]/g, ''))}
@@ -276,7 +285,7 @@
       </g>
     </g>
     <g id="timeline" bind:this={timeline} transform={tl_pos}>
-      <g transform={cursor_pos} on:mousedown={startDrag}>
+      <g transform={cursor_pos} on:mousedown={startDrag} class="slider">
         <path
           fill="white"
           d="M6.8,17.3l-1.4-10C5.2,6.1,6.1,5,7.3,5h3.4c1.2,0,2.2,1.1,2,2.3l-1.4,10c-0.1,1-1,1.7-2,1.7H8.7C7.7,19,6.9,18.3,6.8,17.3z"
