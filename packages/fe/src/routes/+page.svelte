@@ -45,7 +45,7 @@
 
   $: tl_pos = ''
   $: map_pos = 'translate(20, 20)'
-  $: cursor_pos = 'translate(9, -22)'
+  $: cursor_pos = 'translate(-9, -22)'
   $: dragging = false
   let oldestYear: number | undefined
   $: oldestYear = 0
@@ -73,15 +73,18 @@
 
   const drag = (ev: { offsetX: number }) => {
     if (dragging) {
-      year = tl_x_scale!.invert(Number(ev.offsetX - 9))
+      let pos = ev.offsetX - 90
+      year = tl_x_scale!.invert(Number(pos))
       filterLocations(year!)
-      let pos = ev.offsetX - 9
+
       if (year < oldestYear!) {
-        pos = tl_x_scale!(oldestYear!) + 9
+        year = oldestYear!
+        pos = tl_x_scale!(oldestYear!)
       } else if (year > youngestYear!) {
-        pos = tl_x_scale!(youngestYear!) + 9
+        year = youngestYear!
+        pos = tl_x_scale!(youngestYear!)
       }
-      cursor_pos = `translate(${pos}, -22)`
+      cursor_pos = `translate(${pos - 9}, -22)`
     }
   }
 
@@ -163,7 +166,7 @@
   onMount(async () => {
     const bbox = select(map).node()!.getBoundingClientRect()
 
-    tl_pos = `translate(${20}, ${bbox.height + 20 + 20})`
+    tl_pos = `translate(${90}, ${bbox.height + 60})`
 
     const features: any = await json(`${server_url}/data/world.json`)
     data = feature(features, features.objects.countries)
@@ -177,6 +180,7 @@
     const locs: ArtistLocation[] | undefined = await json(`${server_url}/data/artist-locations.json`)
     if (locs) {
       oldestYear = min(locs, d => d.year)
+      year = oldestYear
       youngestYear = max(locs, d => d.year)
       allLocations = groups(locs, d => d.artist)
       filterLocations(oldestYear!)
