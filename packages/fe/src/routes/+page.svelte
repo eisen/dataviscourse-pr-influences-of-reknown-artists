@@ -9,6 +9,7 @@
   const port = 5173
   const server_url = `http://localhost:${port}`
   const CURSOR_HALF_WIDTH = 9
+  const CURSOR_Y_POS = -12
 
   type ArtistLocation = {
     artist: string
@@ -46,7 +47,7 @@
 
   $: tl_pos = ''
   $: map_pos = 'translate(20, 20)'
-  $: cursor_pos = `translate(-${CURSOR_HALF_WIDTH}, -22)`
+  $: cursor_pos = `translate(-${CURSOR_HALF_WIDTH}, ${CURSOR_Y_POS})`
   $: dragging = false
   let oldestYear: number | undefined
   $: oldestYear = 0
@@ -85,7 +86,7 @@
         year = youngestYear!
         pos = tl_x_scale!(youngestYear!)
       }
-      cursor_pos = `translate(${pos - CURSOR_HALF_WIDTH}, -22)`
+      cursor_pos = `translate(${pos - CURSOR_HALF_WIDTH}, ${CURSOR_Y_POS})`
     }
   }
 
@@ -208,6 +209,11 @@
       .slider {
         cursor: ew-resize;
       }
+      .st0 {
+        fill: #000000;
+        stroke: #000000;
+        stroke-miterlimit: 10;
+      }
     </style>
     <g id="map" bind:this={map} transform={map_pos}>
       <g id="graticules">
@@ -287,13 +293,8 @@
     <g id="timeline" bind:this={timeline} transform={tl_pos}>
       <g transform={cursor_pos} on:mousedown={startDrag} class="slider">
         <path
-          fill="white"
-          d="M6.8,17.3l-1.4-10C5.2,6.1,6.1,5,7.3,5h3.4c1.2,0,2.2,1.1,2,2.3l-1.4,10c-0.1,1-1,1.7-2,1.7H8.7C7.7,19,6.9,18.3,6.8,17.3z"
-        />
-        <path
-          stroke="black"
-          fill="black"
-          d="M9.3,19.8H8.7c-1.4,0-2.5-1-2.7-2.4l-1.4-10C4.5,6.6,4.7,5.8,5.2,5.2c0.5-0.6,1.3-0.9,2.1-0.9h3.4c0.8,0,1.6,0.3,2.1,0.9c0.5,0.6,0.8,1.4,0.6,2.2l-1.4,10C11.8,18.7,10.6,19.8,9.3,19.8z M7.3,5.8c-0.4,0-0.7,0.2-0.9,0.4C6.1,6.5,6,6.8,6.1,7.2l1.4,10c0.1,0.6,0.6,1.1,1.2,1.1h0.5c0.6,0,1.1-0.5,1.2-1.1l1.4-10c0.1-0.4-0.1-0.7-0.3-1c-0.2-0.3-0.6-0.4-0.9-0.4H7.3z"
+          class="st0"
+          d="M9.3,19.8H8.7c-1.4,0-2.5-1-2.7-2.4l-1.4-10C4.5,6.6,4.7,5.8,5.2,5.2s1.3-0.9,2.1-0.9h3.4c0.8,0,1.6,0.3,2.1,0.9c0.5,0.6,0.8,1.4,0.6,2.2l-1.4,10C11.8,18.7,10.6,19.8,9.3,19.8z"
         />
         <text
           transform="translate({CURSOR_HALF_WIDTH},0)"
