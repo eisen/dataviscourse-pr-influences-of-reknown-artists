@@ -1,338 +1,338 @@
 [
     {
         "artist": "Constantin Brancusi",
-        "influence": "Alberto Giacometti"
+        "influenced": "Alberto Giacometti"
     },
     {
         "artist": "Paul Cézanne",
-        "influence": "Amrita Sher-Gil"
+        "influenced": "Amrita Sher-Gil"
     },
     {
         "artist": "Paul Gauguin",
-        "influence": "Amrita Sher-Gil"
+        "influenced": "Amrita Sher-Gil"
     },
     {
         "artist": "René François Ghislain Magritte",
-        "influence": "Andy Warhol"
+        "influenced": "Andy Warhol"
     },
     {
         "artist": "Amrita Sher-Gil",
-        "influence": "Arpita Singh"
+        "influenced": "Arpita Singh"
     },
     {
         "artist": "Vincent Willem van Gogh",
-        "influence": "Brett Whiteley"
+        "influenced": "Brett Whiteley"
     },
     {
         "artist": "Ghiberthi",
-        "influence": "Donatella"
+        "influenced": "Donatella"
     },
     {
         "artist": "Utagawa Hiroshige",
-        "influence": "Edgar Degas"
+        "influenced": "Edgar Degas"
     },
     {
         "artist": "Edvard Munch",
-        "influence": "Egon Schiele"
+        "influenced": "Egon Schiele"
     },
     {
         "artist": "Titian",
-        "influence": "El Greco"
+        "influenced": "El Greco"
     },
     {
         "artist": "Vincent Willem van Gogh",
-        "influence": "Emil Nolde"
+        "influenced": "Emil Nolde"
     },
     {
         "artist": "Edvard Munch",
-        "influence": "Erich Heckel"
+        "influenced": "Erich Heckel"
     },
     {
         "artist": "Rembrandt van Rijn",
-        "influence": "Georges Seurat"
+        "influenced": "Georges Seurat"
     },
     {
         "artist": "Kitagawa Utamaro",
-        "influence": "Henri de Toulouse-Lautrec"
+        "influenced": "Henri de Toulouse-Lautrec"
     },
     {
         "artist": "Vincent Willem van Gogh",
-        "influence": "Henri Émile Benoît Matisse"
+        "influenced": "Henri Émile Benoît Matisse"
     },
     {
         "artist": "Paul Cezanne",
-        "influence": "Henri Émile Benoît Matisse"
+        "influenced": "Henri Émile Benoît Matisse"
     },
     {
         "artist": "Jean-Antoine Watteau",
-        "influence": "J.M.W Turner"
+        "influenced": "J.M.W Turner"
     },
     {
         "artist": "René François Ghislain Magritte",
-        "influence": "Jasper Johns"
+        "influenced": "Jasper Johns"
     },
     {
         "artist": "René François Ghislain Magritte",
-        "influence": "John Baldessari"
+        "influenced": "John Baldessari"
     },
     {
         "artist": "Miró",
-        "influence": "John Olsen"
+        "influenced": "John Olsen"
     },
     {
         "artist": "Jean Dubuffet",
-        "influence": "John Olsen"
+        "influenced": "John Olsen"
     },
     {
         "artist": "Antoni Tàpies",
-        "influence": "John Olsen"
+        "influenced": "John Olsen"
     },
     {
         "artist": "",
-        "influence": "John Olsen"
+        "influenced": "John Olsen"
     },
     {
         "artist": "Paul Cézanne",
-        "influence": "Margaret Rose Preston"
+        "influenced": "Margaret Rose Preston"
     },
     {
         "artist": "Paul Gauguin",
-        "influence": "Margaret Rose Preston"
+        "influenced": "Margaret Rose Preston"
     },
     {
         "artist": "Henri Émile Benoît Matisse",
-        "influence": "Margaret Rose Preston"
+        "influenced": "Margaret Rose Preston"
     },
     {
         "artist": "Japanese art ",
-        "influence": "Margaret Rose Preston"
+        "influenced": "Margaret Rose Preston"
     },
     {
         "artist": "Kitagawa Utamaro",
-        "influence": "Mary Stevenson Cassatt"
+        "influenced": "Mary Stevenson Cassatt"
     },
     {
         "artist": "Edvard Munch",
-        "influence": "Max Beckmann"
+        "influenced": "Max Beckmann"
     },
     {
         "artist": "Donatella",
-        "influence": "Michelangelo"
+        "influenced": "Michelangelo"
     },
     {
         "artist": "Katsushika Hokusai",
-        "influence": "Oscar-Claude Monet"
+        "influenced": "Oscar-Claude Monet"
     },
     {
         "artist": "Paul Cezanne",
-        "influence": "Pablo Picasso"
+        "influenced": "Pablo Picasso"
     },
     {
         "artist": "Pablo Picasso",
-        "influence": "Paul Klee"
+        "influenced": "Paul Klee"
     },
     {
         "artist": "Amrita Sher-Gil",
-        "influence": "S. H. Raza"
+        "influenced": "S. H. Raza"
     },
     {
         "artist": "Pablo Picasso",
-        "influence": "Salvador Dali"
+        "influenced": "Salvador Dali"
     },
     {
         "artist": "Raphael",
-        "influence": "Salvador Dali"
+        "influenced": "Salvador Dali"
     },
     {
         "artist": "Vermeer",
-        "influence": "Salvador Dali"
+        "influenced": "Salvador Dali"
     },
     {
         "artist": "Diego Velázquez",
-        "influence": "Salvador Dali"
+        "influenced": "Salvador Dali"
     },
     {
         "artist": "Diego Rivera",
-        "influence": "SATISH GUJRAL"
+        "influenced": "SATISH GUJRAL"
     },
     {
         "artist": "David Alfaro Siqueiros",
-        "influence": "SATISH GUJRAL"
+        "influenced": "SATISH GUJRAL"
     },
     {
         "artist": "Claude Monet",
-        "influence": "The Impressionists "
+        "influenced": "The Impressionists "
     },
     {
         "artist": "Francis Bacon",
-        "influence": "Tyeb Mehta"
+        "influenced": "Tyeb Mehta"
     },
     {
         "artist": "Renoir",
-        "influence": "Vincent Willem van Gogh"
+        "influenced": "Vincent Willem van Gogh"
     },
     {
         "artist": "Édouard Manet",
-        "influence": "Vincent Willem van Gogh"
+        "influenced": "Vincent Willem van Gogh"
     },
     {
         "artist": "Georges Seurat",
-        "influence": "Vincent Willem van Gogh"
+        "influenced": "Vincent Willem van Gogh"
     },
     {
         "artist": "Michelangelo",
-        "influence": ""
+        "influenced": ""
     },
     {
         "artist": "Francis Picabia",
-        "influence": ""
+        "influenced": ""
     },
     {
         "artist": "Max Jacob",
-        "influence": "Frida Kahlo"
+        "influenced": "Frida Kahlo"
     },
     {
         "artist": "Marcel Duchamp",
-        "influence": "Frida Kahlo"
+        "influenced": "Frida Kahlo"
     },
     {
         "artist": "Pablo Picasso",
-        "influence": "Frida Kahlo"
+        "influenced": "Frida Kahlo"
     },
     {
         "artist": "Max Ernst",
-        "influence": "Frida Kahlo"
+        "influenced": "Frida Kahlo"
     },
     {
         "artist": "Giorgio de Chirico",
-        "influence": "Frida Kahlo"
+        "influenced": "Frida Kahlo"
     },
     {
         "artist": "Modigliani",
-        "influence": "Frida Kahlo"
+        "influenced": "Frida Kahlo"
     },
     {
         "artist": "Pablo Picasso",
-        "influence": "Francis Bacon"
+        "influenced": "Francis Bacon"
     },
     {
         "artist": "Diego Velázquez",
-        "influence": "Francis Bacon"
+        "influenced": "Francis Bacon"
     },
     {
         "artist": "Vincent Willem van Gogh",
-        "influence": "Francis Bacon"
+        "influenced": "Francis Bacon"
     },
     {
         "artist": "Francis Bacon",
-        "influence": "Julian Schnabel"
+        "influenced": "Julian Schnabel"
     },
     {
         "artist": "Francis Bacon",
-        "influence": "Damien Hirst"
+        "influenced": "Damien Hirst"
     },
     {
         "artist": "Leonardo da Vinci",
-        "influence": "Andy Warhol"
+        "influenced": "Andy Warhol"
     },
     {
         "artist": "Gustav Klimt",
-        "influence": "Egon Schiele"
+        "influenced": "Egon Schiele"
     },
     {
         "artist": "Gustav Klimt",
-        "influence": "Oskar Kokoschka"
+        "influenced": "Oskar Kokoschka"
     },
     {
         "artist": "Christian Krohg",
-        "influence": "Edvard Munch"
+        "influenced": "Edvard Munch"
     },
     {
         "artist": "Xia Chang",
-        "influence": "Wen Zhengming"
+        "influenced": "Wen Zhengming"
     },
     {
         "artist": "Shen Zhou",
-        "influence": "Wen Zhengming"
+        "influenced": "Wen Zhengming"
     },
     {
         "artist": "Wang Shimin",
-        "influence": "Wang Hui"
+        "influenced": "Wang Hui"
     },
     {
         "artist": "Mi Fu",
-        "influence": "Jeong Seon"
+        "influenced": "Jeong Seon"
     },
     {
         "artist": "Peter Pelham",
-        "influence": "John Singleton Copley"
+        "influenced": "John Singleton Copley"
     },
     {
         "artist": "John Smibert",
-        "influence": "John Singleton Copley"
+        "influenced": "John Singleton Copley"
     },
     {
         "artist": "Oscar-Claude Monet",
-        "influence": "Pieter Cornelis Mondriaan"
+        "influenced": "Pieter Cornelis Mondriaan"
     },
     {
         "artist": "Pablo Picasso",
-        "influence": "Pieter Cornelis Mondriaan"
+        "influenced": "Pieter Cornelis Mondriaan"
     },
     {
         "artist": "Georges Braque",
-        "influence": "Pieter Cornelis Mondriaan"
+        "influenced": "Pieter Cornelis Mondriaan"
     },
     {
         "artist": "Constantin Brancusi",
-        "influence": "Isamu Noguchi"
+        "influenced": "Isamu Noguchi"
     },
     {
         "artist": "Constantin Brancusi",
-        "influence": "Henry Moore"
+        "influenced": "Henry Moore"
     },
     {
         "artist": "Constantin Brancusi",
-        "influence": "Barbara Hepworth"
+        "influenced": "Barbara Hepworth"
     },
     {
         "artist": "Constantin Brancusi",
-        "influence": "Jacob Epstein"
+        "influenced": "Jacob Epstein"
     },
     {
         "artist": "Max Ernst",
-        "influence": "René François Ghislain Magritte"
+        "influenced": "René François Ghislain Magritte"
     },
     {
         "artist": "Giorgio de Chirico",
-        "influence": "René François Ghislain Magritte"
+        "influenced": "René François Ghislain Magritte"
     },
     {
         "artist": "Salvador Dali",
-        "influence": "René François Ghislain Magritte"
+        "influenced": "René François Ghislain Magritte"
     },
     {
         "artist": "Umberto Boccioni",
-        "influence": "René François Ghislain Magritte"
+        "influenced": "René François Ghislain Magritte"
     },
     {
         "artist": "Carlo Carrà",
-        "influence": "René François Ghislain Magritte"
+        "influenced": "René François Ghislain Magritte"
     },
     {
         "artist": "Auguste Renoir",
-        "influence": "René François Ghislain Magritte"
+        "influenced": "René François Ghislain Magritte"
     },
     {
         "artist": "René François Ghislain Magritte",
-        "influence": "Andy Warhol"
+        "influenced": "Andy Warhol"
     },
     {
         "artist": "René François Ghislain Magritte",
-        "influence": "Richard Wentworth"
+        "influenced": "Richard Wentworth"
     },
     {
         "artist": "René François Ghislain Magritte",
-        "influence": "Robert Rauschenberg"
+        "influenced": "Robert Rauschenberg"
     }
 ]
