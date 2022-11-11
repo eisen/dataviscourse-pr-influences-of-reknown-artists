@@ -1,0 +1,338 @@
+[
+    {
+        "artist": "Constantin Brancusi",
+        "influence": "Alberto Giacometti"
+    },
+    {
+        "artist": "Paul Cézanne",
+        "influence": "Amrita Sher-Gil"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "influence": "Amrita Sher-Gil"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influence": "Andy Warhol"
+    },
+    {
+        "artist": "Amrita Sher-Gil",
+        "influence": "Arpita Singh"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "influence": "Brett Whiteley"
+    },
+    {
+        "artist": "Ghiberthi",
+        "influence": "Donatella"
+    },
+    {
+        "artist": "Utagawa Hiroshige",
+        "influence": "Edgar Degas"
+    },
+    {
+        "artist": "Edvard Munch",
+        "influence": "Egon Schiele"
+    },
+    {
+        "artist": "Titian",
+        "influence": "El Greco"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "influence": "Emil Nolde"
+    },
+    {
+        "artist": "Edvard Munch",
+        "influence": "Erich Heckel"
+    },
+    {
+        "artist": "Rembrandt van Rijn",
+        "influence": "Georges Seurat"
+    },
+    {
+        "artist": "Kitagawa Utamaro",
+        "influence": "Henri de Toulouse-Lautrec"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "influence": "Henri Émile Benoît Matisse"
+    },
+    {
+        "artist": "Paul Cezanne",
+        "influence": "Henri Émile Benoît Matisse"
+    },
+    {
+        "artist": "Jean-Antoine Watteau",
+        "influence": "J.M.W Turner"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influence": "Jasper Johns"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influence": "John Baldessari"
+    },
+    {
+        "artist": "Miró",
+        "influence": "John Olsen"
+    },
+    {
+        "artist": "Jean Dubuffet",
+        "influence": "John Olsen"
+    },
+    {
+        "artist": "Antoni Tàpies",
+        "influence": "John Olsen"
+    },
+    {
+        "artist": "",
+        "influence": "John Olsen"
+    },
+    {
+        "artist": "Paul Cézanne",
+        "influence": "Margaret Rose Preston"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "influence": "Margaret Rose Preston"
+    },
+    {
+        "artist": "Henri Émile Benoît Matisse",
+        "influence": "Margaret Rose Preston"
+    },
+    {
+        "artist": "Japanese art ",
+        "influence": "Margaret Rose Preston"
+    },
+    {
+        "artist": "Kitagawa Utamaro",
+        "influence": "Mary Stevenson Cassatt"
+    },
+    {
+        "artist": "Edvard Munch",
+        "influence": "Max Beckmann"
+    },
+    {
+        "artist": "Donatella",
+        "influence": "Michelangelo"
+    },
+    {
+        "artist": "Katsushika Hokusai",
+        "influence": "Oscar-Claude Monet"
+    },
+    {
+        "artist": "Paul Cezanne",
+        "influence": "Pablo Picasso"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influence": "Paul Klee"
+    },
+    {
+        "artist": "Amrita Sher-Gil",
+        "influence": "S. H. Raza"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influence": "Salvador Dali"
+    },
+    {
+        "artist": "Raphael",
+        "influence": "Salvador Dali"
+    },
+    {
+        "artist": "Vermeer",
+        "influence": "Salvador Dali"
+    },
+    {
+        "artist": "Diego Velázquez",
+        "influence": "Salvador Dali"
+    },
+    {
+        "artist": "Diego Rivera",
+        "influence": "SATISH GUJRAL"
+    },
+    {
+        "artist": "David Alfaro Siqueiros",
+        "influence": "SATISH GUJRAL"
+    },
+    {
+        "artist": "Claude Monet",
+        "influence": "The Impressionists "
+    },
+    {
+        "artist": "Francis Bacon",
+        "influence": "Tyeb Mehta"
+    },
+    {
+        "artist": "Renoir",
+        "influence": "Vincent Willem van Gogh"
+    },
+    {
+        "artist": "Édouard Manet",
+        "influence": "Vincent Willem van Gogh"
+    },
+    {
+        "artist": "Georges Seurat",
+        "influence": "Vincent Willem van Gogh"
+    },
+    {
+        "artist": "Michelangelo",
+        "influence": ""
+    },
+    {
+        "artist": "Francis Picabia",
+        "influence": ""
+    },
+    {
+        "artist": "Max Jacob",
+        "influence": "Frida Kahlo"
+    },
+    {
+        "artist": "Marcel Duchamp",
+        "influence": "Frida Kahlo"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influence": "Frida Kahlo"
+    },
+    {
+        "artist": "Max Ernst",
+        "influence": "Frida Kahlo"
+    },
+    {
+        "artist": "Giorgio de Chirico",
+        "influence": "Frida Kahlo"
+    },
+    {
+        "artist": "Modigliani",
+        "influence": "Frida Kahlo"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influence": "Francis Bacon"
+    },
+    {
+        "artist": "Diego Velázquez",
+        "influence": "Francis Bacon"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "influence": "Francis Bacon"
+    },
+    {
+        "artist": "Francis Bacon",
+        "influence": "Julian Schnabel"
+    },
+    {
+        "artist": "Francis Bacon",
+        "influence": "Damien Hirst"
+    },
+    {
+        "artist": "Leonardo da Vinci",
+        "influence": "Andy Warhol"
+    },
+    {
+        "artist": "Gustav Klimt",
+        "influence": "Egon Schiele"
+    },
+    {
+        "artist": "Gustav Klimt",
+        "influence": "Oskar Kokoschka"
+    },
+    {
+        "artist": "Christian Krohg",
+        "influence": "Edvard Munch"
+    },
+    {
+        "artist": "Xia Chang",
+        "influence": "Wen Zhengming"
+    },
+    {
+        "artist": "Shen Zhou",
+        "influence": "Wen Zhengming"
+    },
+    {
+        "artist": "Wang Shimin",
+        "influence": "Wang Hui"
+    },
+    {
+        "artist": "Mi Fu",
+        "influence": "Jeong Seon"
+    },
+    {
+        "artist": "Peter Pelham",
+        "influence": "John Singleton Copley"
+    },
+    {
+        "artist": "John Smibert",
+        "influence": "John Singleton Copley"
+    },
+    {
+        "artist": "Oscar-Claude Monet",
+        "influence": "Pieter Cornelis Mondriaan"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influence": "Pieter Cornelis Mondriaan"
+    },
+    {
+        "artist": "Georges Braque",
+        "influence": "Pieter Cornelis Mondriaan"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "influence": "Isamu Noguchi"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "influence": "Henry Moore"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "influence": "Barbara Hepworth"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "influence": "Jacob Epstein"
+    },
+    {
+        "artist": "Max Ernst",
+        "influence": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Giorgio de Chirico",
+        "influence": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Salvador Dali",
+        "influence": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Umberto Boccioni",
+        "influence": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Carlo Carrà",
+        "influence": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Auguste Renoir",
+        "influence": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influence": "Andy Warhol"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influence": "Richard Wentworth"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influence": "Robert Rauschenberg"
+    }
+]
