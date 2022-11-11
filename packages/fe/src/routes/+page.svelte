@@ -1,18 +1,7 @@
 <script lang="ts">
-  import { geoGraticule, geoEquirectangular, geoPath } from 'd3-geo'
-  import {
-    group,
-    InternMap,
-    axisBottom,
-    select,
-    min,
-    max,
-    scaleLinear,
-    type AxisScale,
-    type NumberValue,
-    type ScaleLinear,
-    groups,
-  } from 'd3'
+  import { geoGraticule, geoPath } from 'd3-geo'
+  import { geoWinkel3 } from 'd3-geo-projection'
+  import { axisBottom, select, min, max, scaleLinear, type ScaleLinear, groups } from 'd3'
   import { json } from 'd3-fetch'
   import { feature } from 'topojson'
   import { onMount } from 'svelte'
@@ -29,6 +18,11 @@
     lon: number
   }
 
+  type ArtistInfluence = {
+    artist: string
+    influenced: string
+  }
+
   let svg: SVGSVGElement
   let map: SVGGElement
   let timeline: SVGGElement
@@ -40,6 +34,14 @@
   $: allLocations = []
   let locations: [string, ArtistLocation[]][]
   $: locations = []
+  let allInfluencees: [string, ArtistInfluence[]][]
+  $: allInfluencees = []
+  let allInfluencers: [string, ArtistInfluence[]][]
+  $: allInfluencers = []
+  let influences: ArtistLocation[]
+  $: influences = []
+  let showInfluences: boolean
+  $: showInfluences = false
 
   $: tl_pos = ''
   $: map_pos = 'translate(20, 20)'
@@ -55,7 +57,7 @@
   const graticuleUle = graticuleGen.lines()
   const graticuleOutline = graticuleGen.outline()
 
-  const projection = geoEquirectangular()
+  const projection = geoWinkel3()
   const path = geoPath().projection(projection)
 
   const tickEvery = 20
@@ -66,6 +68,7 @@
 
   const startDrag = () => {
     dragging = true
+    showInfluences = false
   }
 
   const drag = (ev: { offsetX: number }) => {
@@ -116,6 +119,47 @@
     return pos[1]
   }
 
+  const displayInfluences = (location: ArtistLocation) => {
+    showInfluences = true
+    influences = [location]
+    const artistInfluencees: [string, ArtistInfluence[]][] = allInfluencees.filter(d => d[0] === location.artist)
+    const artistInfluencers: [string, ArtistInfluence[]][] = allInfluencers.filter(d => d[0] === location.artist)
+
+    if (artistInfluencers.length > 0) {
+      console.log('Influencers')
+      for (let influence of artistInfluencers[0][1]) {
+        const data = allLocations.find(loc => loc[1][0].artist === influence.artist)
+        if (data) {
+          influences.push(data[1][0])
+          console.log(influence)
+          console.log(allLocations.find(loc => loc[1][0].artist === influence.artist))
+        }
+      }
+    }
+
+    if (artistInfluencees.length > 0) {
+      console.log('Influencees')
+      for (let influence of artistInfluencees[0][1]) {
+        const data = allLocations.find(loc => loc[1][0].artist === influence.influenced)
+        if (data) {
+          influences.push(data[1][0])
+          console.log(influence)
+          console.log(allLocations.find(loc => loc[1][0].artist === influence.influenced))
+        }
+      }
+    }
+  }
+
+  const OnMouseOver = (target: any) => {
+    select(target + '-group').raise()
+    select(target + '-text').attr('opacity', 1)
+  }
+
+  const OnMouseOut = (target: any) => {
+    select(target + '-group').lower()
+    select(target + '-text').attr('opacity', 0)
+  }
+
   onMount(async () => {
     const bbox = select(map).node()!.getBoundingClientRect()
 
@@ -123,6 +167,12 @@
 
     const features: any = await json(`${server_url}/data/world.json`)
     data = feature(features, features.objects.countries)
+
+    const influence_data: ArtistInfluence[] | undefined = await json(`${server_url}/data/artist-influences.json`)
+    if (influence_data) {
+      allInfluencees = groups(influence_data, (d: ArtistInfluence) => d.artist)
+      allInfluencers = groups(influence_data, (d: ArtistInfluence) => d.influenced)
+    }
 
     const locs: ArtistLocation[] | undefined = await json(`${server_url}/data/artist-locations.json`)
     if (locs) {
@@ -160,18 +210,60 @@
         {/if}
       </g>
       <g id="artists">
-        {#each locations as location}
-          <circle
-            cx={getXfromLatLon(location[1])}
-            cy={getYfromLatLon(location[1])}
-            r="10"
-            stroke="black"
-            fill="white"
-          />
-          <text x={getXfromLatLon(location[1])} y={getYfromLatLon(location[1]) + 25} text-anchor="middle"
-            >{location[0]}</text
-          >
-        {/each}
+        {#if showInfluences}
+          {#each influences as location}
+            <g
+              id={location.artist.replace(/\s/g, '') + '-group'}
+              on:focus={ev => OnMouseOver('#' + location.artist.replace(/\s/g, ''))}
+              on:mouseover={ev => OnMouseOver('#' + location.artist.replace(/\s/g, ''))}
+              on:blur={ev => OnMouseOut('#' + location.artist.replace(/\s/g, ''))}
+              on:mouseout={ev => OnMouseOut('#' + location.artist.replace(/\s/g, ''))}
+            >
+              <circle
+                cx={getXfromLatLon([location])}
+                cy={getYfromLatLon([location])}
+                r="10"
+                stroke="black"
+                fill="white"
+              />
+              <text
+                id={location.artist.replace(/\s/g, '') + '-text'}
+                opacity="0"
+                x={getXfromLatLon([location])}
+                y={getYfromLatLon([location]) + 25}
+                text-anchor="middle">{location.artist}</text
+              >
+            </g>
+          {/each}
+        {:else}
+          {#each locations as location}
+            <g
+              id={location[0].replace(/\s/g, '') + '-group'}
+              on:focus={ev => OnMouseOver('#' + location[0].replace(/\s/g, ''))}
+              on:mouseover={ev => OnMouseOver('#' + location[0].replace(/\s/g, ''))}
+              on:blur={ev => OnMouseOut('#' + location[0].replace(/\s/g, ''))}
+              on:mouseout={ev => OnMouseOut('#' + location[0].replace(/\s/g, ''))}
+            >
+              <circle
+                cx={getXfromLatLon(location[1])}
+                cy={getYfromLatLon(location[1])}
+                r="10"
+                stroke="black"
+                fill="white"
+                on:click={() => {
+                  displayInfluences(location[1][0])
+                }}
+              />
+              <text
+                id={location[0].replace(/\s/g, '') + '-text'}
+                opacity="0"
+                x={getXfromLatLon(location[1])}
+                y={getYfromLatLon(location[1]) + 25}
+                text-anchor="middle">{location[0]}</text
+              >
+            </g>
+          {/each}
+        {/if}
       </g>
       <g id="outline">
         <path d={path(graticuleOutline)} fill="none" stroke="black" stroke-width="2" />
