@@ -101,3 +101,8 @@ dvp gh
 dvp src
 
 ```
+
+### Routes
+Simply go to `localhost:...` where the number after the colon is the one given to you in the console after running our project
+
+You can also go to `localhost:.../chords` to see our work in progress for our chord visualization to the right of the other components. We want to keep it separate from the main route until we make the chord visualization a proper component.
