@@ -43,12 +43,13 @@
 
   $: tl_pos = ''
   $: map_pos = 'translate(20, 20)'
-  $: cursor_pos = 'translate(9, 38)'
+  $: cursor_pos = 'translate(9, -22)'
   $: dragging = false
   let oldestYear: number | undefined
   $: oldestYear = 0
   let youngestYear: number | undefined
   $: youngestYear = 2100
+  $: year = 0
 
   const graticuleGen = geoGraticule()
   const graticuleUle = graticuleGen.lines()
@@ -69,7 +70,7 @@
 
   const drag = (ev: { offsetX: number }) => {
     if (dragging) {
-      let year = tl_x_scale!.invert(Number(ev.offsetX - 9))
+      year = tl_x_scale!.invert(Number(ev.offsetX - 9))
       filterLocations(year!)
       let pos = ev.offsetX - 9
       if (year < oldestYear!) {
@@ -77,7 +78,7 @@
       } else if (year > youngestYear!) {
         pos = tl_x_scale!(youngestYear!) + 9
       }
-      cursor_pos = `translate(${pos}, 38)`
+      cursor_pos = `translate(${pos}, -22)`
     }
   }
 
@@ -179,12 +180,22 @@
     <g id="timeline" bind:this={timeline} transform={tl_pos}>
       <g transform={cursor_pos} on:mousedown={startDrag}>
         <path
-          d="M6.75469 17.2828L5.32612 7.28284C5.154 6.07798 6.08892 5 7.30602 5H10.694C11.9111 5 12.846 6.07797 12.6739 7.28284L11.2453 17.2828C11.1046 18.2681 10.2607 19 9.26541 19H8.73459C7.73929 19 6.89545 18.2681 6.75469 17.2828Z"
-          stroke="currentColor"
           fill="white"
-          stroke-width="1.5"
-          transform="rotate(180)"
+          d="M6.8,17.3l-1.4-10C5.2,6.1,6.1,5,7.3,5h3.4c1.2,0,2.2,1.1,2,2.3l-1.4,10c-0.1,1-1,1.7-2,1.7H8.7C7.7,19,6.9,18.3,6.8,17.3z"
         />
+        <path
+          stroke="black"
+          fill="black"
+          d="M9.3,19.8H8.7c-1.4,0-2.5-1-2.7-2.4l-1.4-10C4.5,6.6,4.7,5.8,5.2,5.2c0.5-0.6,1.3-0.9,2.1-0.9h3.4c0.8,0,1.6,0.3,2.1,0.9c0.5,0.6,0.8,1.4,0.6,2.2l-1.4,10C11.8,18.7,10.6,19.8,9.3,19.8z M7.3,5.8c-0.4,0-0.7,0.2-0.9,0.4C6.1,6.5,6,6.8,6.1,7.2l1.4,10c0.1,0.6,0.6,1.1,1.2,1.1h0.5c0.6,0,1.1-0.5,1.2-1.1l1.4-10c0.1-0.4-0.1-0.7-0.3-1c-0.2-0.3-0.6-0.4-0.9-0.4H7.3z"
+        />
+        <text
+          transform="translate(9,0)"
+          stroke="black"
+          font-weight="lighter"
+          text-anchor="middle"
+          font-size="12"
+          font-family="sans-serif">{Math.trunc(year)}</text
+        >
       </g>
     </g>
   </svg>
