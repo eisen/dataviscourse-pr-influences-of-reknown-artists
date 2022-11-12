@@ -1,0 +1,682 @@
+[
+    {
+        "artist": "Alberto Giacometti",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Alberto Giacometti",
+        "medium": "painter"
+    },
+    {
+        "artist": "Alberto Giacometti",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Alberto Giacometti",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Amedeo Modigliani",
+        "medium": "painter"
+    },
+    {
+        "artist": "Amedeo Modigliani",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Amrita Sher-Gil",
+        "medium": "painter"
+    },
+    {
+        "artist": "Andy Warhol",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Andy Warhol",
+        "medium": "painter"
+    },
+    {
+        "artist": "Andy Warhol",
+        "medium": "photography"
+    },
+    {
+        "artist": "Andy Warhol",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Andy Warhol",
+        "medium": "film"
+    },
+    {
+        "artist": "Antoni Tàpies",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Antoni Tàpies",
+        "medium": "painter"
+    },
+    {
+        "artist": "Arpita Singh",
+        "medium": "watercolourist"
+    },
+    {
+        "artist": "Arpita Singh",
+        "medium": "painter-oil"
+    },
+    {
+        "artist": "Brett Whiteley",
+        "medium": "painter"
+    },
+    {
+        "artist": "Christian Krohg",
+        "medium": "painter"
+    },
+    {
+        "artist": "Christian Krohg",
+        "medium": "illustrator"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "medium": "painter"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "medium": "photography"
+    },
+    {
+        "artist": "Damien Hirst",
+        "medium": "painter"
+    },
+    {
+        "artist": "Damien Hirst",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "David Alfaro Siqueiros",
+        "medium": "painter"
+    },
+    {
+        "artist": "David Alfaro Siqueiros",
+        "medium": "muralist"
+    },
+    {
+        "artist": "Diego Rivera",
+        "medium": "painter"
+    },
+    {
+        "artist": "Diego Rivera",
+        "medium": "muralist"
+    },
+    {
+        "artist": "Diego Velázquez",
+        "medium": "painter"
+    },
+    {
+        "artist": "Donatello",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Edgar Degas",
+        "medium": "painter-oil"
+    },
+    {
+        "artist": "Edgar Degas",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Edgar Degas",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Édouard Manet",
+        "medium": "painter"
+    },
+    {
+        "artist": "Édouard Manet",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Edvard Munch",
+        "medium": "painter"
+    },
+    {
+        "artist": "Egon Schiele",
+        "medium": "painter"
+    },
+    {
+        "artist": "Egon Schiele",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Egon Schiele",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "El Greco",
+        "medium": "painter"
+    },
+    {
+        "artist": "El Greco",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "El Greco",
+        "medium": "architect"
+    },
+    {
+        "artist": "Emil Nolde",
+        "medium": "watercolourist"
+    },
+    {
+        "artist": "Emil Nolde",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Erich Heckel",
+        "medium": "painter"
+    },
+    {
+        "artist": "Erich Heckel",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Francis Bacon",
+        "medium": "painter"
+    },
+    {
+        "artist": "Frida Kahlo",
+        "medium": "painter-oil"
+    },
+    {
+        "artist": "Georges Seurat",
+        "medium": "painter-oil"
+    },
+    {
+        "artist": "Giorgio de Chirico",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Giorgio de Chirico",
+        "medium": "painter-oil"
+    },
+    {
+        "artist": "Giorgio de Chirico",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Gustav Klimt",
+        "medium": "painter-oil"
+    },
+    {
+        "artist": "Gustav Klimt",
+        "medium": "muralist"
+    },
+    {
+        "artist": "Gustav Klimt",
+        "medium": "watercolourist"
+    },
+    {
+        "artist": "Henri de Toulouse-Lautrec",
+        "medium": "painter"
+    },
+    {
+        "artist": "Henri de Toulouse-Lautrec",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Henri de Toulouse-Lautrec",
+        "medium": "illustrator"
+    },
+    {
+        "artist": "Henri de Toulouse-Lautrec",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Henri Émile Benoît Matisse",
+        "medium": "painter"
+    },
+    {
+        "artist": "Henri Émile Benoît Matisse",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Henri Émile Benoît Matisse",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Henri Émile Benoît Matisse",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "J.M.W Turner",
+        "medium": "painter-oil"
+    },
+    {
+        "artist": "J.M.W Turner",
+        "medium": "watercolourist"
+    },
+    {
+        "artist": "J.M.W Turner",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Jasper Johns",
+        "medium": "painter"
+    },
+    {
+        "artist": "Jasper Johns",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Jasper Johns",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Jean Dubuffet",
+        "medium": "painter"
+    },
+    {
+        "artist": "Jean Dubuffet",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Jean-Antoine Watteau",
+        "medium": "painter"
+    },
+    {
+        "artist": "Jean-Antoine Watteau",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Jeong Seon",
+        "medium": "painter"
+    },
+    {
+        "artist": "Jeong Seon",
+        "medium": "ink"
+    },
+    {
+        "artist": "Jeong Seon",
+        "medium": "watercolourist"
+    },
+    {
+        "artist": "Jeong Seon",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Joan Miró",
+        "medium": "painter"
+    },
+    {
+        "artist": "Joan Miró",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Joan Miró",
+        "medium": "muralist"
+    },
+    {
+        "artist": "Joan Miró",
+        "medium": "ceramicist"
+    },
+    {
+        "artist": "Johannes Vermeer",
+        "medium": "painter"
+    },
+    {
+        "artist": "John Baldessari",
+        "medium": "painter"
+    },
+    {
+        "artist": "John Baldessari",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "John Baldessari",
+        "medium": "film"
+    },
+    {
+        "artist": "John Baldessari",
+        "medium": "photography"
+    },
+    {
+        "artist": "John Baldessari",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "John Olsen",
+        "medium": "painter"
+    },
+    {
+        "artist": "John Singleton Copley",
+        "medium": "painter"
+    },
+    {
+        "artist": "John Smibert",
+        "medium": "painter"
+    },
+    {
+        "artist": "Julian Schnabel",
+        "medium": "painter"
+    },
+    {
+        "artist": "Julian Schnabel",
+        "medium": "film"
+    },
+    {
+        "artist": "Katsushika Hokusai",
+        "medium": "painter"
+    },
+    {
+        "artist": "Katsushika Hokusai",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Kitagawa Utamaro",
+        "medium": "painter"
+    },
+    {
+        "artist": "Kitagawa Utamaro",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Leonardo da Vinci",
+        "medium": "painter"
+    },
+    {
+        "artist": "Leonardo da Vinci",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Leonardo da Vinci",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Leonardo da Vinci",
+        "medium": "architect"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Marcel Duchamp",
+        "medium": "painter"
+    },
+    {
+        "artist": "Marcel Duchamp",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Marcel Duchamp",
+        "medium": "film"
+    },
+    {
+        "artist": "Margaret Rose Preston",
+        "medium": "painter"
+    },
+    {
+        "artist": "Margaret Rose Preston",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Mary Stevenson Cassatt",
+        "medium": "painter"
+    },
+    {
+        "artist": "Mary Stevenson Cassatt",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Max Beckmann",
+        "medium": "painter"
+    },
+    {
+        "artist": "Max Beckmann",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Max Beckmann",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Max Beckmann",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Max Ernst",
+        "medium": "painter-oil"
+    },
+    {
+        "artist": "Max Ernst",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Max Ernst",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Max Jacob",
+        "medium": "painter"
+    },
+    {
+        "artist": "Mi Fu",
+        "medium": "painter"
+    },
+    {
+        "artist": "Mi Fu",
+        "medium": "calligrapher"
+    },
+    {
+        "artist": "Michelangelo",
+        "medium": "painter"
+    },
+    {
+        "artist": "Michelangelo",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Michelangelo",
+        "medium": "architect"
+    },
+    {
+        "artist": "Oscar-Claude Monet",
+        "medium": "painter"
+    },
+    {
+        "artist": "Oskar Kokoschka",
+        "medium": "painter"
+    },
+    {
+        "artist": "Oskar Kokoschka",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "medium": "painter"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "medium": "ceramicist"
+    },
+    {
+        "artist": "Paul Cezanne",
+        "medium": "painter"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "medium": "painter"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "medium": "ceramicist"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "medium": "engraving"
+    },
+    {
+        "artist": "Paul Klee",
+        "medium": "painter"
+    },
+    {
+        "artist": "Paul Klee",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Paul Klee",
+        "medium": "watercolourist"
+    },
+    {
+        "artist": "Paul Klee",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Peter Pelham",
+        "medium": "painter"
+    },
+    {
+        "artist": "Peter Pelham",
+        "medium": "engraving"
+    },
+    {
+        "artist": "Pierre-Auguste Renoir",
+        "medium": "painter"
+    },
+    {
+        "artist": "Raphael",
+        "medium": "painter"
+    },
+    {
+        "artist": "Raphael",
+        "medium": "architect"
+    },
+    {
+        "artist": "Rembrandt van Rijn",
+        "medium": "painter"
+    },
+    {
+        "artist": "Rembrandt van Rijn",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Rembrandt van Rijn",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "medium": "painter"
+    },
+    {
+        "artist": "S. H. Raza",
+        "medium": "painter"
+    },
+    {
+        "artist": "Salvador Dali",
+        "medium": "painter"
+    },
+    {
+        "artist": "Salvador Dali",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Salvador Dali",
+        "medium": "photography"
+    },
+    {
+        "artist": "Salvador Dali",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Salvador Dali",
+        "medium": "film"
+    },
+    {
+        "artist": "Satish Gujral",
+        "medium": "sculptor"
+    },
+    {
+        "artist": "Satish Gujral",
+        "medium": "muralist"
+    },
+    {
+        "artist": "Satish Gujral",
+        "medium": "painter"
+    },
+    {
+        "artist": "Shen Zhou",
+        "medium": "painter"
+    },
+    {
+        "artist": "Titian",
+        "medium": "painter"
+    },
+    {
+        "artist": "Tyeb Mehta",
+        "medium": "painter"
+    },
+    {
+        "artist": "Utagawa Hiroshige",
+        "medium": "painter"
+    },
+    {
+        "artist": "Utagawa Hiroshige",
+        "medium": "printmaker"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "medium": "painter"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "medium": "draughtsman"
+    },
+    {
+        "artist": "Wang Hui",
+        "medium": "painter"
+    },
+    {
+        "artist": "Wang Shimin",
+        "medium": "painter"
+    },
+    {
+        "artist": "Wassily Kandinsky",
+        "medium": "painter"
+    },
+    {
+        "artist": "Wen Zhengming",
+        "medium": "painter"
+    },
+    {
+        "artist": "Wen Zhengming",
+        "medium": "calligrapher"
+    },
+    {
+        "artist": "Xia Chang",
+        "medium": "painter"
+    },
+    {
+        "artist": "Xia Chang",
+        "medium": "ink"
+    }
+]
