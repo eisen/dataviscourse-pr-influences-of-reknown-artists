@@ -1,7 +1,21 @@
 <script lang="ts">
   import { geoGraticule, geoPath } from 'd3-geo'
   import { geoWinkel3 } from 'd3-geo-projection'
-  import { axisBottom, select, min, max, scaleLinear, type ScaleLinear, groups } from 'd3'
+  import {
+    axisBottom,
+    select,
+    min,
+    max,
+    scaleLinear,
+    type ScaleLinear,
+    groups,
+    forceSimulation,
+    forceY,
+    forceX,
+    forceCollide,
+    type SimulationNodeDatum,
+    type Simulation,
+  } from 'd3'
   import { json } from 'd3-fetch'
   import { feature } from 'topojson'
   import { onMount } from 'svelte'
@@ -10,6 +24,9 @@
   const server_url = `http://localhost:${port}`
   const CURSOR_HALF_WIDTH = 9
   const CURSOR_Y_POS = -12
+  const RADIUS = 15
+  const TEXT_Y_OFFSET = 30
+  let sim: Simulation<SimulationNodeDatum, undefined>
 
   type ArtistLocation = {
     artist: string
@@ -29,8 +46,8 @@
   let map: SVGGElement
   let timeline: SVGGElement
 
-  let data: any
-  $: data = null
+  let world_data: any
+  $: world_data = null
 
   let allLocations: [string, ArtistLocation[]][]
   $: allLocations = []
@@ -40,7 +57,7 @@
   $: allInfluencees = []
   let allInfluencers: [string, ArtistInfluence[]][]
   $: allInfluencers = []
-  let influences: ArtistLocation[]
+  let influences: [string, ArtistLocation[]][]
   $: influences = []
   let showInfluences: boolean
   $: showInfluences = false
@@ -49,6 +66,7 @@
   $: map_pos = 'translate(20, 20)'
   $: cursor_pos = `translate(-${CURSOR_HALF_WIDTH}, ${CURSOR_Y_POS})`
   $: dragging = false
+  $: sim_running = false
   let oldestYear: number | undefined
   $: oldestYear = 0
   let youngestYear: number | undefined
@@ -71,6 +89,12 @@
   const startDrag = () => {
     dragging = true
     showInfluences = false
+    if (sim_running) {
+      sim.stop()
+    }
+    sim_running = false
+    locations = []
+    influences = []
   }
 
   const drag = (ev: { offsetX: number }) => {
@@ -92,6 +116,10 @@
 
   const stopDrag = () => {
     dragging = false
+    if (sim_running === false) {
+      sim_running = true
+      RunSim(locations)
+    }
   }
 
   const filterLocations = (year: number) => {
@@ -102,6 +130,10 @@
         return locations[0].year <= year
       }
     })
+    for (const location of locations) {
+      location['x'] = getXfromLatLon(location[1])
+      location['y'] = getYfromLatLon(location[1])
+    }
   }
 
   const getXfromLatLon = (
@@ -126,7 +158,8 @@
 
   const displayInfluences = (location: ArtistLocation) => {
     showInfluences = true
-    influences = [location]
+    influences = []
+    influences.push(allLocations.filter(d => d[0] === location.artist)[0])
     const artistInfluencees: [string, ArtistInfluence[]][] = allInfluencees.filter(d => d[0] === location.artist)
     const artistInfluencers: [string, ArtistInfluence[]][] = allInfluencers.filter(d => d[0] === location.artist)
 
@@ -135,7 +168,7 @@
       for (let influence of artistInfluencers[0][1]) {
         const data = allLocations.find(loc => loc[1][0].artist === influence.artist)
         if (data) {
-          influences.push(data[1][0])
+          influences.push(data)
           console.log(influence)
           console.log(allLocations.find(loc => loc[1][0].artist === influence.artist))
         }
@@ -147,12 +180,65 @@
       for (let influence of artistInfluencees[0][1]) {
         const data = allLocations.find(loc => loc[1][0].artist === influence.influenced)
         if (data) {
-          influences.push(data[1][0])
+          influences.push(data)
           console.log(influence)
           console.log(allLocations.find(loc => loc[1][0].artist === influence.influenced))
         }
       }
     }
+    for (const location of influences) {
+      location['x'] = getXfromLatLon(location[1])
+      location['y'] = getYfromLatLon(location[1])
+    }
+    RunSim(influences)
+  }
+
+  const RunSim = (data: any) => {
+    sim = forceSimulation(data)
+      .force(
+        'x',
+        forceX().x(d => {
+          const artist: Array<any> = d as Array<any>
+          return getXfromLatLon(artist[1])
+        })
+      )
+      .force(
+        'y',
+        forceY().y(d => {
+          const artist: Array<any> = d as Array<any>
+          return getYfromLatLon(artist[1])
+        })
+      )
+      .force(
+        'collide',
+        forceCollide().radius(d => RADIUS * 2)
+      )
+
+    sim.on('tick', () => {
+      if (showInfluences) {
+        influences = data
+      } else {
+        locations = data
+      }
+    })
+
+    sim.on('end', () => {
+      sim_running = false
+    })
+  }
+
+  const getX = (location: [string, ArtistLocation[]]) => {
+    if (location.hasOwnProperty('x')) {
+      return location['x']
+    }
+    return getXfromLatLon(location[1])
+  }
+
+  const getY = (location: [string, ArtistLocation[]]) => {
+    if (location.hasOwnProperty('y')) {
+      return location['y']
+    }
+    return getYfromLatLon(location[1])
   }
 
   const OnMouseOver = (target: any) => {
@@ -171,7 +257,7 @@
     tl_pos = `translate(${90}, ${bbox.height + 60})`
 
     const features: any = await json(`${server_url}/data/world.json`)
-    data = feature(features, features.objects.countries)
+    world_data = feature(features, features.objects.countries)
 
     const influence_data: ArtistInfluence[] | undefined = await json(`${server_url}/data/artist-influences.json`)
     if (influence_data) {
@@ -222,8 +308,8 @@
         {/each}
       </g>
       <g id="countries">
-        {#if data}
-          {#each data.features as feature}
+        {#if world_data}
+          {#each world_data.features as feature}
             <path id={feature.id} d={path(feature)} stroke="lightgray" fill="white" />
           {/each}
         {/if}
@@ -232,26 +318,29 @@
         {#if showInfluences}
           {#each influences as location}
             <g
-              id={location.artist.replace(/[[\s\.]]/g, '') + '-group'}
+              id={location[0].replace(/[[\s\.]]/g, '') + '-group'}
               class="pointer"
-              on:focus={ev => OnMouseOver('#' + location.artist.replace(/[\s\.]/g, ''))}
-              on:mouseover={ev => OnMouseOver('#' + location.artist.replace(/[\s\.]/g, ''))}
-              on:blur={ev => OnMouseOut('#' + location.artist.replace(/[\s\.]/g, ''))}
-              on:mouseout={ev => OnMouseOut('#' + location.artist.replace(/[\s\.]/g, ''))}
+              on:focus={ev => OnMouseOver('#' + location[0].replace(/[\s\.]/g, ''))}
+              on:mouseover={ev => OnMouseOver('#' + location[0].replace(/[\s\.]/g, ''))}
+              on:blur={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
+              on:mouseout={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
             >
-              <circle
-                cx={getXfromLatLon([location])}
-                cy={getYfromLatLon([location])}
-                r="10"
+              <line
+                x2={getXfromLatLon(location[1])}
+                x1={getX(location)}
+                y2={getYfromLatLon(location[1])}
+                y1={getY(location)}
                 stroke="black"
-                fill="white"
               />
+              <circle cx={getXfromLatLon(location[1])} cy={getYfromLatLon(location[1])} r="2" fill="black" />
+
+              <circle cx={getX(location)} cy={getY(location)} r={RADIUS} stroke="black" fill="white" />
               <text
-                id={location.artist.replace(/[\s\.]/g, '') + '-text'}
+                id={location[0].replace(/[\s\.]/g, '') + '-text'}
                 opacity="0"
-                x={getXfromLatLon([location])}
-                y={getYfromLatLon([location]) + 25}
-                text-anchor="middle">{location.artist}</text
+                x={getX(location)}
+                y={getY(location) + TEXT_Y_OFFSET}
+                text-anchor="middle">{location[0]}</text
               >
             </g>
           {/each}
@@ -265,10 +354,18 @@
               on:blur={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
               on:mouseout={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
             >
+              <line
+                x2={getXfromLatLon(location[1])}
+                x1={getX(location)}
+                y2={getYfromLatLon(location[1])}
+                y1={getY(location)}
+                stroke="black"
+              />
+              <circle cx={getXfromLatLon(location[1])} cy={getYfromLatLon(location[1])} r="2" fill="black" />
               <circle
-                cx={getXfromLatLon(location[1])}
-                cy={getYfromLatLon(location[1])}
-                r="10"
+                cx={getX(location)}
+                cy={getY(location)}
+                r={RADIUS}
                 stroke="black"
                 fill="white"
                 on:click={() => {
@@ -278,8 +375,8 @@
               <text
                 id={location[0].replace(/[\s\.]/g, '') + '-text'}
                 opacity="0"
-                x={getXfromLatLon(location[1])}
-                y={getYfromLatLon(location[1]) + 25}
+                x={getX(location)}
+                y={getY(location) + TEXT_Y_OFFSET}
                 text-anchor="middle">{location[0]}</text
               >
             </g>
@@ -291,7 +388,7 @@
       </g>
     </g>
     <g id="timeline" bind:this={timeline} transform={tl_pos}>
-      <g transform={cursor_pos} on:mousedown={startDrag} class="slider">
+      <g transform={cursor_pos} on:mousedown={startDrag} on:mouseup={stopDrag} class="slider">
         <path
           class="st0"
           d="M9.3,19.8H8.7c-1.4,0-2.5-1-2.7-2.4l-1.4-10C4.5,6.6,4.7,5.8,5.2,5.2s1.3-0.9,2.1-0.9h3.4c0.8,0,1.6,0.3,2.1,0.9c0.5,0.6,0.8,1.4,0.6,2.2l-1.4,10C11.8,18.7,10.6,19.8,9.3,19.8z"
