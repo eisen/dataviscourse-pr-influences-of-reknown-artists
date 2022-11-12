@@ -88,10 +88,6 @@
         "influenced": "John Olsen"
     },
     {
-        "artist": "",
-        "influenced": "John Olsen"
-    },
-    {
         "artist": "Paul Cézanne",
         "influenced": "Margaret Rose Preston"
     },
@@ -101,10 +97,6 @@
     },
     {
         "artist": "Henri Émile Benoît Matisse",
-        "influenced": "Margaret Rose Preston"
-    },
-    {
-        "artist": "Japanese art ",
         "influenced": "Margaret Rose Preston"
     },
     {
@@ -153,15 +145,11 @@
     },
     {
         "artist": "Diego Rivera",
-        "influenced": "SATISH GUJRAL"
+        "influenced": "Satish Gujral"
     },
     {
         "artist": "David Alfaro Siqueiros",
-        "influenced": "SATISH GUJRAL"
-    },
-    {
-        "artist": "Claude Monet",
-        "influenced": "The Impressionists "
+        "influenced": "Satish Gujral"
     },
     {
         "artist": "Francis Bacon",
@@ -178,14 +166,6 @@
     {
         "artist": "Georges Seurat",
         "influenced": "Vincent Willem van Gogh"
-    },
-    {
-        "artist": "Michelangelo",
-        "influenced": ""
-    },
-    {
-        "artist": "Francis Picabia",
-        "influenced": ""
     },
     {
         "artist": "Max Jacob",
