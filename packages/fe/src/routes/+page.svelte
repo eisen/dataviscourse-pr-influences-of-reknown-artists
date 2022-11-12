@@ -273,7 +273,6 @@
   }
 
   const OnMouseOut = (target: any) => {
-    select(target + '-group').lower()
     select(target + '-text').attr('opacity', 0)
   }
 
