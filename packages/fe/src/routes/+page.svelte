@@ -59,6 +59,12 @@
   $: allInfluencers = []
   let influences: [string, ArtistLocation[]][]
   $: influences = []
+  let influencees: [string, ArtistLocation[]][]
+  $: influencees = []
+  let influencers: [string, ArtistLocation[]][]
+  $: influencers = []
+  let selected: [string, ArtistLocation[]]
+  $: selected
   let showInfluences: boolean
   $: showInfluences = false
 
@@ -85,6 +91,8 @@
 
   let tl_x_scale: ScaleLinear<number, number, never>
   let tl_x_axis = null
+
+  let influence_scale: ScaleLinear<number, number, never>
 
   const startDrag = () => {
     dragging = true
@@ -114,11 +122,13 @@
     }
   }
 
-  const stopDrag = () => {
-    dragging = false
-    if (sim_running === false) {
-      sim_running = true
-      RunSim(locations)
+  const stopDrag = el => {
+    if (el.target.id === 'handle') {
+      dragging = false
+      if (sim_running === false) {
+        sim_running = true
+        RunSim(locations)
+      }
     }
   }
 
@@ -159,7 +169,10 @@
   const displayInfluences = (location: ArtistLocation) => {
     showInfluences = true
     influences = []
-    influences.push(allLocations.filter(d => d[0] === location.artist)[0])
+    influencers = []
+    influencees = []
+    selected = allLocations.filter(d => d[0] === location.artist)[0]
+    influences.push(selected)
     const artistInfluencees: [string, ArtistInfluence[]][] = allInfluencees.filter(d => d[0] === location.artist)
     const artistInfluencers: [string, ArtistInfluence[]][] = allInfluencers.filter(d => d[0] === location.artist)
 
@@ -169,6 +182,7 @@
         const data = allLocations.find(loc => loc[1][0].artist === influence.artist)
         if (data) {
           influences.push(data)
+          influencers.push(data)
           console.log(influence)
           console.log(allLocations.find(loc => loc[1][0].artist === influence.artist))
         }
@@ -181,6 +195,7 @@
         const data = allLocations.find(loc => loc[1][0].artist === influence.influenced)
         if (data) {
           influences.push(data)
+          influencees.push(data)
           console.log(influence)
           console.log(allLocations.find(loc => loc[1][0].artist === influence.influenced))
         }
@@ -220,6 +235,10 @@
       } else {
         locations = data
       }
+      if (Math.abs(sim.alpha() - sim.alphaTarget()) < 0.1) {
+        sim.stop()
+        sim_running = false
+      }
     })
 
     sim.on('end', () => {
@@ -239,6 +258,13 @@
       return location['y']
     }
     return getYfromLatLon(location[1])
+  }
+
+  const getYearGap = (loc1: [string, ArtistLocation[]], loc2: [string, ArtistLocation[]]): number => {
+    const middle1 = loc1[1][0].year // Death Year - Born Year
+    const middle2 = loc2[1][0].year // Death Year - Born Year
+
+    return influence_scale(Math.abs(middle2 - middle1))
   }
 
   const OnMouseOver = (target: any) => {
@@ -273,6 +299,9 @@
       allLocations = groups(locs, d => d.artist)
       filterLocations(oldestYear!)
 
+      influence_scale = scaleLinear()
+        .domain([0, youngestYear! - oldestYear!])
+        .range([2, RADIUS])
       tl_x_scale = scaleLinear().domain([oldestYear!, youngestYear!]).range([0, bbox.width])
       tl_x_axis = axisBottom(tl_x_scale)
         .tickFormat(d => {
@@ -295,7 +324,7 @@
       .slider {
         cursor: ew-resize;
       }
-      .st0 {
+      #handle {
         fill: #000000;
         stroke: #000000;
         stroke-miterlimit: 10;
@@ -317,6 +346,28 @@
       <g id="artists">
         {#if showInfluences}
           {#each influences as location}
+            <g>
+              <line
+                x2={getXfromLatLon(location[1])}
+                y2={getYfromLatLon(location[1])}
+                x1={getX(location)}
+                y1={getY(location)}
+                stroke="black"
+              />
+              <circle cx={getXfromLatLon(location[1])} cy={getYfromLatLon(location[1])} r="2" fill="black" />
+
+              <line
+                x2={getX(location)}
+                y2={getY(location)}
+                x1={getX(selected)}
+                y1={getY(selected)}
+                stroke="red"
+                opacity="0.5"
+                stroke-width={getYearGap(selected, location)}
+              />
+            </g>
+          {/each}
+          {#each influences as location}
             <g
               id={location[0].replace(/[[\s\.]]/g, '') + '-group'}
               class="pointer"
@@ -325,15 +376,6 @@
               on:blur={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
               on:mouseout={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
             >
-              <line
-                x2={getXfromLatLon(location[1])}
-                x1={getX(location)}
-                y2={getYfromLatLon(location[1])}
-                y1={getY(location)}
-                stroke="black"
-              />
-              <circle cx={getXfromLatLon(location[1])} cy={getYfromLatLon(location[1])} r="2" fill="black" />
-
               <circle cx={getX(location)} cy={getY(location)} r={RADIUS} stroke="black" fill="white" />
               <text
                 id={location[0].replace(/[\s\.]/g, '') + '-text'}
@@ -388,9 +430,9 @@
       </g>
     </g>
     <g id="timeline" bind:this={timeline} transform={tl_pos}>
-      <g transform={cursor_pos} on:mousedown={startDrag} on:mouseup={stopDrag} class="slider">
+      <g transform={cursor_pos} on:mousedown={startDrag} class="slider">
         <path
-          class="st0"
+          id="handle"
           d="M9.3,19.8H8.7c-1.4,0-2.5-1-2.7-2.4l-1.4-10C4.5,6.6,4.7,5.8,5.2,5.2s1.3-0.9,2.1-0.9h3.4c0.8,0,1.6,0.3,2.1,0.9c0.5,0.6,0.8,1.4,0.6,2.2l-1.4,10C11.8,18.7,10.6,19.8,9.3,19.8z"
         />
         <text
