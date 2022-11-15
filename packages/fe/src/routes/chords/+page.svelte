@@ -97,9 +97,29 @@
             [1013, 990, 940, 6907]
         ];
 
+  // let eDataArg = [
+  //   {cat: 0, nums: [100], death: ['Natural Causes']},
+  //   {cat: 1, nums: [20, 20, 20, 20, 20], death: ['Natural Causes', 'Unknown', 'Heart Attack', 'Suicide', 'Currently Alive']},
+  //   {cat: 2, nums: [2, 98], death: ['Natural Causes', 'Currently Alive']},
+  //   {cat: 3, nums: [33, 67], death: ['Unknown', 'Natural Causes']},
+  //   {cat: 4, nums: [33, 33, 34], death: ['Unknown', 'Heart Attack', 'Currently Alive']},
+  //   {cat: 5, nums: [100], death: ['Currently Alive']},
+  //   {cat: 6, nums: [10, 45, 15, 15, 15], death: ['Natural Causes', 'Unknown', 'Heart Attack', 'Suicide', 'Currently Alive']}
+  // ];
+
+  let eDataArg = [
+    {cat: 0, nums: [100], death: [0]},
+    {cat: 1, nums: [20, 20, 20, 20, 20], death: [4, 0, 2, 3, 1]},
+    {cat: 2, nums: [2, 98], death: [2, 4]},
+    {cat: 3, nums: [33, 67], death: [3, 0]},
+    {cat: 4, nums: [33, 33, 34], death: [4, 2, 1]},
+    {cat: 5, nums: [100], death: [1]},
+    {cat: 6, nums: [10, 45, 15, 15, 15], death: [0, 1, 2, 3, 4]}
+  ];
+
   let chordColorScale = scaleOrdinal().domain(range(4)).range(chordColors);
   let chordGen = chord().padAngle(0.05);
-  let arcGen = arc().innerRadius(250).outerRadius(300);
+  let arcGen = arc().innerRadius(315).outerRadius(335);
   let ribbonGen = ribbon().radius(140);
   console.log(chordGen(matrixD));
 
@@ -156,37 +176,126 @@
     return pos[1]
   }
 
-  function ribbonBasket() {
-        var buffer,
+  function ribbonBasket(d) {
+    console.log(d);    
+    var buffer,
         // s = source.apply(this, arguments),
         // t = target.apply(this, arguments),
         ap = 0.02,
         // argv = slice.call(arguments),
-        sr = 200.0, // source radius
-        sa0 = 0.0, // start angle source
-        sa1 = Math.PI / 2, // end angle source
-        tr = 200.0, // Target radius
-        ta0 = Math.PI,
+        sr = 300.0, // source radius
+        middleDist = 40,
+        middleRad = 0,
+        sa0 = 13, // start angle source
+        sa1 = 35, // end angle source
+        // sa0 = 300, // start angle source
+        // sa1 = 330, // end angle source
+        // sa0 = -160, // start angle source
+        // sa1 = -120, // end angle source
+        sa0 = (d.startAngle * 180 / Math.PI) - 90, // start angle source
+        sa1 = (d.endAngle * 180 / Math.PI) - 90, // end angle source
+        tr = 300.0, // Target radius
+        ta0 = 180,
         ta1 = Math.PI * 1.25;
         var context = null;
         if(!context)
         {
           context = buffer = path();
         }
-        context.moveTo(sr * Math.cos(sa0), sr * Math.sin(sa0));
-        // context.arc(0, 0, sr, sa0, sa1);
+        context.moveTo(sr * Math.cos(sa0 * Math.PI / 180), sr * Math.sin(sa0 * Math.PI / 180)); // Good
+        // console.log('Hmm: ' + sr * Math.cos(sa0 * Math.PI / 180) + ', ' + sr * Math.sin(sa0 * Math.PI / 180));
+        context.arc(0, 0, sr, sa0 * Math.PI / 180, sa1 * Math.PI / 180);
         var hr = 10;
         var tr2 = tr - hr;
         var ta2 = (ta0 + ta1) / 2;
         // context.quadraticCurveTo(0, 0, tr2 * Math.cos(ta0), tr2 * Math.sin(ta0));
         // context.lineTo(tr * Math.cos(ta2), tr * Math.sin(ta2));
         // context.lineTo(tr2 * Math.cos(ta1), tr2 * Math.sin(ta1));
-        // context.quadraticCurveTo(tr/2, tr * Math.tan((sa1-sa0) / 2), tr * Math.cos(ta0), tr * Math.sin(ta0));
-        context.quadraticCurveTo(100, 200, -200, 2.4492935982947064e-14);
-        context.arc(0, 0, tr, ta0, ta1);
+
+        // calc coords for control point
+        // let missAngle = 180 - 90 - (90-(((sa1 - sa0) * 0.1) + sa0));
+        let missAngle;
+        let mMult = ((sa1 > 0 && sa1 < 90) || (sa1 < -90 && sa1 > -180)) ? 0.4 : 1.1;
+        missAngle = 180 - 90 - (90-((Math.abs(sa1 - sa0) * mMult) + sa0));
+        let vert = sr * Math.sin(missAngle * Math.PI / 180);
+        let hor = sr * Math.cos(missAngle * Math.PI / 180);
+        // let vertCoord = (sa1 > 90 || sa1 < -90) ? vert/2 + ((Math.abs(sa1-sa0) * 0.1) * 5) : vert/2 + ((Math.abs(sa1-sa0) * 0.1) * 5);
+        // let horCoord = (sa1 > 90 || sa1 < -90) ? hor/2 + ((Math.abs(sa1-sa0) * 0.1) * 10) : hor/2 + ((Math.abs(sa1-sa0) * 0.1) * 10);
+        let vertCoord = vert/2 + ((Math.abs(sa1-sa0) * 0.1) * 5);
+        let adjustHi = -1;
+        if(sa1 > -90 && sa1 < 90)
+        {
+          adjustHi = ((Math.abs(sa1-sa0) * 0.1) * 10);
+        }
+        else{
+          adjustHi = -1 * ((Math.abs(sa1-sa0) * 0.1) * 10);
+          // console.log("what's poooping?");
+        }
+        let horCoord = hor/2 + adjustHi;
+
+        // second control point
+        // let missTangle = 180 - 90 - (90-(sa0 - ((sa1 - sa0) * 0.6)));
+        let missTangle;
+        let mMultT = ((sa1 > 0 && sa1 < 90) || (sa1 < -90 && sa1 > -180)) ? 1.1 : 0.4;
+        missTangle = 180 - 90 - (90-(sa1 - (Math.abs(sa1 - sa0) * mMultT)));
+        let vertT = sr * Math.sin(missTangle * Math.PI / 180);
+        let horT = sr * Math.cos(missTangle * Math.PI / 180);
+        // let vertTCoord = (sa1 > 90 || sa1 < -90) ? vertT/2 + ((Math.abs(sa1-sa0) * 0.1) * 5) : vertT/2 + ((Math.abs(sa1-sa0) * 0.1) * 5);
+        // let horTCoord = (sa1 > 90 || sa1 < -90) ? horT/2 + ((Math.abs(sa1-sa0) * 0.1) * 10) : horT/2 + ((Math.abs(sa1-sa0) * 0.1) * 10);
+        let vertTCoord = vertT/2 + ((Math.abs(sa1-sa0) * 0.1) * 5);
+        let adjustH = -1;
+        if(sa1 > -90 && sa1 < 90)
+        {
+          adjustH = ((Math.abs(sa1-sa0) * 0.1) * 10);
+        }
+        else{
+          adjustH = -1 * ((Math.abs(sa1-sa0) * 0.1) * 10);
+          // console.log("what's poooping?");
+        }
+        let horTCoord = horT/2 + adjustH
+
+        // second control point
+        // let missVangle = 180 - 90 - (90-(sa1 + ((sa1 - sa0) * 0.1)));
+        // let vertV = sr * Math.sin(missVangle * Math.PI / 180);
+        // let horV = sr * Math.cos(missVangle * Math.PI / 180);
+        // let vertVCoord = vertV/2;
+        // let horVCoord = horV/2;
+
+        // //quirky point
+        // let missUAngle = 180 - 90 - (90-(((sa1 - sa0) * 0.6) + sa0));
+        // let vertU = sr * Math.sin(missUAngle * Math.PI / 180);
+        // let horU = sr * Math.cos(missUAngle * Math.PI / 180);
+        // let vertUCoord = vertU/2;
+        // let horUCoord = horU/2;
+        let argg = [-157, -65, 25, 118, 208];
+        
+        context.quadraticCurveTo(
+          // ((sr * Math.cos(sa1 * Math.PI / 180)) - (sr * Math.cos(sa1 * Math.PI / 180))), 
+         
+          horCoord, 
+        vertCoord, 
+        // horVCoord, 
+        // vertVCoord, 
+          // ((sr * Math.cos(sa1 * Math.PI / 180)) - 2 * (sr * Math.cos(sa1 * Math.PI / 180))) , 
+          // (- ((-middleRad) * Math.cos(ta0 * Math.PI / 180))) , 
+          // (-middleRad) * Math.sin(ta0 * Math.PI / 180));// to
+          (0) , 
+          // (208));// to
+          argg[d.death[0]]);// to
+
+        context.quadraticCurveTo(
+         horTCoord,
+          vertTCoord, 
+        // horUCoord,
+          // vertUCoord, 
+          sr * Math.cos(sa0 * Math.PI / 180), 
+          sr * Math.sin(sa0 * Math.PI / 180)); //back
+
+        // context.quadraticCurveTo(100, 200, -200, 2.4492935982947064e-14);
+        // context.arc(0, 0, tr, ta0, ta1);
         // context.closePath();
         // context.quadraticCurveTo(sr/2, sr * Math.tan((sa1 - sa0) / 2), sr * Math.cos(sa0),  sr * Math.sin(sa0));
-        context.quadraticCurveTo(50, 200, 200,  0);
+        // context.quadraticCurveTo(50, 200, 200,  0);
         // context.closePath();
         if (buffer) return context = null, buffer + "" || null;
   }
@@ -217,31 +326,35 @@
       // console.log(chordGen(matrixD));
       select(chordViz).datum(function(d, i) {
         let retArr = [];
-        let n = 10;
+        let n = eDataArg.length;
         let angleD = 120;
         let angleR = angleD * Math.PI / 180;
         let padR = 0.02;
         for(let i = 0; i < Math.floor(n/2); i++)
         {
-          console.log(n/2);
+          // console.log(n/2);
           retArr.push(
             {
               'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
               'index' : i,
               'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
-              'value' : 29630
+              'value' : 29630,
+              'nums': eDataArg[i].nums,
+              'death': eDataArg[i].death
             }
           );
         }
         for(let i = 0; i < n - Math.floor(n/2); i++)
         {
-          console.log(n - (n / 2))
+          // console.log(n - (n / 2))
           retArr.push(
             {
               'endAngle' : Math.PI + ((i + 1) * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) - padR,
               'index' : i + (Math.floor(n/2)),
               'startAngle' : Math.PI + (i * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) + padR,
-              'value' : 29630
+              'value' : 29630,
+              'nums': eDataArg[i + (Math.floor(n/2))].nums,
+              'death': eDataArg[i + (Math.floor(n/2))].death
             }
           );
         }
@@ -261,27 +374,27 @@
         })
         .style("stroke", (d, i) => rgb(chordColorScale(d.index)).darker())
         .attr("d", arcGen);
-      // let ribbons = select(chordViz).append("g") -> Work in progress.
-      //       .attr("class", "ribbons")
-      //       .selectAll("path")
-      //       .data(chords => chords)
-      //       .enter().append("path")
-      //       .attr("d", ribbonBasket)
-      //       .style("fill", function(d) {
-      //         console.log('fr');
-      //         console.log(d);
-      //         // return chordColorScale(d.index);
-      //         return 'rgb(222, 182, 254)';
-      //       })
-      //       // .style("stroke", d => rgb(chordColorScale(d.index)).darker())
-      //       .style("stroke", 'rgb(222, 182, 254)')
-      //       .style("opacity", 1.0);
+      let ribbons = select(chordViz).append("g") 
+            .attr("class", "ribbons")
+            .selectAll("path")
+            .data(chords => chords)
+            .enter().append("path")
+            .attr("d", ribbonBasket)
+            .style("fill", function(d) {
+              // console.log('fr');
+              // console.log(d);
+              // return chordColorScale(d.index);
+              return chordColorScale(d.index);
+            })
+            // .style("stroke", d => rgb(chordColorScale(d.index)).darker())
+            .style("stroke", (d, i) => rgb(chordColorScale(d.index)).darker())
+            .style("opacity", 0.6);
       let deathArr = ['Natural Causes', 'Unknown', 'Heart Attack', 'Suicide', 'Currently Alive'];
       let mediumArr = ['Water Color', 'Oil Paint', 'Pastel', 'Sculptures', 'Acrylic'];
       groupChord.append('text')
         .data(deathArr)
         .attr('x', -50)
-        .attr('y', (d, i) => (i * ((350 * 0.5) / deathArr.length)) - 70)
+        .attr('y', (d, i) => (i * ((450) / deathArr.length)) - 150)
         .text((d) => d);
 
     } else {
