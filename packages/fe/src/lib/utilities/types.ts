@@ -20,4 +20,7 @@ export type ArtistLink = {
 export type ArtistData = {
   artist: string
   death_type: string
+  index?: number
+  x?: number
+  y?: number
 }
