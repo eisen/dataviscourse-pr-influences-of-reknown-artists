@@ -52,6 +52,8 @@
   let locations: [string, ArtistLocation[]][]
   $: locations = []
 
+  console.log(allLocations);
+
   $: tl_pos = ''
   $: map_pos = 'translate(20, 20)'
   $: cursor_pos = 'translate(9, 38)'
@@ -98,16 +100,6 @@
             [1013, 990, 940, 6907]
         ];
 
-  // let eDataArg = [
-  //   {cat: 0, nums: [100], death: ['Natural Causes']},
-  //   {cat: 1, nums: [20, 20, 20, 20, 20], death: ['Natural Causes', 'Unknown', 'Heart Attack', 'Suicide', 'Currently Alive']},
-  //   {cat: 2, nums: [2, 98], death: ['Natural Causes', 'Currently Alive']},
-  //   {cat: 3, nums: [33, 67], death: ['Unknown', 'Natural Causes']},
-  //   {cat: 4, nums: [33, 33, 34], death: ['Unknown', 'Heart Attack', 'Currently Alive']},
-  //   {cat: 5, nums: [100], death: ['Currently Alive']},
-  //   {cat: 6, nums: [10, 45, 15, 15, 15], death: ['Natural Causes', 'Unknown', 'Heart Attack', 'Suicide', 'Currently Alive']}
-  // ];
-
   let eDataArg = [
     {cat: 0, nums: [2], death: [0], half: -1},
     {cat: 1, nums: [1, 5, 2, 1, 1], death: [4, 0, 2, 3, 1], half: -1},
@@ -126,16 +118,10 @@
     }
   }
 
-  // let decisiveTally = 0;
-  // for(let i = 0; i < eDataArg.length; i++)
-  // nah calc offset.
-
   let chordColorScale = scaleOrdinal().domain(range(4)).range(chordColors);
   let chordGen = chord().padAngle(0.05);
   let arcGen = arc().innerRadius(315).outerRadius(335);
   let ribbonGen = ribbon().radius(140);
-  console.log(chordGen(matrixD));
-
 
   const startDrag = () => {
     dragging = true
@@ -190,7 +176,6 @@
   }
 
   function ribbonBasket(d) {
-    console.log(d);    
     var buffer,
         // s = source.apply(this, arguments),
         // t = target.apply(this, arguments),
@@ -201,10 +186,6 @@
         middleRad = 0,
         sa0 = 13, // start angle source
         sa1 = 35, // end angle source
-        // sa0 = 300, // start angle source
-        // sa1 = 330, // end angle source
-        // sa0 = -160, // start angle source
-        // sa1 = -120, // end angle source
         sa0 = (d.startAngle * 180 / Math.PI) - 90, // start angle source
         sa1 = (d.endAngle * 180 / Math.PI) - 90, // end angle source
         tr = 300.0, // Target radius
@@ -216,14 +197,10 @@
           context = buffer = path();
         }
         context.moveTo(sr * Math.cos(sa0 * Math.PI / 180), sr * Math.sin(sa0 * Math.PI / 180)); // Good
-        // console.log('Hmm: ' + sr * Math.cos(sa0 * Math.PI / 180) + ', ' + sr * Math.sin(sa0 * Math.PI / 180));
         context.arc(0, 0, sr, sa0 * Math.PI / 180, sa1 * Math.PI / 180);
         var hr = 10;
         var tr2 = tr - hr;
         var ta2 = (ta0 + ta1) / 2;
-        // context.quadraticCurveTo(0, 0, tr2 * Math.cos(ta0), tr2 * Math.sin(ta0));
-        // context.lineTo(tr * Math.cos(ta2), tr * Math.sin(ta2));
-        // context.lineTo(tr2 * Math.cos(ta1), tr2 * Math.sin(ta1));
 
         // calc coords for control point
         // let missAngle = 180 - 90 - (90-(((sa1 - sa0) * 0.1) + sa0));
@@ -242,7 +219,6 @@
         }
         else{
           adjustHi = -1 * ((Math.abs(sa1-sa0) * 0.1) * 10);
-          // console.log("what's poooping?");
         }
         let horCoord = hor/2 + adjustHi;
 
@@ -263,53 +239,21 @@
         }
         else{
           adjustH = -1 * ((Math.abs(sa1-sa0) * 0.1) * 10);
-          // console.log("what's poooping?");
         }
         let horTCoord = horT/2 + adjustH
-
-        // second control point
-        // let missVangle = 180 - 90 - (90-(sa1 + ((sa1 - sa0) * 0.1)));
-        // let vertV = sr * Math.sin(missVangle * Math.PI / 180);
-        // let horV = sr * Math.cos(missVangle * Math.PI / 180);
-        // let vertVCoord = vertV/2;
-        // let horVCoord = horV/2;
-
-        // //quirky point
-        // let missUAngle = 180 - 90 - (90-(((sa1 - sa0) * 0.6) + sa0));
-        // let vertU = sr * Math.sin(missUAngle * Math.PI / 180);
-        // let horU = sr * Math.cos(missUAngle * Math.PI / 180);
-        // let vertUCoord = vertU/2;
-        // let horUCoord = horU/2;
         let argg = [-157, -65, 25, 118, 208];
         
         context.quadraticCurveTo(
-          // ((sr * Math.cos(sa1 * Math.PI / 180)) - (sr * Math.cos(sa1 * Math.PI / 180))), 
-         
           horCoord, 
         vertCoord, 
-        // horVCoord, 
-        // vertVCoord, 
-          // ((sr * Math.cos(sa1 * Math.PI / 180)) - 2 * (sr * Math.cos(sa1 * Math.PI / 180))) , 
-          // (- ((-middleRad) * Math.cos(ta0 * Math.PI / 180))) , 
-          // (-middleRad) * Math.sin(ta0 * Math.PI / 180));// to
           (0) , 
-          // (208));// to
           argg[d.death]);// to
 
         context.quadraticCurveTo(
          horTCoord,
           vertTCoord, 
-        // horUCoord,
-          // vertUCoord, 
           sr * Math.cos(sa0 * Math.PI / 180), 
           sr * Math.sin(sa0 * Math.PI / 180)); //back
-
-        // context.quadraticCurveTo(100, 200, -200, 2.4492935982947064e-14);
-        // context.arc(0, 0, tr, ta0, ta1);
-        // context.closePath();
-        // context.quadraticCurveTo(sr/2, sr * Math.tan((sa1 - sa0) / 2), sr * Math.cos(sa0),  sr * Math.sin(sa0));
-        // context.quadraticCurveTo(50, 200, 200,  0);
-        // context.closePath();
         if (buffer) return context = null, buffer + "" || null;
   }
 
@@ -336,7 +280,6 @@
         .ticks((youngestYear! - oldestYear!) / tickEvery)
       select(timeline).call(tl_x_axis)
       // select(chordViz).datum(chordGen(matrixD));
-      // console.log(chordGen(matrixD));
       select(chordViz).datum(function(d, i) {
         let sortedArr = eDataArg.sort(function(a, b) {
           let totA = 0;
@@ -358,8 +301,6 @@
           }
           return 0;
         });
-        console.log('Ayooooo!');
-        console.log(sortedArr);
         let retArr = [];
         let n = eDataArg.length;
         let angleD = 120;
@@ -377,7 +318,6 @@
         for(let i = 0; i < n; i++)
         {
           colorIndex++;
-          console.log(n/2);
           for(let j = 0; j < sortedArr[i].death.length; j++)
           {
             let currSegment = sortedArr[i].nums[j];
@@ -400,20 +340,6 @@
               forwardAngle += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
             }
             else{
-              // retArr.push(
-              // {
-              //   'index' : colorIndex,
-              //   // 'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
-              //   'startAngle' : (j == 0) ? (padR + forwardAngle) : (forwardAngle),
-              //   // 'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
-              //   'endAngle' : (j == 0) ? (padR + (unitAngleR * currSegment) + forwardAngle) : ((unitAngleR * currSegment) + forwardAngle),
-              //   'value' : 29630,
-              //   'nums': sortedArr[i].nums[j],
-              //   'death': sortedArr[i].death[j],
-              //   'colorIndex': colorIndex
-              // }
-              // );
-              // let baseTerm = ((3/2) * Math.PI) - ((Math.PI - angleR) / 2);
               let baseTerm = (2 * Math.PI);
               retArr.push(
                 {
@@ -433,55 +359,8 @@
               );
               forwardAngleD += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
             }
-            // if(i % 2 == 0)
-            // {
-              // retArr.push(
-              // {
-              //   'index' : colorIndex,
-              //   // 'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
-              //   'startAngle' : (j == 0) ? (padR + forwardAngle) : (forwardAngle),
-              //   // 'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
-              //   'endAngle' : (j == 0) ? (padR + (unitAngleR * currSegment) + forwardAngle) : ((unitAngleR * currSegment) + forwardAngle),
-              //   'value' : 29630,
-              //   'nums': sortedArr[i].nums[j],
-              //   'death': sortedArr[i].death[j],
-              //   'colorIndex': colorIndex
-              // }
-              // );
-              // forwardAngle += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
-            // }
-            // else{
-            //   retArr.push(
-            //   {
-            //     'index' : colorIndex,
-            //     // 'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
-            //     'startAngle' : (j == 0) ? (Math.PI + padR + forwardAngleD) : (Math.PI + forwardAngleD),
-            //     // 'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
-            //     'endAngle' : (j == 0) ? (Math.PI + padR + (unitAngleR * currSegment) + forwardAngleD) : (Math.PI + (unitAngleR * currSegment) + forwardAngleD),
-            //     'value' : 29630,
-            //     'nums': sortedArr[i].nums[j],
-            //     'death': sortedArr[i].death[j],
-            //     'colorIndex': colorIndex
-            //   }
-            // );
-            // forwardAngleD += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
-            // }
           }
         }
-        // for(let i = 0; i < n - Math.floor(n/2); i++)
-        // {
-        //   // console.log(n - (n / 2))
-        //   retArr.push(
-        //     {
-        //       'endAngle' : Math.PI + ((i + 1) * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) - padR,
-        //       'index' : i + (Math.floor(n/2)),
-        //       'startAngle' : Math.PI + (i * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) + padR,
-        //       'value' : 29630,
-        //       'nums': eDataArg[i + (Math.floor(n/2))].nums,
-        //       'death': eDataArg[i + (Math.floor(n/2))].death
-        //     }
-        //   );
-        // }
         return retArr;
       });
       let groupChord = select(chordViz).append('g')
@@ -493,7 +372,6 @@
       groupChord.append('path')
         // .style('fill', (d, i) => chordColorScale(d.index))
         .style('fill', function(d, i){
-          // console.log(d);
           return chordColorScale(d.index);
         })
         .style("stroke", (d, i) => rgb(chordColorScale(d.index)).darker())
@@ -505,8 +383,6 @@
             .enter().append("path")
             .attr("d", ribbonBasket)
             .style("fill", function(d) {
-              // console.log('fr');
-              // console.log(d);
               // return chordColorScale(d.index);
               return chordColorScale(d.index);
             })
