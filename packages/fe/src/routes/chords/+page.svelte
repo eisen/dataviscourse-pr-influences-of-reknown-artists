@@ -18,7 +18,8 @@
     arc,
     ribbon,
     rgb,
-    path
+    path,
+    sort
   } from 'd3'
   import { json } from 'd3-fetch'
   import { feature } from 'topojson'
@@ -108,14 +109,26 @@
   // ];
 
   let eDataArg = [
-    {cat: 0, nums: [100], death: [0]},
-    {cat: 1, nums: [20, 20, 20, 20, 20], death: [4, 0, 2, 3, 1]},
-    {cat: 2, nums: [2, 98], death: [2, 4]},
-    {cat: 3, nums: [33, 67], death: [3, 0]},
-    {cat: 4, nums: [33, 33, 34], death: [4, 2, 1]},
-    {cat: 5, nums: [100], death: [1]},
-    {cat: 6, nums: [10, 45, 15, 15, 15], death: [0, 1, 2, 3, 4]}
+    {cat: 0, nums: [2], death: [0], half: -1},
+    {cat: 1, nums: [1, 5, 2, 1, 1], death: [4, 0, 2, 3, 1], half: -1},
+    {cat: 2, nums: [2, 2], death: [2, 4], half: -1},
+    {cat: 3, nums: [3, 4], death: [3, 0], half: -1},
+    {cat: 4, nums: [41, 2, 1], death: [4, 2, 1], half: -1},
+    {cat: 5, nums: [1], death: [1], half:-1},
+    {cat: 6, nums: [4, 1, 1, 1, 1], death: [0, 1, 2, 3, 4], half: -1}
   ];
+  let megaTotal = 0;
+  for(let i = 0; i < eDataArg.length; i++)
+  {
+    for(let j = 0; j < eDataArg[i].nums.length; j++)
+    {
+      megaTotal += eDataArg[i].nums[j];
+    }
+  }
+
+  // let decisiveTally = 0;
+  // for(let i = 0; i < eDataArg.length; i++)
+  // nah calc offset.
 
   let chordColorScale = scaleOrdinal().domain(range(4)).range(chordColors);
   let chordGen = chord().padAngle(0.05);
@@ -281,7 +294,7 @@
           // (-middleRad) * Math.sin(ta0 * Math.PI / 180));// to
           (0) , 
           // (208));// to
-          argg[d.death[0]]);// to
+          argg[d.death]);// to
 
         context.quadraticCurveTo(
          horTCoord,
@@ -325,39 +338,150 @@
       // select(chordViz).datum(chordGen(matrixD));
       // console.log(chordGen(matrixD));
       select(chordViz).datum(function(d, i) {
+        let sortedArr = eDataArg.sort(function(a, b) {
+          let totA = 0;
+          let totB = 0;
+          for(let i = 0; i < a.nums.length; i++)
+          {
+            totA += a.nums[i];
+          }
+          for(let i = 0; i < b.nums.length; i++)
+          {
+            totB += b.nums[i];
+          }
+          if(totA > totB)
+          {
+            return 1;
+          }
+          else if(totB > totA){
+            return -1;
+          }
+          return 0;
+        });
+        console.log('Ayooooo!');
+        console.log(sortedArr);
         let retArr = [];
         let n = eDataArg.length;
         let angleD = 120;
         let angleR = angleD * Math.PI / 180;
+        let totalAngle = 240;
+        let totalAngleR = totalAngle * Math.PI / 180;
+        let unitAngleR = totalAngleR / megaTotal;
         let padR = 0.02;
-        for(let i = 0; i < Math.floor(n/2); i++)
+        let colorIndex = -1;
+        let forwardAngle = ((Math.PI - angleR) / 2);
+        let forwardAngleD = ((Math.PI - angleR) / 2);
+        let runningRTally = 0.0;
+
+        // for(let i = 0; i < Math.floor(n/2); i++)
+        for(let i = 0; i < n; i++)
         {
-          // console.log(n/2);
-          retArr.push(
+          colorIndex++;
+          console.log(n/2);
+          for(let j = 0; j < sortedArr[i].death.length; j++)
+          {
+            let currSegment = sortedArr[i].nums[j];
+            runningRTally += ((unitAngleR * currSegment));
+            if(runningRTally < (120 * Math.PI / 180))
             {
-              'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
-              'index' : i,
-              'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
-              'value' : 29630,
-              'nums': eDataArg[i].nums,
-              'death': eDataArg[i].death
+              retArr.push(
+              {
+                'index' : colorIndex,
+                // 'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
+                'startAngle' : (j == 0) ? (padR + forwardAngle) : (forwardAngle),
+                // 'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
+                'endAngle' : (j == 0) ? (padR + (unitAngleR * currSegment) + forwardAngle) : ((unitAngleR * currSegment) + forwardAngle),
+                'value' : 29630,
+                'nums': sortedArr[i].nums[j],
+                'death': sortedArr[i].death[j],
+                'colorIndex': colorIndex
+              }
+              );
+              forwardAngle += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
             }
-          );
-        }
-        for(let i = 0; i < n - Math.floor(n/2); i++)
-        {
-          // console.log(n - (n / 2))
-          retArr.push(
-            {
-              'endAngle' : Math.PI + ((i + 1) * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) - padR,
-              'index' : i + (Math.floor(n/2)),
-              'startAngle' : Math.PI + (i * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) + padR,
-              'value' : 29630,
-              'nums': eDataArg[i + (Math.floor(n/2))].nums,
-              'death': eDataArg[i + (Math.floor(n/2))].death
+            else{
+              // retArr.push(
+              // {
+              //   'index' : colorIndex,
+              //   // 'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
+              //   'startAngle' : (j == 0) ? (padR + forwardAngle) : (forwardAngle),
+              //   // 'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
+              //   'endAngle' : (j == 0) ? (padR + (unitAngleR * currSegment) + forwardAngle) : ((unitAngleR * currSegment) + forwardAngle),
+              //   'value' : 29630,
+              //   'nums': sortedArr[i].nums[j],
+              //   'death': sortedArr[i].death[j],
+              //   'colorIndex': colorIndex
+              // }
+              // );
+              // let baseTerm = ((3/2) * Math.PI) - ((Math.PI - angleR) / 2);
+              let baseTerm = (2 * Math.PI);
+              retArr.push(
+                {
+                  'index' : colorIndex,
+                  // 'startAngle' : Math.PI + (i * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) + padR,
+                  // 'startAngle' : (j == 0) ? ((baseTerm) + padR + forwardAngleD) : (baseTerm + forwardAngleD),
+                  'startAngle' : (j == 0) ? (baseTerm - padR - (unitAngleR * currSegment) - forwardAngleD) : (baseTerm - (unitAngleR * currSegment) - forwardAngleD),
+                  // 'endAngle' : Math.PI + ((i + 1) * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) - padR,
+                  // 'endAngle' : (j == 0) ? (baseTerm + padR + (unitAngleR * currSegment) + forwardAngleD) : (baseTerm + (unitAngleR * currSegment) + forwardAngleD),
+                  'endAngle' : (j == 0) ? ((baseTerm) - padR - forwardAngleD) : (baseTerm - forwardAngleD),
+                  'value' : 29630,
+                  'nums': eDataArg[i].nums[j],
+                  'death': eDataArg[i].death[j],
+                  'colorIndex': colorIndex
+
+                }
+              );
+              forwardAngleD += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
             }
-          );
+            // if(i % 2 == 0)
+            // {
+              // retArr.push(
+              // {
+              //   'index' : colorIndex,
+              //   // 'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
+              //   'startAngle' : (j == 0) ? (padR + forwardAngle) : (forwardAngle),
+              //   // 'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
+              //   'endAngle' : (j == 0) ? (padR + (unitAngleR * currSegment) + forwardAngle) : ((unitAngleR * currSegment) + forwardAngle),
+              //   'value' : 29630,
+              //   'nums': sortedArr[i].nums[j],
+              //   'death': sortedArr[i].death[j],
+              //   'colorIndex': colorIndex
+              // }
+              // );
+              // forwardAngle += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
+            // }
+            // else{
+            //   retArr.push(
+            //   {
+            //     'index' : colorIndex,
+            //     // 'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
+            //     'startAngle' : (j == 0) ? (Math.PI + padR + forwardAngleD) : (Math.PI + forwardAngleD),
+            //     // 'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
+            //     'endAngle' : (j == 0) ? (Math.PI + padR + (unitAngleR * currSegment) + forwardAngleD) : (Math.PI + (unitAngleR * currSegment) + forwardAngleD),
+            //     'value' : 29630,
+            //     'nums': sortedArr[i].nums[j],
+            //     'death': sortedArr[i].death[j],
+            //     'colorIndex': colorIndex
+            //   }
+            // );
+            // forwardAngleD += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
+            // }
+          }
         }
+        // for(let i = 0; i < n - Math.floor(n/2); i++)
+        // {
+        //   // console.log(n - (n / 2))
+        //   retArr.push(
+        //     {
+        //       'endAngle' : Math.PI + ((i + 1) * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) - padR,
+        //       'index' : i + (Math.floor(n/2)),
+        //       'startAngle' : Math.PI + (i * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) + padR,
+        //       'value' : 29630,
+        //       'nums': eDataArg[i + (Math.floor(n/2))].nums,
+        //       'death': eDataArg[i + (Math.floor(n/2))].death
+        //     }
+        //   );
+        // }
         return retArr;
       });
       let groupChord = select(chordViz).append('g')
