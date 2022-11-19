@@ -1,306 +1,350 @@
 [
     {
         "artist": "Alberto Giacometti",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Amedeo Modigliani",
-        "death-type": "illnessmention"
+        "death_type": "illness"
     },
     {
         "artist": "Amrita Sher-Gil",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Andy Warhol",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Antoni Tàpies",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Arpita Singh",
-        "death-type": "alive"
+        "death_type": "alive"
+    },
+    {
+        "artist": "Barbara Hepworth",
+        "death_type": ""
     },
     {
         "artist": "Brett Whiteley",
-        "death-type": "suicide"
+        "death_type": "suicide"
+    },
+    {
+        "artist": "Carlo Carrà",
+        "death_type": ""
     },
     {
         "artist": "Christian Krohg",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Constantin Brancusi",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Damien Hirst",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "David Alfaro Siqueiros",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Diego Rivera",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Diego Velázquez",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
-        "artist": "Donatella",
-        "death-type": "no-mention"
+        "artist": "Donatello",
+        "death_type": "no-mention"
     },
     {
         "artist": "Edgar Degas",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Édouard Manet",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Edvard Munch",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Egon Schiele",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "El Greco",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Emil Nolde",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Erich Heckel",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Francis Bacon",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Frida Kahlo",
-        "death-type": "suicide"
+        "death_type": "suicide"
+    },
+    {
+        "artist": "Georges Braque",
+        "death_type": ""
     },
     {
         "artist": "Georges Seurat",
-        "death-type": "illness"
+        "death_type": "illness"
+    },
+    {
+        "artist": "Ghiberthi",
+        "death_type": ""
     },
     {
         "artist": "Giorgio de Chirico",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Gustav Klimt",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Henri de Toulouse-Lautrec",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Henri Émile Benoît Matisse",
-        "death-type": "heartattack"
+        "death_type": "heartattack"
+    },
+    {
+        "artist": "Henry Moore",
+        "death_type": ""
+    },
+    {
+        "artist": "Isamu Noguchi",
+        "death_type": ""
+    },
+    {
+        "artist": "Jacob Epstein",
+        "death_type": ""
     },
     {
         "artist": "J.M.W Turner",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Jasper Johns",
-        "death-type": "alive"
+        "death_type": "alive"
     },
     {
         "artist": "Jean Dubuffet",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Jean-Antoine Watteau",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Jeong Seon",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Joan Miró",
-        "death-type": "heartattack"
+        "death_type": "heartattack"
     },
     {
         "artist": "Johannes Vermeer",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "John Baldessari",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "John Olsen",
-        "death-type": "alive"
+        "death_type": "alive"
     },
     {
         "artist": "John Singleton Copley",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "John Smibert",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Julian Schnabel",
-        "death-type": "alive"
+        "death_type": "alive"
     },
     {
         "artist": "Katsushika Hokusai",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Kitagawa Utamaro",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Leonardo da Vinci",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Lorenzo Ghiberti",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Marcel Duchamp",
-        "death-type": "heartattack"
+        "death_type": "heartattack"
     },
     {
         "artist": "Margaret Rose Preston",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Mary Stevenson Cassatt",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Max Beckmann",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Max Ernst",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Max Jacob",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Mi Fu",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Michelangelo",
-        "death-type": "natural"
+        "death_type": "natural"
     },
     {
         "artist": "Oscar-Claude Monet",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Oskar Kokoschka",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Pablo Picasso",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
-        "artist": "Paul Cezanne",
-        "death-type": "illness"
+        "artist": "Paul Cézanne",
+        "death_type": "illness"
     },
     {
         "artist": "Paul Gauguin",
-        "death-type": "heartattack-overdose-probably"
+        "death_type": "heartattack-overdose-probably"
     },
     {
         "artist": "Paul Klee",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Peter Pelham",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Pierre-Auguste Renoir",
-        "death-type": "natural"
+        "death_type": "natural"
+    },
+    {
+        "artist": "Pieter Cornelis Mondriaan",
+        "death_type": ""
     },
     {
         "artist": "Raphael",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Rembrandt van Rijn",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "René François Ghislain Magritte",
-        "death-type": "illness"
+        "death_type": "illness"
+    },
+    {
+        "artist": "Richard Wentworth",
+        "death_type": ""
+    },
+    {
+        "artist": "Robert Rauschenberg",
+        "death_type": ""
     },
     {
         "artist": "S. H. Raza",
-        "death-type": "natural"
+        "death_type": "natural"
     },
     {
         "artist": "Salvador Dali",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Satish Gujral",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Shen Zhou",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Titian",
-        "death-type": "natural"
+        "death_type": "natural"
     },
     {
         "artist": "Tyeb Mehta",
-        "death-type": "heartattack"
+        "death_type": "heartattack"
+    },
+    {
+        "artist": "Umberto Boccioni",
+        "death_type": ""
     },
     {
         "artist": "Utagawa Hiroshige",
-        "death-type": "illness"
+        "death_type": "illness"
     },
     {
         "artist": "Vincent Willem van Gogh",
-        "death-type": "suicide"
+        "death_type": "suicide"
     },
     {
         "artist": "Wang Hui",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Wang Shimin",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Wassily Kandinsky",
-        "death-type": "natural"
+        "death_type": "natural"
     },
     {
         "artist": "Wen Zhengming",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     },
     {
         "artist": "Xia Chang",
-        "death-type": "no-mention"
+        "death_type": "no-mention"
     }
 ]

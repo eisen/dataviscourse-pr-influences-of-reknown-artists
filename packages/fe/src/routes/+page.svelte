@@ -19,6 +19,7 @@
   import { json } from 'd3-fetch'
   import { feature } from 'topojson'
   import { onMount } from 'svelte'
+  import { Types } from '$lib/utilities'
 
   const port = 5173
   const server_url = `http://localhost:${port}`
@@ -28,20 +29,6 @@
   const TEXT_Y_OFFSET = 30
   let sim: Simulation<SimulationNodeDatum, undefined>
 
-  type ArtistLocation = {
-    artist: string
-    year: number
-    city: string
-    country: string
-    lat: number
-    lon: number
-  }
-
-  type ArtistInfluence = {
-    artist: string
-    influenced: string
-  }
-
   let svg: SVGSVGElement
   let map: SVGGElement
   let timeline: SVGGElement
@@ -49,21 +36,21 @@
   let world_data: any
   $: world_data = null
 
-  let allLocations: [string, ArtistLocation[]][]
+  let allLocations: [string, Types.ArtistLocation[]][]
   $: allLocations = []
-  let locations: [string, ArtistLocation[]][]
+  let locations: [string, Types.ArtistLocation[]][]
   $: locations = []
-  let allInfluencees: [string, ArtistInfluence[]][]
+  let allInfluencees: [string, Types.ArtistInfluence[]][]
   $: allInfluencees = []
-  let allInfluencers: [string, ArtistInfluence[]][]
+  let allInfluencers: [string, Types.ArtistInfluence[]][]
   $: allInfluencers = []
-  let influences: [string, ArtistLocation[]][]
+  let influences: [string, Types.ArtistLocation[]][]
   $: influences = []
-  let influencees: [string, ArtistLocation[]][]
+  let influencees: [string, Types.ArtistLocation[]][]
   $: influencees = []
-  let influencers: [string, ArtistLocation[]][]
+  let influencers: [string, Types.ArtistLocation[]][]
   $: influencers = []
-  let selected: [string, ArtistLocation[]]
+  let selected: [string, Types.ArtistLocation[]]
   $: selected
   let showInfluences: boolean
   $: showInfluences = false
@@ -166,15 +153,15 @@
     return pos[1]
   }
 
-  const displayInfluences = (location: ArtistLocation) => {
+  const displayInfluences = (location: Types.ArtistLocation) => {
     showInfluences = true
     influences = []
     influencers = []
     influencees = []
     selected = allLocations.filter(d => d[0] === location.artist)[0]
     influences.push(selected)
-    const artistInfluencees: [string, ArtistInfluence[]][] = allInfluencees.filter(d => d[0] === location.artist)
-    const artistInfluencers: [string, ArtistInfluence[]][] = allInfluencers.filter(d => d[0] === location.artist)
+    const artistInfluencees: [string, Types.ArtistInfluence[]][] = allInfluencees.filter(d => d[0] === location.artist)
+    const artistInfluencers: [string, Types.ArtistInfluence[]][] = allInfluencers.filter(d => d[0] === location.artist)
 
     if (artistInfluencers.length > 0) {
       console.log('Influencers')
@@ -246,21 +233,21 @@
     })
   }
 
-  const getX = (location: [string, ArtistLocation[]]) => {
+  const getX = (location: [string, Types.ArtistLocation[]]) => {
     if (location.hasOwnProperty('x')) {
       return location['x']
     }
     return getXfromLatLon(location[1])
   }
 
-  const getY = (location: [string, ArtistLocation[]]) => {
+  const getY = (location: [string, Types.ArtistLocation[]]) => {
     if (location.hasOwnProperty('y')) {
       return location['y']
     }
     return getYfromLatLon(location[1])
   }
 
-  const getYearGap = (loc1: [string, ArtistLocation[]], loc2: [string, ArtistLocation[]]): number => {
+  const getYearGap = (loc1: [string, Types.ArtistLocation[]], loc2: [string, Types.ArtistLocation[]]): number => {
     const middle1 = loc1[1][0].year // Death Year - Born Year
     const middle2 = loc2[1][0].year // Death Year - Born Year
 
@@ -284,13 +271,13 @@
     const features: any = await json(`${server_url}/data/world.json`)
     world_data = feature(features, features.objects.countries)
 
-    const influence_data: ArtistInfluence[] | undefined = await json(`${server_url}/data/artist-influences.json`)
+    const influence_data: Types.ArtistInfluence[] | undefined = await json(`${server_url}/data/artist-influences.json`)
     if (influence_data) {
-      allInfluencees = groups(influence_data, (d: ArtistInfluence) => d.artist)
-      allInfluencers = groups(influence_data, (d: ArtistInfluence) => d.influenced)
+      allInfluencees = groups(influence_data, (d: Types.ArtistInfluence) => d.artist)
+      allInfluencers = groups(influence_data, (d: Types.ArtistInfluence) => d.influenced)
     }
 
-    const locs: ArtistLocation[] | undefined = await json(`${server_url}/data/artist-locations.json`)
+    const locs: Types.ArtistLocation[] | undefined = await json(`${server_url}/data/artist-locations.json`)
     if (locs) {
       oldestYear = min(locs, d => d.year)
       year = oldestYear!
@@ -367,22 +354,26 @@
             </g>
           {/each}
           {#each influences as location}
-            <g
-              id={location[0].replace(/[[\s\.]]/g, '') + '-group'}
-              class="pointer"
-              on:focus={ev => OnMouseOver('#' + location[0].replace(/[\s\.]/g, ''))}
-              on:mouseover={ev => OnMouseOver('#' + location[0].replace(/[\s\.]/g, ''))}
-              on:blur={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
-              on:mouseout={ev => OnMouseOut('#' + location[0].replace(/[\s\.]/g, ''))}
-            >
-              <circle cx={getX(location)} cy={getY(location)} r={RADIUS} stroke="black" fill="white" />
-              <text
-                id={location[0].replace(/[\s\.]/g, '') + '-text'}
-                opacity="0"
-                x={getX(location)}
-                y={getY(location) + TEXT_Y_OFFSET}
-                text-anchor="middle">{location[0]}</text
-              >
+            <g id={location[0].replace(/[[\s\.]]/g, '') + '-group'} class="pointer">
+              {#if location[0] === selected[0]}
+                <circle cx={getX(location)} cy={getY(location)} r={RADIUS * 2} stroke="black" fill="white" />
+                <text
+                  id={location[0].replace(/[\s\.]/g, '') + '-text'}
+                  opacity="1"
+                  x={getX(location)}
+                  y={getY(location) + TEXT_Y_OFFSET + RADIUS}
+                  text-anchor="middle">{location[0]}</text
+                >
+              {:else}
+                <circle cx={getX(location)} cy={getY(location)} r={RADIUS} stroke="black" fill="white" />
+                <text
+                  id={location[0].replace(/[\s\.]/g, '') + '-text'}
+                  opacity="1"
+                  x={getX(location)}
+                  y={getY(location) + TEXT_Y_OFFSET}
+                  text-anchor="middle">{location[0]}</text
+                >
+              {/if}
             </g>
           {/each}
         {:else}

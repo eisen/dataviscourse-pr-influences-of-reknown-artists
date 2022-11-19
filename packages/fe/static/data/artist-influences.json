@@ -25,7 +25,7 @@
     },
     {
         "artist": "Ghiberthi",
-        "influenced": "Donatella"
+        "influenced": "Donatello"
     },
     {
         "artist": "Utagawa Hiroshige",
@@ -60,7 +60,7 @@
         "influenced": "Henri Émile Benoît Matisse"
     },
     {
-        "artist": "Paul Cezanne",
+        "artist": "Paul Cézanne",
         "influenced": "Henri Émile Benoît Matisse"
     },
     {
@@ -76,7 +76,7 @@
         "influenced": "John Baldessari"
     },
     {
-        "artist": "Miró",
+        "artist": "Joan Miró",
         "influenced": "John Olsen"
     },
     {
@@ -108,7 +108,7 @@
         "influenced": "Max Beckmann"
     },
     {
-        "artist": "Donatella",
+        "artist": "Donatello",
         "influenced": "Michelangelo"
     },
     {
@@ -116,7 +116,7 @@
         "influenced": "Oscar-Claude Monet"
     },
     {
-        "artist": "Paul Cezanne",
+        "artist": "Paul Cézanne",
         "influenced": "Pablo Picasso"
     },
     {
@@ -136,7 +136,7 @@
         "influenced": "Salvador Dali"
     },
     {
-        "artist": "Vermeer",
+        "artist": "Johannes Vermeer",
         "influenced": "Salvador Dali"
     },
     {
@@ -156,7 +156,7 @@
         "influenced": "Tyeb Mehta"
     },
     {
-        "artist": "Renoir",
+        "artist": "Pierre-Auguste Renoir",
         "influenced": "Vincent Willem van Gogh"
     },
     {
@@ -188,7 +188,7 @@
         "influenced": "Frida Kahlo"
     },
     {
-        "artist": "Modigliani",
+        "artist": "Amedeo Modigliani",
         "influenced": "Frida Kahlo"
     },
     {
@@ -300,7 +300,7 @@
         "influenced": "René François Ghislain Magritte"
     },
     {
-        "artist": "Auguste Renoir",
+        "artist": "Pierre-Auguste Renoir",
         "influenced": "René François Ghislain Magritte"
     },
     {
