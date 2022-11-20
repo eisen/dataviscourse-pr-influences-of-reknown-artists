@@ -1,9 +1,11 @@
 <script lang="ts">
   import * as d3 from 'd3'
   import { Types } from '$lib/utilities'
-  import { onMount } from 'svelte'
+  import type { ArtistData } from '$lib/utilities/types'
 
   const RADIUS = 15
+  const DURATION = 500
+  const PADDING = 20
 
   let sim: d3.Simulation<d3.SimulationNodeDatum, d3.SimulationLinkDatum<d3.SimulationNodeDatum>>
   let sim_running = false
@@ -19,7 +21,11 @@
   export let width: number = 0
   export let height: number = 0
 
-  const translate = (x: number | undefined, y: number | undefined) => `translate(${x}, ${y})`
+  const Translate = (x: number | undefined, y: number | undefined) => `translate(${x}, ${y})`
+
+  const ArtistName = (datum: ArtistData) => {
+    return datum.artist.replace(/[\s\.]/g, '')
+  }
 
   const RunSim = (nodes: any, edges: any) => {
     sim = d3
@@ -31,10 +37,8 @@
           .id(d => d['artist'])
           .distance(RADIUS * 3)
           .strength(1)
-        //.iterations(30)
       )
       .force('charge', d3.forceManyBody().strength(15))
-      //.force('center', d3.forceCenter(width / 2, height / 2))
       .force('y', d3.forceY(height / 2))
       .force(
         'collide',
@@ -60,11 +64,67 @@
 
   const OnMouseOver = (target: any) => {
     d3.select(target + '-group').raise()
-    d3.select(target + '-text').attr('opacity', 1)
+    d3.select(target + '-text')
+      .transition()
+      .duration(DURATION)
+      .attr('opacity', 1)
+    d3.select(target + '-rect')
+      .transition()
+      .duration(DURATION)
+      .attr('opacity', 1)
+    d3.select(target + '-image')
+      .transition()
+      .duration(DURATION)
+      .attr('width', 100)
+      .attr('height', 100)
+      .attr('x', -50)
+      .attr('y', -50)
+    d3.select(target + '-circle')
+      .transition()
+      .duration(DURATION)
+      .attr('r', 50)
   }
 
   const OnMouseOut = (target: any) => {
-    d3.select(target + '-text').attr('opacity', 0)
+    d3.select(target + '-text')
+      .transition()
+      .duration(DURATION)
+      .attr('opacity', 0)
+    d3.select(target + '-rect')
+      .transition()
+      .duration(DURATION)
+      .attr('opacity', 0)
+    d3.select(target + '-image')
+      .transition()
+      .duration(DURATION)
+      .attr('width', RADIUS * 2)
+      .attr('height', RADIUS * 2)
+      .attr('x', -RADIUS)
+      .attr('y', -RADIUS)
+    d3.select(target + '-circle')
+      .transition()
+      .duration(DURATION)
+      .attr('r', RADIUS)
+  }
+
+  const TextWidth = (id: string, text: string): number => {
+    const node = d3.select(id).node()! as Element
+    if (node) {
+      const bbox = node.getBoundingClientRect()
+      return bbox.width
+    } else {
+      return 0
+    }
+  }
+
+  const TextHeight = (id: string, text: string) => {
+    const node = d3.select(id).node()! as Element
+    if (node) {
+      const bbox = node.getBoundingClientRect()
+      return bbox.height
+    } else {
+      return 0
+    }
   }
 
   export const Run = (artists: Types.ArtistData[], links: Types.ArtistLink[]) => {
@@ -105,18 +165,38 @@
   </g>
   <g id="nodes">
     {#each artists as artist}
-      <g
-        transform={translate(artist.x + width / 2, artist.y)}
-        id={artist.artist.replace(/[\s\.]/g, '') + '-group'}
-        on:focus={ev => OnMouseOver('#' + artist.artist.replace(/[\s\.]/g, ''))}
-        on:mouseover={ev => OnMouseOver('#' + artist.artist.replace(/[\s\.]/g, ''))}
-        on:blur={ev => OnMouseOut('#' + artist.artist.replace(/[\s\.]/g, ''))}
-        on:mouseout={ev => OnMouseOut('#' + artist.artist.replace(/[\s\.]/g, ''))}
-      >
-        <image href={artist.thumbnail} height={RADIUS * 2} width={RADIUS * 2} x={-RADIUS} y={-RADIUS} />
-        <circle cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
-        <text id={artist.artist.replace(/[\s\.]/g, '') + '-text'} x="0" y={RADIUS + 15} opacity="0" text-anchor="middle"
-          >{artist.artist}</text
+      <g transform={Translate(artist.x + width / 2, artist.y)} id={ArtistName(artist) + '-group'}>
+        <image
+          id={ArtistName(artist) + '-image'}
+          href={artist.thumbnail}
+          height={RADIUS * 2}
+          width={RADIUS * 2}
+          x={-RADIUS}
+          y={-RADIUS}
+          on:focus={ev => OnMouseOver('#' + ArtistName(artist))}
+          on:mouseover={ev => OnMouseOver('#' + ArtistName(artist))}
+          on:blur={ev => OnMouseOut('#' + ArtistName(artist))}
+          on:mouseout={ev => OnMouseOut('#' + ArtistName(artist))}
+        />
+        <circle id={ArtistName(artist) + '-circle'} cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
+        <rect
+          id={ArtistName(artist) + '-rect'}
+          x={-(TextWidth('#' + ArtistName(artist) + '-text', artist.artist) + PADDING) / 2}
+          width={TextWidth('#' + ArtistName(artist) + '-text', artist.artist) + PADDING}
+          y={RADIUS + 60 - (TextHeight('#' + ArtistName(artist) + '-text', artist.artist) + PADDING) / 2}
+          height={TextHeight('#' + ArtistName(artist) + '-text', artist.artist) + PADDING}
+          fill="white"
+          stroke="black"
+          rx="15"
+          opacity="0"
+        />
+        <text
+          class="cursor-default"
+          id={ArtistName(artist) + '-text'}
+          x="0"
+          y={RADIUS + 65}
+          opacity="0"
+          text-anchor="middle">{artist.artist}</text
         >
       </g>
     {/each}
