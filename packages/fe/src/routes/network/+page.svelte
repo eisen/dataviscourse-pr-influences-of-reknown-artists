@@ -101,7 +101,7 @@
     <marker
       id="arrowhead"
       viewBox="-0 -5 10 10"
-      refX={RADIUS}
+      refX={RADIUS + 3}
       refY="0"
       orient="auto"
       markerWidth="13"
@@ -137,7 +137,7 @@
       >
         <image href={artist.thumbnail} height={RADIUS * 2} width={RADIUS * 2} x={-RADIUS} y={-RADIUS} />
         <circle cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
-        <text id={artist.artist.replace(/[\s\.]/g, '') + '-text'} x="0" y="40" opacity="0" text-anchor="middle"
+        <text id={artist.artist.replace(/[\s\.]/g, '') + '-text'} x="0" y={RADIUS + 15} opacity="0" text-anchor="middle"
           >{artist.artist}</text
         >
       </g>

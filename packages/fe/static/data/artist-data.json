@@ -362,17 +362,17 @@
     {
         "artist": "S. H. Raza",
         "death_type": "natural",
-        "thumbnail": "thumbnails/salvador_dali.png"
+        "thumbnail": "thumbnails/sh_raza.png"
     },
     {
         "artist": "Salvador Dali",
         "death_type": "illness",
-        "thumbnail": "thumbnails/satish_gujral.png"
+        "thumbnail": "thumbnails/salvador_dali.png"
     },
     {
         "artist": "Satish Gujral",
         "death_type": "no-mention",
-        "thumbnail": "thumbnails/sh_raza.png"
+        "thumbnail": "thumbnails/satish_gujral.png"
     },
     {
         "artist": "Shen Zhou",
