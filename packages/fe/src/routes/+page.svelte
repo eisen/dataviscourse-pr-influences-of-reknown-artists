@@ -21,8 +21,17 @@
   $: allLinks = []
 
   let network: Network
+  let chord: Chord
 
   onMount(async () => {
+    const locs: Types.ArtistLocation[] | undefined = await d3.json(`${Config.server_url}/data/artist-locations.json`)
+
+    const medLocs: Types.ArtistMedium[] | undefined = await d3.json(`${Config.server_url}/data/artist-mediums.json`)
+
+    const influence_data: Types.ArtistInfluence[] | undefined = await d3.json(
+      `${Config.server_url}/data/artist-influences.json`
+    )
+
     const artist_data: Types.ArtistData[] | undefined = await d3.json(`${Config.server_url}/data/artist-data.json`)
     if (artist_data) {
       for (let artist of artist_data) {
@@ -30,10 +39,7 @@
       }
       allArtists = artist_data
     }
-
-    const influence_data: Types.ArtistInfluence[] | undefined = await d3.json(
-      `${Config.server_url}/data/artist-influences.json`
-    )
+    
     if (influence_data) {
       allLinks = d3.map(influence_data, (d: Types.ArtistInfluence): Types.ArtistLink => {
         const link: Types.ArtistLink = {
@@ -44,6 +50,7 @@
       })
     }
 
+    chord.Initialize(locs!, medLocs!)
     network.Run(allArtists, allLinks)
   })
 </script>
@@ -52,5 +59,5 @@
 
 <div class="grid-cols-2">
   <Network bind:this={network} width={network_width} height={network_height} />
-  <Chord width={chord_width} height={chord_height} />
+  <Chord bind:this={chord} width={chord_width} height={chord_height} />
 </div>

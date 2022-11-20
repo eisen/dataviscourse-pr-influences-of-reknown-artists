@@ -25,3 +25,26 @@ export type ArtistData = {
   x?: number
   y?: number
 }
+
+export type ArtistMedium = {
+  artist: string
+  medium: string
+}
+
+export type PossibleMediums = {
+  sculptor: number
+  painter: number
+  printmaker: number
+  draughtsman: number
+  photography: number
+  film: number
+  watercolourist: number
+  oilpainter: number
+  illustrator: number
+  muralist: number
+  architect: number
+  ink: number
+  ceramicist: number
+  caligrapher: number
+  engraving: number
+}

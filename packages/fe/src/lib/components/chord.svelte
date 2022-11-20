@@ -1,9 +1,6 @@
 <script lang="ts">
   import * as d3 from 'd3'
-  import { json } from 'd3-fetch'
-  import { feature } from 'topojson'
-  import { onMount } from 'svelte'
-  import { Config } from '$lib/utilities'
+  import { Types } from '$lib/utilities'
 
   let grouping = 'century'
   let attribute = 'medium'
@@ -17,53 +14,18 @@
   $: rectWidth = (chartRad / 370) * 120
   $: attrFontSize = (height <= width) ? ((chordCHeight / 270) * 15) : ((chartRad / 370) * 15)
 
-  type ArtistLocation = {
-    artist: string
-    year: number
-    city: string
-    country: string
-    lat: number
-    lon: number
-  }
-
-  type ArtistMedium = {
-    artist: string
-    medium: string
-  }
-
-  type PossibleMediums = {
-    sculptor: number
-    painter: number
-    printmaker: number
-    draughtsman: number
-    photography: number
-    film: number
-    watercolourist: number
-    oilpainter: number
-    illustrator: number
-    muralist: number
-    architect: number
-    ink: number
-    ceramicist: number
-    caligrapher: number
-    engraving: number
-  }
-
   let svg: SVGSVGElement
   let chordViz: SVGGElement
 
   let data: any
   $: data = null
 
-  let allLocations: [string, ArtistLocation[]][]
+  let allLocations: [string, Types.ArtistLocation[]][]
   $: allLocations = []
-  let locations: [string, ArtistLocation[]][]
+  let locations: [string, Types.ArtistLocation[]][]
   $: locations = []
-  let allMediums: [string, ArtistMedium[]][]
+  let allMediums: [string, Types.ArtistMedium[]][]
   $: allMediums = []
-
-  let mediumTypes: [PossibleMediums[]][]
-  $: mediumTypes = []
 
   let oldestYear: number | undefined
   $: oldestYear = 0
@@ -218,10 +180,7 @@
     if (buffer) return (context = null), buffer + '' || null
   }
 
-  onMount(async () => {
-    const locs: ArtistLocation[] | undefined = await json(`${Config.server_url}/data/artist-locations.json`)
-
-    const medLocs: ArtistMedium[] | undefined = await json(`${Config.server_url}/data/artist-mediums.json`)
+  export const Initialize = ( (locs:Types.ArtistLocation[], medLocs:Types.ArtistMedium[]) => {
 
     if (locs && medLocs) {
       allMediums = d3.groups(medLocs, d => d.artist)
@@ -425,5 +384,5 @@
 
 <svg id="svg" bind:this={svg} class="inline-block" width={width} height={height}>
   <!-- <g id="chordViz" bind:this={chordViz} transform="translate(600, 450)" /> -->
-  <g id="chordViz" bind:this={chordViz} transform="translate({chartRad * 1.1}, {chordCHeight * 1.1})" width={width} height={height} />
+  <g id="chordViz" bind:this={chordViz} transform="translate({chartRad * 1.12}, {chordCHeight * 1.1})" width={width} height={height} />
 </svg>
