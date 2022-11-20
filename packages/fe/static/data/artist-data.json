@@ -1,350 +1,432 @@
 [
     {
         "artist": "Alberto Giacometti",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/alberto_giacometti.png"
     },
     {
         "artist": "Amedeo Modigliani",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/amedeo_modigliani.png"
     },
     {
         "artist": "Amrita Sher-Gil",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/amrita_sher-gil.png"
     },
     {
         "artist": "Andy Warhol",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/andy_warhol.png"
     },
     {
         "artist": "Antoni Tàpies",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/antoni-tapies.png"
     },
     {
         "artist": "Arpita Singh",
-        "death_type": "alive"
+        "death_type": "alive",
+        "thumbnail": "thumbnails/arpita_singh.png"
     },
     {
         "artist": "Barbara Hepworth",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/barbara_hepworth.png"
     },
     {
         "artist": "Brett Whiteley",
-        "death_type": "suicide"
+        "death_type": "suicide",
+        "thumbnail": "thumbnails/brett_whiteley.png"
     },
     {
         "artist": "Carlo Carrà",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/carlo_carra.png"
     },
     {
         "artist": "Christian Krohg",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/christian_krohg.png"
     },
     {
         "artist": "Constantin Brancusi",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/constantin_brancusi.png"
     },
     {
         "artist": "Damien Hirst",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/damien_hirst.png"
     },
     {
         "artist": "David Alfaro Siqueiros",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/david_alfaro_siqueiros.png"
     },
     {
         "artist": "Diego Rivera",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/diego_rivera.png"
     },
     {
         "artist": "Diego Velázquez",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/diego_velazquez.png"
     },
     {
         "artist": "Donatello",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/donatello.png"
     },
     {
         "artist": "Edgar Degas",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/edgar_degas.png"
     },
     {
         "artist": "Édouard Manet",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/edouard_manet.png"
     },
     {
         "artist": "Edvard Munch",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/edvard_munch.png"
     },
     {
         "artist": "Egon Schiele",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/egon_schiele.png"
     },
     {
         "artist": "El Greco",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/el_greco.png"
     },
     {
         "artist": "Emil Nolde",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/emil_nolde.png"
     },
     {
         "artist": "Erich Heckel",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/erich_heckel.png"
     },
     {
         "artist": "Francis Bacon",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/francis_bacon.png"
     },
     {
         "artist": "Frida Kahlo",
-        "death_type": "suicide"
+        "death_type": "suicide",
+        "thumbnail": "thumbnails/frida_kahlo.png"
     },
     {
         "artist": "Georges Braque",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/georges_braque.png"
     },
     {
         "artist": "Georges Seurat",
-        "death_type": "illness"
-    },
-    {
-        "artist": "Ghiberthi",
-        "death_type": ""
+        "death_type": "illness",
+        "thumbnail": "thumbnails/georges_seurat.png"
     },
     {
         "artist": "Giorgio de Chirico",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/giorgio_de_chirico.png"
     },
     {
         "artist": "Gustav Klimt",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/gustav_klimt.png"
     },
     {
         "artist": "Henri de Toulouse-Lautrec",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/henri_de_toulouse-lautrec.png"
     },
     {
         "artist": "Henri Émile Benoît Matisse",
-        "death_type": "heartattack"
+        "death_type": "heartattack",
+        "thumbnail": "thumbnails/henri_emile_benoit_matisse.png"
     },
     {
         "artist": "Henry Moore",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/henry_moore.png"
     },
     {
         "artist": "Isamu Noguchi",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/isamu_noguchi.png"
     },
     {
         "artist": "Jacob Epstein",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/jacob_epstein.png"
     },
     {
         "artist": "J.M.W Turner",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/jmw_turner.png"
     },
     {
         "artist": "Jasper Johns",
-        "death_type": "alive"
+        "death_type": "alive",
+        "thumbnail": "thumbnails/jasper_johns.png"
     },
     {
         "artist": "Jean Dubuffet",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/jean_dubuffet.png"
     },
     {
         "artist": "Jean-Antoine Watteau",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/jean-antoine_watteau.png"
     },
     {
         "artist": "Jeong Seon",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/jeong_seon.png"
     },
     {
         "artist": "Joan Miró",
-        "death_type": "heartattack"
+        "death_type": "heartattack",
+        "thumbnail": "thumbnails/joan_miro.png"
     },
     {
         "artist": "Johannes Vermeer",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/johannes_vermeer.png"
     },
     {
         "artist": "John Baldessari",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/john_baldessari.png"
     },
     {
         "artist": "John Olsen",
-        "death_type": "alive"
+        "death_type": "alive",
+        "thumbnail": "thumbnails/john_olsen.png"
     },
     {
         "artist": "John Singleton Copley",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/john_singleton_copley.png"
     },
     {
         "artist": "John Smibert",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/john_smibert.png"
     },
     {
         "artist": "Julian Schnabel",
-        "death_type": "alive"
+        "death_type": "alive",
+        "thumbnail": "thumbnails/julian_schnabel.png"
     },
     {
         "artist": "Katsushika Hokusai",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/katsushika_hokusai.png"
     },
     {
         "artist": "Kitagawa Utamaro",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/kitagawa-utamaro.png"
     },
     {
         "artist": "Leonardo da Vinci",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/leonardo_da_vinci.png"
     },
     {
         "artist": "Lorenzo Ghiberti",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/lorenzo_ghiberti.png"
     },
     {
         "artist": "Marcel Duchamp",
-        "death_type": "heartattack"
+        "death_type": "heartattack",
+        "thumbnail": "thumbnails/marcel_duchamp.png"
     },
     {
         "artist": "Margaret Rose Preston",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/margaret_rose_preston.png"
     },
     {
         "artist": "Mary Stevenson Cassatt",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/mary_stevenson_cassatt.png"
     },
     {
         "artist": "Max Beckmann",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/max_beckmann.png"
     },
     {
         "artist": "Max Ernst",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/max_ernst.png"
     },
     {
         "artist": "Max Jacob",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/max_jacob.png"
     },
     {
         "artist": "Mi Fu",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/mi_fu.png"
     },
     {
         "artist": "Michelangelo",
-        "death_type": "natural"
+        "death_type": "natural",
+        "thumbnail": "thumbnails/michelangelo.png"
     },
     {
         "artist": "Oscar-Claude Monet",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/oscar-claude_monet.png"
     },
     {
         "artist": "Oskar Kokoschka",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/oskar_kokoschka.png"
     },
     {
         "artist": "Pablo Picasso",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/pablo_picasso.png"
     },
     {
         "artist": "Paul Cézanne",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/paul_cezanne.png"
     },
     {
         "artist": "Paul Gauguin",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/paul_gauguin.png"
     },
     {
         "artist": "Paul Klee",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/paul_klee.png"
     },
     {
         "artist": "Peter Pelham",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/peter_pelham.png"
     },
     {
         "artist": "Pierre-Auguste Renoir",
-        "death_type": "natural"
+        "death_type": "natural",
+        "thumbnail": "thumbnails/pierre-auguste_renoir.png"
     },
     {
         "artist": "Pieter Cornelis Mondriaan",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/pieter_cornelis_mondriaan.png"
     },
     {
         "artist": "Raphael",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/raphael.png"
     },
     {
         "artist": "Rembrandt van Rijn",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/rembrandt_van_rijn.png"
     },
     {
         "artist": "René François Ghislain Magritte",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/rene_francois_ghislain_magritte.png"
     },
     {
         "artist": "Richard Wentworth",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/richard_wentworth.png"
     },
     {
         "artist": "Robert Rauschenberg",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/robert_rauschenberg.png"
     },
     {
         "artist": "S. H. Raza",
-        "death_type": "natural"
+        "death_type": "natural",
+        "thumbnail": "thumbnails/salvador_dali.png"
     },
     {
         "artist": "Salvador Dali",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/satish_gujral.png"
     },
     {
         "artist": "Satish Gujral",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/sh_raza.png"
     },
     {
         "artist": "Shen Zhou",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/shen_zhou.png"
     },
     {
         "artist": "Titian",
-        "death_type": "natural"
+        "death_type": "natural",
+        "thumbnail": "thumbnails/titian.png"
     },
     {
         "artist": "Tyeb Mehta",
-        "death_type": "heartattack"
+        "death_type": "heartattack",
+        "thumbnail": "thumbnails/tyeb_mehta.png"
     },
     {
         "artist": "Umberto Boccioni",
-        "death_type": ""
+        "death_type": "",
+        "thumbnail": "thumbnails/umberto_boccioni.png"
     },
     {
         "artist": "Utagawa Hiroshige",
-        "death_type": "illness"
+        "death_type": "illness",
+        "thumbnail": "thumbnails/utagawa_hiroshige.png"
     },
     {
         "artist": "Vincent Willem van Gogh",
-        "death_type": "suicide"
+        "death_type": "suicide",
+        "thumbnail": "thumbnails/vincent_willem_van_gogh.png"
     },
     {
         "artist": "Wang Hui",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/wang_hui.png"
     },
     {
         "artist": "Wang Shimin",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/wang_shimin.png"
     },
     {
         "artist": "Wassily Kandinsky",
-        "death_type": "natural"
+        "death_type": "natural",
+        "thumbnail": "thumbnails/wassily_kandinsky.png"
     },
     {
         "artist": "Wen Zhengming",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/wen_zhengming.png"
     },
     {
         "artist": "Xia Chang",
-        "death_type": "no-mention"
+        "death_type": "no-mention",
+        "thumbnail": "thumbnails/xia_chang.png"
     }
 ]

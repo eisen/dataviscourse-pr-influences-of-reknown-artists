@@ -2,7 +2,6 @@
   import * as d3 from 'd3'
   import { Types } from '$lib/utilities'
   import { onMount } from 'svelte'
-  import type { ArtistData, ArtistLink } from '$lib/utilities/types'
 
   const port = 5173
   const server_url = `http://localhost:${port}`
@@ -82,8 +81,8 @@
       `${server_url}/data/artist-influences.json`
     )
     if (influence_data) {
-      allLinks = d3.map(influence_data, (d: Types.ArtistInfluence): ArtistLink => {
-        const link: ArtistLink = {
+      allLinks = d3.map(influence_data, (d: Types.ArtistInfluence): Types.ArtistLink => {
+        const link: Types.ArtistLink = {
           source: d.artist,
           target: d.influenced,
         }
@@ -99,7 +98,15 @@
 
 <svg {width} {height}>
   <defs>
-    <marker id="arrowhead" viewBox="-0 -5 10 10" refX="25" refY="0" orient="auto" markerWidth="13" markerHeight="13">
+    <marker
+      id="arrowhead"
+      viewBox="-0 -5 10 10"
+      refX={RADIUS}
+      refY="0"
+      orient="auto"
+      markerWidth="13"
+      markerHeight="13"
+    >
       <path d="M 0,-5 L 10 ,0 L 0,5" fill="black" style="stroke: none;" />
     </marker>
   </defs>
@@ -128,7 +135,8 @@
         on:blur={ev => OnMouseOut('#' + artist.artist.replace(/[\s\.]/g, ''))}
         on:mouseout={ev => OnMouseOut('#' + artist.artist.replace(/[\s\.]/g, ''))}
       >
-        <circle cx="0" cy="0" r="20" stroke="black" fill="white" />
+        <image href={artist.thumbnail} height={RADIUS * 2} width={RADIUS * 2} x={-RADIUS} y={-RADIUS} />
+        <circle cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
         <text id={artist.artist.replace(/[\s\.]/g, '') + '-text'} x="0" y="40" opacity="0" text-anchor="middle"
           >{artist.artist}</text
         >
