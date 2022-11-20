@@ -117,7 +117,7 @@
     }
   }
 
-  const TextHeight = (id: string, text: string) => {
+  const TextHeight = (id: string, text: string): number => {
     const node = d3.select(id).node()! as Element
     if (node) {
       const bbox = node.getBoundingClientRect()
@@ -199,9 +199,10 @@
           stroke="black"
           rx="15"
           opacity="0"
+          class="pointer-events-none"
         />
         <text
-          class="cursor-default"
+          class="cursor-default pointer-events-none"
           id={ArtistName(artist) + '-text'}
           x="0"
           y={RADIUS + 65}
