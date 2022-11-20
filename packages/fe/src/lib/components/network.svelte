@@ -127,9 +127,19 @@
     }
   }
 
-  export const Run = (artists: Types.ArtistData[], links: Types.ArtistLink[]) => {
-    allArtists = artists
-    allLinks = links
+  export const Initialize = (artist_data: Types.ArtistData[], influence_data: Types.ArtistInfluence[]) => {
+    for (let artist of artist_data) {
+      artist.x = width / 2
+    }
+    allArtists = artist_data
+
+    allLinks = d3.map(influence_data, (d: Types.ArtistInfluence): Types.ArtistLink => {
+      const link: Types.ArtistLink = {
+        source: d.artist,
+        target: d.influenced,
+      }
+      return link
+    })
     RunSim(allArtists, allLinks)
   }
 </script>
