@@ -1,32 +1,8 @@
 <script lang="ts">
-  import { geoGraticule, geoEquirectangular, geoPath } from 'd3-geo'
-  import {
-    group,
-    InternMap,
-    axisBottom,
-    select,
-    min,
-    max,
-    scaleLinear,
-    scaleOrdinal,
-    type AxisScale,
-    type NumberValue,
-    type ScaleLinear,
-    groups,
-    // group,
-    range,
-    chord,
-    arc,
-    ribbon,
-    rgb,
-    path,
-    sort
-  } from 'd3'
+  import * as d3 from 'd3'
   import { json } from 'd3-fetch'
   import { feature } from 'topojson'
   import { onMount } from 'svelte'
-    import { compute_slots } from 'svelte/internal'
-  // import { path } from 'd3-path'
 
   const port = 5173
   const server_url = `http://localhost:${port}`
@@ -86,19 +62,11 @@
   let mediumTypes: [PossibleMediums[]][]
   $: mediumTypes = []
 
-  $: cursor_pos = 'translate(9, 38)'
-  $: dragging = false
   let oldestYear: number | undefined
   $: oldestYear = 0
   let youngestYear: number | undefined
   $: youngestYear = 2100
 
-  const graticuleGen = geoGraticule()
-
-  const projection = geoEquirectangular()
-
-  let tl_x_scale: ScaleLinear<number, number, never>
-  let tl_x_axis = null
 
   let chordColors = [
     'rgb(211, 157, 69)',
@@ -119,61 +87,7 @@
     'rgb(52, 25, 58)',
     'rgb(252, 179, 75)',
   ];
-  // let chordColors = [
-  //   '#2f4f4f',
-  //   '#7f0000',
-  //   '#008000',
-  //   '#00008b',
-  //   '#ff8c00',
-  //   '#ffff00',
-  //   '#00ff00',
-  //   '#00ffff',
-  //   '#ff00ff',
-  //   '#1e90ff',
-  //   '#ff69b4',
-  //   '#ffe4c4',
-  // ];
-
-  let matrixD = [
-            [11975, 5871, 8916, 2868],
-            [1951, 10048, 2060, 6171],
-            [8010, 16145, 8090, 8045],
-            [1013, 990, 940, 6907]
-        ];
-
-  let eDataArg = [
-    {cat: 0, nums: [2], death: [0], half: -1},
-    {cat: 1, nums: [1, 5, 2, 1, 1], death: [4, 0, 2, 3, 1], half: -1},
-    {cat: 2, nums: [2, 2], death: [2, 4], half: -1},
-    {cat: 3, nums: [3, 4], death: [3, 0], half: -1},
-    {cat: 4, nums: [41, 2, 1], death: [4, 2, 1], half: -1},
-    {cat: 5, nums: [1], death: [1], half:-1},
-    {cat: 6, nums: [4, 1, 1, 1, 1], death: [0, 1, 2, 3, 4], half: -1}
-  ];
-  let megaTotal = 0;
-  for(let i = 0; i < eDataArg.length; i++)
-  {
-    for(let j = 0; j < eDataArg[i].nums.length; j++)
-    {
-      megaTotal += eDataArg[i].nums[j];
-    }
-  }
   
-  // {name: 'sculptor', number: 0},
-  //     {name: 'painter', number: 0},
-  //     {name: 'printmaker', number: 0},
-  //     {name: 'draughtsman', number: 0},
-  //     {name: 'photography', number: 0},
-  //     {name: 'film', number: 0},
-  //     {name: 'watercolourist', number: 0},
-  //     {name: 'oilpainter', number: 0},
-  //     {name: 'illustrator', number: 0},
-  //     {name: 'muralist', number: 0},
-  //     {name: 'architect', number: 0},
-  //     {name: 'ink', number: 0},
-  //     {name: 'ceramicist', number: 0},
-  //     {name: 'caligrapher', number: 0},
-  //     {name: 'engraving', number: 0}
   let gtMediums = [ 'sculptor',
                         'painter',
                         'printmaker',
@@ -191,7 +105,7 @@
                         'engraving']
   let medN = gtMediums.length;
         
-  let chordMediumScale = scaleOrdinal().domain(gtMediums).range(range(medN));
+  let chordMediumScale = d3.scaleOrdinal().domain(gtMediums).range(d3.range(medN));
 
   let centuryGroupedData = [
     {cent: 1000, people: [], nums: [1], death: [0], meds: new Array(medN).fill(0)},
@@ -207,32 +121,10 @@
     // {cent: 2000, people: [], nums: [1], death: [0], meds: new Array(medN).fill(0)},
   ];
 
-  let chordColorScale = scaleOrdinal().domain(range(12)).range(chordColors);
-  let chordGen = chord().padAngle(0.05);
-  let arcGen = arc().innerRadius(chartRad - 30).outerRadius(chartRad).cornerRadius(3);
-  let ribbonGen = ribbon().radius(140);
-
-  const startDrag = () => {
-    dragging = true
-  }
-
-  const drag = (ev: { offsetX: number }) => {
-    if (dragging) {
-      let year = tl_x_scale!.invert(Number(ev.offsetX - 9))
-      filterLocations(year!)
-      let pos = ev.offsetX - 9
-      if (year < oldestYear!) {
-        pos = tl_x_scale!(oldestYear!) + 9
-      } else if (year > youngestYear!) {
-        pos = tl_x_scale!(youngestYear!) + 9
-      }
-      cursor_pos = `translate(${pos}, 38)`
-    }
-  }
-
-  const stopDrag = () => {
-    dragging = false
-  }
+  let chordColorScale = d3.scaleOrdinal().domain(d3.range(12)).range(chordColors);
+  // let chordGen = chord().padAngle(0.05);
+  let arcGen = d3.arc().innerRadius(chartRad - 30).outerRadius(chartRad).cornerRadius(3);
+  // let ribbonGen = ribbon().radius(140);
 
   const filterLocations = (year: number) => {
     locations = allLocations.filter(([, locations]) => {
@@ -242,26 +134,6 @@
         return locations[0].year <= year
       }
     })
-  }
-
-  const getXfromLatLon = (
-    loc: {
-      lat: number
-      lon: number
-    }[]
-  ) => {
-    const pos = projection([loc[0].lon, loc[0].lat])!
-    return pos[0]
-  }
-
-  const getYfromLatLon = (
-    loc: {
-      lat: number
-      lon: number
-    }[]
-  ) => {
-    const pos = projection([loc[0].lon, loc[0].lat])!
-    return pos[1]
   }
 
   function ribbonBasket(d) {
@@ -284,7 +156,7 @@
         var context = null;
         if(!context)
         {
-          context = buffer = path();
+          context = buffer = d3.path();
         }
         context.moveTo(sr * Math.cos(sa0 * Math.PI / 180), sr * Math.sin(sa0 * Math.PI / 180)); // Good
         context.arc(0, 0, sr, sa0 * Math.PI / 180, sa1 * Math.PI / 180);
@@ -331,7 +203,7 @@
           adjustH = -1 * ((Math.abs(sa1-sa0) * 0.1) * 10);
         }
         let horTCoord = horT/2 + adjustH
-        // let argg = [-157, -65, 25, 118, 208];
+
         let argg = [];
         for(let m = 0; m < gtMediums.length; m++)
         {
@@ -353,9 +225,6 @@
   }
 
   onMount(async () => {
-    // const bbox = select(map).node()!.getBoundingClientRect()
-
-    // tl_pos = `translate(${20}, ${bbox.height + 20 + 20})`
 
     const features: any = await json(`${server_url}/data/world.json`)
     data = feature(features, features.objects.countries)
@@ -365,11 +234,11 @@
     const medLocs: ArtistMedium[] | undefined = await json(`${server_url}/data/artist-mediums.json`)
 
     if (locs && medLocs) {
-      allMediums = groups(medLocs, d => d.artist);
+      allMediums = d3.groups(medLocs, d => d.artist);
 
-      oldestYear = min(locs, d => d.year)
-      youngestYear = max(locs, d => d.year)
-      allLocations = groups(locs, d => d.artist)
+      oldestYear = d3.min(locs, d => d.year)
+      youngestYear = d3.max(locs, d => d.year)
+      allLocations = d3.groups(locs, d => d.artist)
       filterLocations(oldestYear!)
 
 
@@ -404,8 +273,8 @@
           mediumsTotalEntries += centuryGroupedData[i].meds[j];
         }
       }
-      
-      select(chordViz).datum(function(d, i) {
+
+      d3.select(chordViz).datum(function(d, i) {
         let sortedArr = centuryGroupedData.sort(function(a, b) {
           let totA = 0;
           let totB = 0;
@@ -428,11 +297,9 @@
         });
         let retArr = [];
         let n = centuryGroupedData.length;
-        // let angleD = 90;
         let angleR = angleD * Math.PI / 180;
         let totalAngle = 2 * angleD;
         let totalAngleR = totalAngle * Math.PI / 180;
-        // let unitAngleR = totalAngleR / megaTotal;
         let unitAngleR = totalAngleR / mediumsTotalEntries;
         // let unitAngleR = angleR / mediumsTotalEntries;
         let padR = 0.02;
@@ -447,8 +314,6 @@
 
         console.log(centuryGroupedData);
         
-
-        // for(let i = 0; i < Math.floor(n/2); i++)
         let padCheck = false;
         for(let i = 0; i < n; i++)
         {
@@ -512,39 +377,33 @@
         }
         return retArr;
       });
-      let groupChord = select(chordViz).append('g')
+      let groupChord = d3.select(chordViz).append('g')
             .attr("class", "groups")
             .selectAll("g")
-            // .data(chords => chords.groups)
             .data(chords => chords)
             .enter().append("g");
       groupChord.append('path')
-        // .style('fill', (d, i) => chordColorScale(d.index))
         .style('fill', function(d, i){
           return chordColorScale(d.index);
         })
-        // .style("stroke", (d, i) => rgb(chordColorScale(d.index)).darker())
         .style("stroke", "white")
         .attr("d", arcGen);
-      let ribbons = select(chordViz).append("g") 
+      let ribbons = d3.select(chordViz).append("g") 
             .attr("class", "ribbons")
             .selectAll("path")
             .data(chords => chords)
             .enter().append("path")
             .attr("d", ribbonBasket)
             .style("fill", function(d) {
-              // return chordColorScale(d.index);
               return chordColorScale(d.colorIndex);
             })
-            // .style("stroke", d => rgb(chordColorScale(d.index)).darker())
-            .style("stroke", (d, i) => rgb(chordColorScale(d.colorIndex)).darker())
+            .style("stroke", (d, i) => d3.rgb(chordColorScale(d.colorIndex)).darker())
             .style("opacity", 0.5);
       let deathArr = ['Natural Causes', 'Unknown', 'Heart Attack', 'Suicide', 'Currently Alive'];
       let mediumArr = ['Water Color', 'Oil Paint', 'Pastel', 'Sculptures', 'Acrylic'];
-      let groupChordD = select(chordViz).append('g')
+      let groupChordD = d3.select(chordViz).append('g')
             .attr("class", "groups")
             .selectAll("g")
-            // .data(chords => chords.groups)
             .data(chords => chords)
             .enter().append("g");
       groupChordD.append('rect')
@@ -571,7 +430,7 @@
   })
 </script>
 
-<div class="absolute inset-0 select-none" on:mousemove={drag} on:mouseup={stopDrag}>
+<div class="absolute inset-0 select-none">
   <svg id="svg" bind:this={svg} class="block w-full h-full">
     <g id="chordViz" bind:this={chordViz} transform="translate(600, 450)">
     </g>
