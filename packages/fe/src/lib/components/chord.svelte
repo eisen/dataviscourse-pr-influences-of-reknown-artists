@@ -8,12 +8,14 @@
   let grouping = 'century'
   let attribute = 'medium'
 
-  const chordCHeight = 800
-  const chartRad = 400
-  const angleD = 90
-
   export let width: number
   export let height: number
+
+  $: chordCHeight = ((height * 0.45) > 275) ? 275 : (height * 0.45)
+  $: chartRad = ((width * 0.45) > 390) ? 390 : (width * 0.45) // Max size for more possible screens
+  $: angleD = (chordCHeight / 270) * 90 - 5
+  $: rectWidth = (chartRad / 370) * 120
+  $: attrFontSize = (height <= width) ? ((chordCHeight / 270) * 16) : ((chartRad / 370) * 16)
 
   type ArtistLocation = {
     artist: string
@@ -125,11 +127,6 @@
 
   let chordColorScale = d3.scaleOrdinal().domain(d3.range(12)).range(chordColors)
   // let chordGen = chord().padAngle(0.05);
-  let arcGen = d3
-    .arc()
-    .innerRadius(chartRad - 30)
-    .outerRadius(chartRad)
-    .cornerRadius(3)
   // let ribbonGen = ribbon().radius(140);
 
   const filterLocations = (year: number) => {
@@ -149,7 +146,7 @@
       ap = 0.02,
       // argv = slice.call(arguments),
       // sr = 300.0, // source radius
-      sr = chartRad - 35, // source radius
+      sr = chartRad * 0.9125, // source radius
       middleDist = 40,
       middleRad = 0,
       sa0 = 13, // start angle source
@@ -207,10 +204,10 @@
 
     let argg = []
     for (let m = 0; m < gtMediums.length; m++) {
-      argg.push(m * ((chartRad * 2 + 20) / gtMediums.length) - (chartRad - 35))
+      argg.push(m * ((chordCHeight * 2 + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.9125))
     }
 
-    context.quadraticCurveTo(horCoord, vertCoord, d.half == 0 ? 60 : -60, argg[d.death]) // to
+    context.quadraticCurveTo(horCoord, vertCoord, d.half == 0 ? rectWidth/2 : -rectWidth/2, argg[d.death]) // to
 
     context.quadraticCurveTo(
       horTCoord,
@@ -258,6 +255,12 @@
         }
       }
 
+    let arcGen = d3
+        .arc()
+        .innerRadius(chartRad * 0.925)
+        .outerRadius(chartRad)
+        .cornerRadius(3)
+
       d3.select(chordViz).datum(function (d, i) {
         let sortedArr = centuryGroupedData.sort(function (a, b) {
           let totA = 0
@@ -282,7 +285,7 @@
         let totalAngleR = (totalAngle * Math.PI) / 180
         let unitAngleR = totalAngleR / mediumsTotalEntries
         // let unitAngleR = angleR / mediumsTotalEntries;
-        let padR = 0.02
+        let padR = (chordCHeight / 270) * 0.02
         let colorIndex = -1
         let forwardAngle = (Math.PI - angleR) / 2
         let forwardAngleD = (Math.PI - angleR) / 2
@@ -397,21 +400,22 @@
       groupChord
         .append('rect')
         .data(gtMediums)
-        .attr('x', -60)
-        .attr('y', (d, i) => i * ((chartRad * 2 + 20) / gtMediums.length) - (chartRad - 35) - 20)
+        .attr('x', -1* rectWidth/2)
+        .attr('y', (d, i) => i * ((chordCHeight * 2 + + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.9) - (0.05 * chordCHeight))
         .attr('rx', 6)
         .attr('ry', 6)
-        .attr('width', 120)
-        .attr('height', 30)
+        .attr('width', rectWidth)
+        .attr('height', 0.1 * chordCHeight)
         .attr('fill', '#00005C')
         .attr('opacity', 1.0)
       groupChord
         .append('text')
         .data(gtMediums)
         .attr('x', 0)
-        .attr('y', (d, i) => i * ((chartRad * 2 + 20) / gtMediums.length) - (chartRad - 35))
+        .attr('y', (d, i) => i * ((chordCHeight * 2 + + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.875))
         .attr('fill', 'white')
         .style('text-anchor', 'middle')
+        .style('font-size', attrFontSize)
         .text(d => d.charAt(0).toUpperCase() + d.slice(1))
     } else {
       console.error('Unable to load Artist Locations!')
@@ -419,6 +423,7 @@
   })
 </script>
 
-<svg id="svg" bind:this={svg} class="inline-block">
-  <g id="chordViz" bind:this={chordViz} transform="translate(600, 450)" />
+<svg id="svg" bind:this={svg} class="inline-block" width={width} height={height}>
+  <!-- <g id="chordViz" bind:this={chordViz} transform="translate(600, 450)" /> -->
+  <g id="chordViz" bind:this={chordViz} transform="translate({chartRad * 1.1}, {chordCHeight * 1.1})" width={width} height={height} />
 </svg>
