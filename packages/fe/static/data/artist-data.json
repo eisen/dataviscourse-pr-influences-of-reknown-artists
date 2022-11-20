@@ -428,5 +428,60 @@
         "artist": "Xia Chang",
         "death_type": "no-mention",
         "thumbnail": "thumbnails/xia_chang.png"
+    },
+    {
+        "artist": "Domenico Ghirlandaio",
+        "death_type": "",
+        "thumbnail": "thumbnails/domenico_ghirlandaio.png"
+    },
+    {
+        "artist": "Daniele da Volterra",
+        "death_type": "",
+        "thumbnail": "thumbnails/daniele_da_volterra.png"
+    },
+    {
+        "artist": "Giotto",
+        "death_type": "",
+        "thumbnail": "thumbnails/giotto.png"
+    },
+    {
+        "artist": "Masaccio",
+        "death_type": "",
+        "thumbnail": "thumbnails/masaccio.png"
+    },
+    {
+        "artist": "Peter Paul Rubens",
+        "death_type": "",
+        "thumbnail": "thumbnails/peter_paul_rubens.png"
+    },
+    {
+        "artist": "Gherardo Starnina",
+        "death_type": "",
+        "thumbnail": "thumbnails/gherardo_starnina.png"
+    },
+    {
+        "artist": "Masolino",
+        "death_type": "",
+        "thumbnail": "thumbnails/masolino.png"
+    },
+    {
+        "artist": "Michelozzo",
+        "death_type": "",
+        "thumbnail": "thumbnails/michelozzo.png"
+    },
+    {
+        "artist": "Paolo Uccello",
+        "death_type": "",
+        "thumbnail": "thumbnails/paolo_uccello.png"
+    },
+    {
+        "artist": "Antonio del Pollaiuolo",
+        "death_type": "",
+        "thumbnail": "thumbnails/antonio_del_pollaiuolo.png"
+    },
+    {
+        "artist": "Franz von Stuck",
+        "death_type": "",
+        "thumbnail": "thumbnails/franz_von_stuck.png"
     }
 ]

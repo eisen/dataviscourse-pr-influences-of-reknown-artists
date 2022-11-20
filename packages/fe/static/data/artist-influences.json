@@ -314,5 +314,57 @@
     {
         "artist": "René François Ghislain Magritte",
         "influenced": "Robert Rauschenberg"
+    },
+    {
+        "artist": "Domenico Ghirlandaio",
+        "influenced": "Michelangelo"
+    },
+    {
+        "artist": "Michelangelo",
+        "influenced": "Daniele da Volterra"
+    },
+    {
+        "artist": "Giotto",
+        "influenced": "Michelangelo"
+    },
+    {
+        "artist": "Masaccio",
+        "influenced": "Michelangelo"
+    },
+    {
+        "artist": "Michelangelo",
+        "influenced": "Peter Paul Rubens"
+    },
+    {
+        "artist": "Gherardo Starnina",
+        "influenced": "Lorenzo Ghiberti"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Donatello"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Masolino"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Michelozzo"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Paolo Uccello"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Antonio del Pollaiuolo"
+    },
+    {
+        "artist": "Franz von Stuck",
+        "influenced": "Wassily Kandinsky"
+    },
+    {
+        "artist": "Oscar-Claude Monet",
+        "influenced": "Wassily Kandinsky"
     }
 ]
