@@ -9,10 +9,10 @@
 
   const horizontalPadding = 20
 
-  $: network_width = (width - horizontalPadding) / 2
+  $: network_width = Math.abs(width - horizontalPadding) / 2
   $: network_height = height / 2
 
-  $: chord_width = (width - horizontalPadding) / 2
+  $: chord_width = Math.abs(width - horizontalPadding) / 2
   $: chord_height = height * 0.65
 
   let allArtists: Types.ArtistData[]
@@ -30,12 +30,6 @@
     const influence_data: Types.ArtistInfluence[] | undefined = await d3.json(
       `${Config.server_url}/data/artist-influences.json`
     )
-
-    if (artist_data) {
-    }
-
-    if (influence_data) {
-    }
 
     chord.Initialize(locs!, medLocs!)
     network.Initialize(artist_data!, influence_data!)
