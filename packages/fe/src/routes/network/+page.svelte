@@ -6,7 +6,7 @@
   const port = 5173
   const server_url = `http://localhost:${port}`
 
-  const RADIUS = 25
+  const RADIUS = 15
 
   let sim: d3.Simulation<d3.SimulationNodeDatum, d3.SimulationLinkDatum<d3.SimulationNodeDatum>>
   let sim_running = false
@@ -22,7 +22,10 @@
   $: links = []
 
   $: width = 0
+  $: svg_width = width / 2
+
   $: height = 0
+  $: svg_height = height / 2
 
   const translate = (x: number | undefined, y: number | undefined) => `translate(${x}, ${y})`
 
@@ -34,12 +37,13 @@
         d3
           .forceLink()
           .id(d => d['artist'])
-          .distance(RADIUS * 2)
+          .distance(RADIUS * 3)
           .strength(1)
         //.iterations(30)
       )
-      .force('charge', d3.forceManyBody().strength(-10))
-      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('charge', d3.forceManyBody().strength(15))
+      //.force('center', d3.forceCenter(svg_width / 2, svg_height / 2))
+      .force('y', d3.forceY(svg_height / 2))
       .force(
         'collide',
         d3.forceCollide().radius(d => RADIUS + 15)
@@ -74,6 +78,9 @@
   onMount(async () => {
     const artist_data: Types.ArtistData[] | undefined = await d3.json(`${server_url}/data/artist-data.json`)
     if (artist_data) {
+      for (let artist of artist_data) {
+        artist.x = svg_width / 2
+      }
       allArtists = artist_data
     }
 
@@ -96,18 +103,18 @@
 
 <svelte:window bind:innerWidth={width} bind:innerHeight={height} />
 
-<svg {width} {height}>
+<svg width={svg_width} height={svg_height}>
   <defs>
     <marker
       id="arrowhead"
       viewBox="-0 -5 10 10"
-      refX={RADIUS + 3}
+      refX={RADIUS * 2}
       refY="0"
       orient="auto"
-      markerWidth="13"
-      markerHeight="13"
+      markerWidth="7"
+      markerHeight="7"
     >
-      <path d="M 0,-5 L 10 ,0 L 0,5" fill="black" style="stroke: none;" />
+      <path d="M 0,-5 L 10 ,0 L 0,5" fill="black" stroke="none" />
     </marker>
   </defs>
 
@@ -116,9 +123,9 @@
       <g>
         <line
           marker-end="url(#arrowhead)"
-          x1={link.source.x}
+          x1={link.source.x + svg_width / 2}
           y1={link.source.y}
-          x2={link.target.x}
+          x2={link.target.x + svg_width / 2}
           y2={link.target.y}
           stroke="black"
         />
@@ -128,7 +135,7 @@
   <g id="nodes">
     {#each artists as artist}
       <g
-        transform={translate(artist.x, artist.y)}
+        transform={translate(artist.x + svg_width / 2, artist.y)}
         id={artist.artist.replace(/[\s\.]/g, '') + '-group'}
         on:focus={ev => OnMouseOver('#' + artist.artist.replace(/[\s\.]/g, ''))}
         on:mouseover={ev => OnMouseOver('#' + artist.artist.replace(/[\s\.]/g, ''))}
