@@ -95,7 +95,7 @@
   })
 </script>
 
-<svg {width} {height}>
+<svg class="inline-block" {width} {height}>
   <defs>
     <marker
       id="arrowhead"

@@ -11,7 +11,9 @@
   $: chord_height = height / 2
 </script>
 
-<svelte:window bind:innerWidth={width} bind:innerHeight={height} />
+<svelte:window bind:outerWidth={width} bind:outerHeight={height} />
 
-<Network width={network_width} height={network_height} />
-<Chord width={chord_width} height={chord_height} />
+<div class="grid-cols-2">
+  <Network width={network_width} height={network_height} />
+  <Chord width={chord_width} height={chord_height} />
+</div>
