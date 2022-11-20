@@ -13,6 +13,7 @@
     type NumberValue,
     type ScaleLinear,
     groups,
+    // group,
     range,
     chord,
     arc,
@@ -30,6 +31,13 @@
   const port = 5173
   const server_url = `http://localhost:${port}`
 
+  let grouping = 'century';
+  let attribute = 'medium';
+
+  const chordCHeight = 800;
+  const chartRad = 400;
+  const angleD = 90;
+
   type ArtistLocation = {
     artist: string
     year: number
@@ -39,9 +47,30 @@
     lon: number
   }
 
+  type ArtistMedium = {
+    artist: string
+    medium: string
+  }
+
+  type PossibleMediums = {
+    sculptor: number
+    painter: number
+    printmaker: number
+    draughtsman: number
+    photography: number
+    film: number
+    watercolourist: number
+    oilpainter: number
+    illustrator: number
+    muralist: number
+    architect: number
+    ink: number
+    ceramicist: number
+    caligrapher: number
+    engraving: number
+  }
+
   let svg: SVGSVGElement
-  let map: SVGGElement
-  let timeline: SVGGElement
   let chordViz: SVGGElement
 
   let data: any
@@ -51,11 +80,12 @@
   $: allLocations = []
   let locations: [string, ArtistLocation[]][]
   $: locations = []
+  let allMediums: [string, ArtistMedium[]][]
+  $: allMediums = []
 
-  console.log(allLocations);
+  let mediumTypes: [PossibleMediums[]][]
+  $: mediumTypes = []
 
-  $: tl_pos = ''
-  $: map_pos = 'translate(20, 20)'
   $: cursor_pos = 'translate(9, 38)'
   $: dragging = false
   let oldestYear: number | undefined
@@ -64,34 +94,45 @@
   $: youngestYear = 2100
 
   const graticuleGen = geoGraticule()
-  const graticuleUle = graticuleGen.lines()
-  const graticuleOutline = graticuleGen.outline()
 
   const projection = geoEquirectangular()
-  const pathGG = geoPath().projection(projection)
-
-  const tickEvery = 20
-  const yearEvery = 100
-  const chordHeight = 350;
 
   let tl_x_scale: ScaleLinear<number, number, never>
   let tl_x_axis = null
 
   let chordColors = [
     'rgb(211, 157, 69)',
-    'rgb(195, 72, 54)',
-    'rgb(19, 11, 75)',
+    '#ff69b4',
+    '#ffe4c4',
+    // 'rgb(19, 11, 75)',
     'rgb(20, 57, 59)',
     'rgb(163, 0, 48)',
     'rgb(222, 182, 254)',
-    'rgb(20, 4, 61)',
-    'rgb(62, 40, 73)',
-    'rgb(178, 73, 81)',
-    'rgb(142, 45, 49)',
+    // 'rgb(20, 4, 61)',
+    '#1e90ff',
+    // 'rgb(62, 40, 73)',
+    '#00ff00',
+    // 'rgb(178, 73, 81)',
+    // 'rgb(142, 45, 49)',
+    '#7624C2',
+    'rgb(195, 72, 54)',
     'rgb(52, 25, 58)',
     'rgb(252, 179, 75)',
-    
   ];
+  // let chordColors = [
+  //   '#2f4f4f',
+  //   '#7f0000',
+  //   '#008000',
+  //   '#00008b',
+  //   '#ff8c00',
+  //   '#ffff00',
+  //   '#00ff00',
+  //   '#00ffff',
+  //   '#ff00ff',
+  //   '#1e90ff',
+  //   '#ff69b4',
+  //   '#ffe4c4',
+  // ];
 
   let matrixD = [
             [11975, 5871, 8916, 2868],
@@ -117,10 +158,58 @@
       megaTotal += eDataArg[i].nums[j];
     }
   }
+  
+  // {name: 'sculptor', number: 0},
+  //     {name: 'painter', number: 0},
+  //     {name: 'printmaker', number: 0},
+  //     {name: 'draughtsman', number: 0},
+  //     {name: 'photography', number: 0},
+  //     {name: 'film', number: 0},
+  //     {name: 'watercolourist', number: 0},
+  //     {name: 'oilpainter', number: 0},
+  //     {name: 'illustrator', number: 0},
+  //     {name: 'muralist', number: 0},
+  //     {name: 'architect', number: 0},
+  //     {name: 'ink', number: 0},
+  //     {name: 'ceramicist', number: 0},
+  //     {name: 'caligrapher', number: 0},
+  //     {name: 'engraving', number: 0}
+  let gtMediums = [ 'sculptor',
+                        'painter',
+                        'printmaker',
+                        'draughtsman',
+                        'photography',
+                        'film',
+                        'watercolourist',
+                        'oilpainter',
+                        'illustrator',
+                        'muralist',
+                        'architect',
+                        'ink',
+                        'ceramicist',
+                        'calligrapher',
+                        'engraving']
+  let medN = gtMediums.length;
+        
+  let chordMediumScale = scaleOrdinal().domain(gtMediums).range(range(medN));
 
-  let chordColorScale = scaleOrdinal().domain(range(4)).range(chordColors);
+  let centuryGroupedData = [
+    {cent: 1000, people: [], nums: [1], death: [0], meds: new Array(medN).fill(0)},
+    {cent: 1100, people: [], nums: [1], death: [1], meds: new Array(medN).fill(0)},
+    {cent: 1200, people: [], nums: [1], death: [2], meds: new Array(medN).fill(0)},
+    {cent: 1300, people: [], nums: [1], death: [3], meds: new Array(medN).fill(0)},
+    {cent: 1400, people: [], nums: [1], death: [4], meds: new Array(medN).fill(0)},
+    {cent: 1500, people: [], nums: [1], death: [0], meds: new Array(medN).fill(0)},
+    {cent: 1600, people: [], nums: [1], death: [1], meds: new Array(medN).fill(0)},
+    {cent: 1700, people: [], nums: [1], death: [2], meds: new Array(medN).fill(0)},
+    {cent: 1800, people: [], nums: [1], death: [3], meds: new Array(medN).fill(0)},
+    {cent: 1900, people: [], nums: [1], death: [4], meds: new Array(medN).fill(0)},
+    // {cent: 2000, people: [], nums: [1], death: [0], meds: new Array(medN).fill(0)},
+  ];
+
+  let chordColorScale = scaleOrdinal().domain(range(12)).range(chordColors);
   let chordGen = chord().padAngle(0.05);
-  let arcGen = arc().innerRadius(315).outerRadius(335);
+  let arcGen = arc().innerRadius(chartRad - 30).outerRadius(chartRad).cornerRadius(3);
   let ribbonGen = ribbon().radius(140);
 
   const startDrag = () => {
@@ -181,7 +270,8 @@
         // t = target.apply(this, arguments),
         ap = 0.02,
         // argv = slice.call(arguments),
-        sr = 300.0, // source radius
+        // sr = 300.0, // source radius
+        sr = chartRad - 35, // source radius
         middleDist = 40,
         middleRad = 0,
         sa0 = 13, // start angle source
@@ -241,12 +331,17 @@
           adjustH = -1 * ((Math.abs(sa1-sa0) * 0.1) * 10);
         }
         let horTCoord = horT/2 + adjustH
-        let argg = [-157, -65, 25, 118, 208];
+        // let argg = [-157, -65, 25, 118, 208];
+        let argg = [];
+        for(let m = 0; m < gtMediums.length; m++)
+        {
+          argg.push((m * (((chartRad) * 2 + 20) / gtMediums.length)) - (chartRad-35))
+        }
         
         context.quadraticCurveTo(
           horCoord, 
         vertCoord, 
-          (0) , 
+          (d.half == 0)? (60) : (-60) , 
           argg[d.death]);// to
 
         context.quadraticCurveTo(
@@ -258,30 +353,60 @@
   }
 
   onMount(async () => {
-    const bbox = select(map).node()!.getBoundingClientRect()
+    // const bbox = select(map).node()!.getBoundingClientRect()
 
-    tl_pos = `translate(${20}, ${bbox.height + 20 + 20})`
+    // tl_pos = `translate(${20}, ${bbox.height + 20 + 20})`
 
     const features: any = await json(`${server_url}/data/world.json`)
     data = feature(features, features.objects.countries)
 
     const locs: ArtistLocation[] | undefined = await json(`${server_url}/data/artist-locations.json`)
-    if (locs) {
+
+    const medLocs: ArtistMedium[] | undefined = await json(`${server_url}/data/artist-mediums.json`)
+
+    if (locs && medLocs) {
+      allMediums = groups(medLocs, d => d.artist);
+
       oldestYear = min(locs, d => d.year)
       youngestYear = max(locs, d => d.year)
       allLocations = groups(locs, d => d.artist)
       filterLocations(oldestYear!)
 
-      tl_x_scale = scaleLinear().domain([oldestYear!, youngestYear!]).range([0, bbox.width])
-      tl_x_axis = axisBottom(tl_x_scale)
-        .tickFormat(d => {
-          return Number(d) % yearEvery === 0 ? String(d) : ''
-        })
-        .ticks((youngestYear! - oldestYear!) / tickEvery)
-      select(timeline).call(tl_x_axis)
-      // select(chordViz).datum(chordGen(matrixD));
+
+      for(let i = 0; i < allLocations.length; i++)
+      {
+        centuryGroupedData[Math.floor((Number(allLocations[i][1][0].year)) / 100) - 10].nums[0]++;
+        centuryGroupedData[Math.floor((Number(allLocations[i][1][0].year)) / 100) - 10].people.push(allLocations[i][0]);
+      }
+      for(let i = 0; i < centuryGroupedData.length; i++)
+      {
+        for(let j = 0; j < centuryGroupedData[i].people.length; j++)
+        {
+          for(let k = 0; k < allMediums.length; k++)
+          {
+            if(centuryGroupedData[i].people[j] == allMediums[k][0])
+            {
+              for(let l = 0; l < allMediums[k][1].length; l++)
+              {
+                centuryGroupedData[i].meds[chordMediumScale(allMediums[k][1][l].medium)]+=1;
+              }
+              break;
+            }
+          }
+        }
+      }
+
+      let mediumsTotalEntries = 0;
+      for(let i = 0; i < centuryGroupedData.length; i++)
+      {
+        for(let j = 0; j < centuryGroupedData[i].meds.length; j++)
+        {
+          mediumsTotalEntries += centuryGroupedData[i].meds[j];
+        }
+      }
+      
       select(chordViz).datum(function(d, i) {
-        let sortedArr = eDataArg.sort(function(a, b) {
+        let sortedArr = centuryGroupedData.sort(function(a, b) {
           let totA = 0;
           let totB = 0;
           for(let i = 0; i < a.nums.length; i++)
@@ -302,42 +427,58 @@
           return 0;
         });
         let retArr = [];
-        let n = eDataArg.length;
-        let angleD = 120;
+        let n = centuryGroupedData.length;
+        // let angleD = 90;
         let angleR = angleD * Math.PI / 180;
-        let totalAngle = 240;
+        let totalAngle = 2 * angleD;
         let totalAngleR = totalAngle * Math.PI / 180;
-        let unitAngleR = totalAngleR / megaTotal;
+        // let unitAngleR = totalAngleR / megaTotal;
+        let unitAngleR = totalAngleR / mediumsTotalEntries;
+        // let unitAngleR = angleR / mediumsTotalEntries;
         let padR = 0.02;
         let colorIndex = -1;
         let forwardAngle = ((Math.PI - angleR) / 2);
         let forwardAngleD = ((Math.PI - angleR) / 2);
         let runningRTally = 0.0;
 
+        // placeholder for data gaps
+        sortedArr[0].meds[5] = 1;
+        sortedArr[1].meds[11] = 1;
+
+        console.log(centuryGroupedData);
+        
+
         // for(let i = 0; i < Math.floor(n/2); i++)
+        let padCheck = false;
         for(let i = 0; i < n; i++)
         {
           colorIndex++;
-          for(let j = 0; j < sortedArr[i].death.length; j++)
+          padCheck = true;
+          for(let j = 0; j < sortedArr[i].meds.length; j++)
           {
-            let currSegment = sortedArr[i].nums[j];
+            if(sortedArr[i].meds[j] > 0)
+            {
+            let currSegment = sortedArr[i].meds[j];
             runningRTally += ((unitAngleR * currSegment));
-            if(runningRTally < (120 * Math.PI / 180))
+            if(runningRTally < (angleD * Math.PI / 180))
             {
               retArr.push(
               {
                 'index' : colorIndex,
                 // 'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
-                'startAngle' : (j == 0) ? (padR + forwardAngle) : (forwardAngle),
+                'startAngle' : (padCheck && i > 0) ? (padR + forwardAngle) : (forwardAngle),
                 // 'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
-                'endAngle' : (j == 0) ? (padR + (unitAngleR * currSegment) + forwardAngle) : ((unitAngleR * currSegment) + forwardAngle),
+                'endAngle' : (padCheck && i > 0) ? (padR + (unitAngleR * currSegment) + forwardAngle) : ((unitAngleR * currSegment) + forwardAngle),
                 'value' : 29630,
-                'nums': sortedArr[i].nums[j],
-                'death': sortedArr[i].death[j],
-                'colorIndex': colorIndex
+                // 'nums': sortedArr[i].nums[j],
+                'nums': sortedArr[i].meds[j],
+                // 'death': sortedArr[i].death[j],
+                'death': j,
+                'colorIndex': colorIndex,
+                'half': 0
               }
               );
-              forwardAngle += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
+              forwardAngle += (padCheck && i > 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
             }
             else{
               let baseTerm = (2 * Math.PI);
@@ -346,18 +487,26 @@
                   'index' : colorIndex,
                   // 'startAngle' : Math.PI + (i * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) + padR,
                   // 'startAngle' : (j == 0) ? ((baseTerm) + padR + forwardAngleD) : (baseTerm + forwardAngleD),
-                  'startAngle' : (j == 0) ? (baseTerm - padR - (unitAngleR * currSegment) - forwardAngleD) : (baseTerm - (unitAngleR * currSegment) - forwardAngleD),
+                  'startAngle' : (padCheck && i > 0) ? (baseTerm - padR - (unitAngleR * currSegment) - forwardAngleD) : (baseTerm - (unitAngleR * currSegment) - forwardAngleD),
                   // 'endAngle' : Math.PI + ((i + 1) * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) - padR,
                   // 'endAngle' : (j == 0) ? (baseTerm + padR + (unitAngleR * currSegment) + forwardAngleD) : (baseTerm + (unitAngleR * currSegment) + forwardAngleD),
-                  'endAngle' : (j == 0) ? ((baseTerm) - padR - forwardAngleD) : (baseTerm - forwardAngleD),
+                  'endAngle' : (padCheck && i > 0) ? ((baseTerm) - padR - forwardAngleD) : (baseTerm - forwardAngleD),
                   'value' : 29630,
-                  'nums': eDataArg[i].nums[j],
-                  'death': eDataArg[i].death[j],
-                  'colorIndex': colorIndex
+                  // 'nums': sortedArr[i].nums[j],
+                  'nums': sortedArr[i].meds[j],
+                  // 'death': sortedArr[i].death[j],
+                  'death': j,
+                  'colorIndex': colorIndex,
+                  'half': 1
 
                 }
               );
-              forwardAngleD += (j == 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
+              forwardAngleD += (padCheck && i > 0) ? (padR + (unitAngleR * currSegment)) : ((unitAngleR * currSegment));
+            }
+            if(padCheck)
+            {
+              padCheck = false;
+            }
             }
           }
         }
@@ -374,7 +523,8 @@
         .style('fill', function(d, i){
           return chordColorScale(d.index);
         })
-        .style("stroke", (d, i) => rgb(chordColorScale(d.index)).darker())
+        // .style("stroke", (d, i) => rgb(chordColorScale(d.index)).darker())
+        .style("stroke", "white")
         .attr("d", arcGen);
       let ribbons = select(chordViz).append("g") 
             .attr("class", "ribbons")
@@ -384,18 +534,36 @@
             .attr("d", ribbonBasket)
             .style("fill", function(d) {
               // return chordColorScale(d.index);
-              return chordColorScale(d.index);
+              return chordColorScale(d.colorIndex);
             })
             // .style("stroke", d => rgb(chordColorScale(d.index)).darker())
-            .style("stroke", (d, i) => rgb(chordColorScale(d.index)).darker())
-            .style("opacity", 0.6);
+            .style("stroke", (d, i) => rgb(chordColorScale(d.colorIndex)).darker())
+            .style("opacity", 0.5);
       let deathArr = ['Natural Causes', 'Unknown', 'Heart Attack', 'Suicide', 'Currently Alive'];
       let mediumArr = ['Water Color', 'Oil Paint', 'Pastel', 'Sculptures', 'Acrylic'];
-      groupChord.append('text')
-        .data(deathArr)
-        .attr('x', -50)
-        .attr('y', (d, i) => (i * ((450) / deathArr.length)) - 150)
-        .text((d) => d);
+      let groupChordD = select(chordViz).append('g')
+            .attr("class", "groups")
+            .selectAll("g")
+            // .data(chords => chords.groups)
+            .data(chords => chords)
+            .enter().append("g");
+      groupChordD.append('rect')
+        .data(gtMediums)
+        .attr('x', -60)
+        .attr('y', (d, i) => (i * (((chartRad) * 2 + 20) / gtMediums.length)) - (chartRad-35) - 20)
+        .attr("rx", 6)
+        .attr("ry", 6)
+        .attr('width', 120)
+        .attr('height', 30)
+        .attr('fill', '#00005C')
+        .attr('opacity', 1.0);
+      groupChordD.append('text')
+        .data(gtMediums)
+        .attr('x', 0)
+        .attr('y', (d, i) => (i * (((chartRad) * 2 + 20) / gtMediums.length)) - (chartRad-35))
+        .attr('fill', 'white')
+        .style('text-anchor', 'middle')
+        .text((d) => (d.charAt(0).toUpperCase() + d.slice(1)));
 
     } else {
       console.error('Unable to load Artist Locations!')
@@ -405,49 +573,7 @@
 
 <div class="absolute inset-0 select-none" on:mousemove={drag} on:mouseup={stopDrag}>
   <svg id="svg" bind:this={svg} class="block w-full h-full">
-    <g id="map" bind:this={map} transform={map_pos}>
-      <g id="graticules">
-        {#each graticuleUle as line}
-          <path d={pathGG(line)} fill="none" stroke="lightgray" />
-        {/each}
-      </g>
-      <g id="countries">
-        {#if data}
-          {#each data.features as feature}
-            <path id={feature.id} d={pathGG(feature)} stroke="lightgray" fill="white" />
-          {/each}
-        {/if}
-      </g>
-      <g id="artists">
-        {#each locations as location}
-          <circle
-            cx={getXfromLatLon(location[1])}
-            cy={getYfromLatLon(location[1])}
-            r="10"
-            stroke="black"
-            fill="white"
-          />
-          <text x={getXfromLatLon(location[1])} y={getYfromLatLon(location[1]) + 25} text-anchor="middle"
-            >{location[0]}</text
-          >
-        {/each}
-      </g>
-      <g id="outline">
-        <path d={pathGG(graticuleOutline)} fill="none" stroke="black" stroke-width="2" />
-      </g>
-    </g>
-    <g id="timeline" bind:this={timeline} transform={tl_pos}>
-      <g transform={cursor_pos} on:mousedown={startDrag}>
-        <path
-          d="M6.75469 17.2828L5.32612 7.28284C5.154 6.07798 6.08892 5 7.30602 5H10.694C11.9111 5 12.846 6.07797 12.6739 7.28284L11.2453 17.2828C11.1046 18.2681 10.2607 19 9.26541 19H8.73459C7.73929 19 6.89545 18.2681 6.75469 17.2828Z"
-          stroke="currentColor"
-          fill="white"
-          stroke-width="1.5"
-          transform="rotate(180)"
-        />
-      </g>
-    </g>
-    <g id="chordViz" bind:this={chordViz} transform="translate(1375, 300)">
+    <g id="chordViz" bind:this={chordViz} transform="translate(600, 450)">
     </g>
   </svg>
 </div>
