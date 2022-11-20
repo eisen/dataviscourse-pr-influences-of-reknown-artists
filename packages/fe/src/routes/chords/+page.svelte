@@ -14,6 +14,9 @@
   const chartRad = 400;
   const angleD = 90;
 
+  export let mWidth: number
+  export let mHeight: number
+
   type ArtistLocation = {
     artist: string
     year: number
@@ -377,17 +380,10 @@
         }
         return retArr;
       });
-      let groupChord = d3.select(chordViz).append('g')
-            .attr("class", "groups")
-            .selectAll("g")
-            .data(chords => chords)
-            .enter().append("g");
-      groupChord.append('path')
-        .style('fill', function(d, i){
-          return chordColorScale(d.index);
-        })
-        .style("stroke", "white")
-        .attr("d", arcGen);
+      let deathArr = ['Natural Causes', 'Unknown', 'Heart Attack', 'Suicide', 'Currently Alive'];
+      let mediumArr = ['Water Color', 'Oil Paint', 'Pastel', 'Sculptures', 'Acrylic'];
+
+      // Ribbons
       let ribbons = d3.select(chordViz).append("g") 
             .attr("class", "ribbons")
             .selectAll("path")
@@ -399,14 +395,25 @@
             })
             .style("stroke", (d, i) => d3.rgb(chordColorScale(d.colorIndex)).darker())
             .style("opacity", 0.5);
-      let deathArr = ['Natural Causes', 'Unknown', 'Heart Attack', 'Suicide', 'Currently Alive'];
-      let mediumArr = ['Water Color', 'Oil Paint', 'Pastel', 'Sculptures', 'Acrylic'];
-      let groupChordD = d3.select(chordViz).append('g')
+      
+      // Group for everything but the ribbons
+      let groupChord = d3.select(chordViz).append('g')
             .attr("class", "groups")
             .selectAll("g")
             .data(chords => chords)
             .enter().append("g");
-      groupChordD.append('rect')
+      groupChord.append('path')
+        .style('fill', function(d, i){
+          return chordColorScale(d.index);
+        })
+        .style("stroke", "white")
+        .attr("d", arcGen);
+      groupChord.append('g')
+            .attr("class", "groups")
+            .selectAll("g")
+            .data(chords => chords)
+            .enter().append("g");
+      groupChord.append('rect')
         .data(gtMediums)
         .attr('x', -60)
         .attr('y', (d, i) => (i * (((chartRad) * 2 + 20) / gtMediums.length)) - (chartRad-35) - 20)
@@ -416,14 +423,13 @@
         .attr('height', 30)
         .attr('fill', '#00005C')
         .attr('opacity', 1.0);
-      groupChordD.append('text')
+      groupChord.append('text')
         .data(gtMediums)
         .attr('x', 0)
         .attr('y', (d, i) => (i * (((chartRad) * 2 + 20) / gtMediums.length)) - (chartRad-35))
         .attr('fill', 'white')
         .style('text-anchor', 'middle')
         .text((d) => (d.charAt(0).toUpperCase() + d.slice(1)));
-
     } else {
       console.error('Unable to load Artist Locations!')
     }
