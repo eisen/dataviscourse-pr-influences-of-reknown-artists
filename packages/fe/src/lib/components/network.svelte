@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as d3 from 'd3'
-  import { Config, Types } from '$lib/utilities'
+  import { Types } from '$lib/utilities'
   import { onMount } from 'svelte'
 
   const RADIUS = 15
@@ -8,15 +8,13 @@
   let sim: d3.Simulation<d3.SimulationNodeDatum, d3.SimulationLinkDatum<d3.SimulationNodeDatum>>
   let sim_running = false
 
-  let allArtists: Types.ArtistData[]
-  $: allArtists = []
-  let allLinks: Types.ArtistLink[]
-  $: allArtists = []
-
   let artists: Types.ArtistData[]
   $: artists = []
   let links: Types.ArtistLink[]
   $: links = []
+
+  let allArtists: Types.ArtistData[]
+  let allLinks: Types.ArtistLink[]
 
   export let width: number = 0
   export let height: number = 0
@@ -69,30 +67,11 @@
     d3.select(target + '-text').attr('opacity', 0)
   }
 
-  onMount(async () => {
-    const artist_data: Types.ArtistData[] | undefined = await d3.json(`${Config.server_url}/data/artist-data.json`)
-    if (artist_data) {
-      for (let artist of artist_data) {
-        artist.x = width / 2
-      }
-      allArtists = artist_data
-    }
-
-    const influence_data: Types.ArtistInfluence[] | undefined = await d3.json(
-      `${Config.server_url}/data/artist-influences.json`
-    )
-    if (influence_data) {
-      allLinks = d3.map(influence_data, (d: Types.ArtistInfluence): Types.ArtistLink => {
-        const link: Types.ArtistLink = {
-          source: d.artist,
-          target: d.influenced,
-        }
-        return link
-      })
-    }
-
+  export const Run = (artists: Types.ArtistData[], links: Types.ArtistLink[]) => {
+    allArtists = artists
+    allLinks = links
     RunSim(allArtists, allLinks)
-  })
+  }
 </script>
 
 <svg class="inline-block" {width} {height}>
