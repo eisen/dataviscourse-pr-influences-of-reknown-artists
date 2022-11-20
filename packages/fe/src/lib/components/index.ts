@@ -1,1 +1,4 @@
-export * as Map from "./map.svelte"
+import Map from './map.svelte'
+import Network from './network.svelte'
+
+export { Map, Network }
