@@ -7,12 +7,12 @@
   $: width = 0
   $: height = 0
 
-  const horizontalPadding = 20;
+  const horizontalPadding = 20
 
-  $: network_width = (width - horizontalPadding) / 2
+  $: network_width = Math.abs(width - horizontalPadding) / 2
   $: network_height = height / 2
 
-  $: chord_width = (width - horizontalPadding) / 2
+  $: chord_width = Math.abs(width - horizontalPadding) / 2
   $: chord_height = height * 0.65
 
   let allArtists: Types.ArtistData[]
@@ -25,33 +25,14 @@
 
   onMount(async () => {
     const locs: Types.ArtistLocation[] | undefined = await d3.json(`${Config.server_url}/data/artist-locations.json`)
-
     const medLocs: Types.ArtistMedium[] | undefined = await d3.json(`${Config.server_url}/data/artist-mediums.json`)
-
+    const artist_data: Types.ArtistData[] | undefined = await d3.json(`${Config.server_url}/data/artist-data.json`)
     const influence_data: Types.ArtistInfluence[] | undefined = await d3.json(
       `${Config.server_url}/data/artist-influences.json`
     )
 
-    const artist_data: Types.ArtistData[] | undefined = await d3.json(`${Config.server_url}/data/artist-data.json`)
-    if (artist_data) {
-      for (let artist of artist_data) {
-        artist.x = width / 2
-      }
-      allArtists = artist_data
-    }
-    
-    if (influence_data) {
-      allLinks = d3.map(influence_data, (d: Types.ArtistInfluence): Types.ArtistLink => {
-        const link: Types.ArtistLink = {
-          source: d.artist,
-          target: d.influenced,
-        }
-        return link
-      })
-    }
-
     chord.Initialize(locs!, medLocs!)
-    network.Run(allArtists, allLinks)
+    network.Initialize(artist_data!, influence_data!)
   })
 </script>
 
