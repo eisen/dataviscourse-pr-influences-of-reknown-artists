@@ -8,6 +8,7 @@
   export let width: number
   export let height: number
 
+  // Sizing dependent on window
   $: chordCHeight = ((height * 0.45) > 275) ? 275 : (height * 0.45)
   $: chartRad = ((width * 0.45) > 390) ? 390 : (width * 0.45) // Max size for more possible screens
   $: angleD = (chordCHeight / 270) * 90 - 5
@@ -15,10 +16,7 @@
   $: attrFontSize = (height <= width) ? ((chordCHeight / 270) * 15) : ((chartRad / 370) * 15)
 
   let svg: SVGSVGElement
-  let chordViz: SVGGElement
-
-  let data: any
-  $: data = null
+  let chordViz: SVGGElement 
 
   let allLocations: [string, Types.ArtistLocation[]][]
   $: allLocations = []
@@ -36,16 +34,11 @@
     'rgb(211, 157, 69)',
     '#ff69b4',
     '#ffe4c4',
-    // 'rgb(19, 11, 75)',
     'rgb(20, 57, 59)',
     'rgb(163, 0, 48)',
     'rgb(222, 182, 254)',
-    // 'rgb(20, 4, 61)',
     '#1e90ff',
-    // 'rgb(62, 40, 73)',
     '#00ff00',
-    // 'rgb(178, 73, 81)',
-    // 'rgb(142, 45, 49)',
     '#7624C2',
     'rgb(195, 72, 54)',
     'rgb(52, 25, 58)',
@@ -84,40 +77,17 @@
     { cent: 1700, people: [], nums: [1], death: [2], meds: new Array(medN).fill(0) },
     { cent: 1800, people: [], nums: [1], death: [3], meds: new Array(medN).fill(0) },
     { cent: 1900, people: [], nums: [1], death: [4], meds: new Array(medN).fill(0) },
-    // {cent: 2000, people: [], nums: [1], death: [0], meds: new Array(medN).fill(0)},
+    // {cent: 2000, people: [], nums: [1], death: [0], meds: new Array(medN).fill(0)}, // We probably will have 0 entries for this
   ]
 
   let chordColorScale = d3.scaleOrdinal().domain(d3.range(12)).range(chordColors)
-  // let chordGen = chord().padAngle(0.05);
-  // let ribbonGen = ribbon().radius(140);
-
-  const filterLocations = (year: number) => {
-    locations = allLocations.filter(([, locations]) => {
-      if (locations.length > 1) {
-        return locations[0].year <= year && locations[1].year > year
-      } else {
-        return locations[0].year <= year
-      }
-    })
-  }
 
   function ribbonBasket(d) {
     var buffer,
-      // s = source.apply(this, arguments),
-      // t = target.apply(this, arguments),
-      ap = 0.02,
-      // argv = slice.call(arguments),
-      // sr = 300.0, // source radius
       sr = chartRad * 0.9125, // source radius
-      middleDist = 40,
-      middleRad = 0,
-      sa0 = 13, // start angle source
-      sa1 = 35, // end angle source
       sa0 = (d.startAngle * 180) / Math.PI - 90, // start angle source
-      sa1 = (d.endAngle * 180) / Math.PI - 90, // end angle source
-      tr = 300.0, // Target radius
-      ta0 = 180,
-      ta1 = Math.PI * 1.25
+      sa1 = (d.endAngle * 180) / Math.PI - 90 // end angle source
+
     var context = null
     if (!context) {
       context = buffer = d3.path()
@@ -125,18 +95,13 @@
     context.moveTo(sr * Math.cos((sa0 * Math.PI) / 180), sr * Math.sin((sa0 * Math.PI) / 180)) // Good
     context.arc(0, 0, sr, (sa0 * Math.PI) / 180, (sa1 * Math.PI) / 180)
     var hr = 10
-    var tr2 = tr - hr
-    var ta2 = (ta0 + ta1) / 2
 
-    // calc coords for control point
-    // let missAngle = 180 - 90 - (90-(((sa1 - sa0) * 0.1) + sa0));
+    // first control point
     let missAngle
     let mMult = (sa1 > 0 && sa1 < 90) || (sa1 < -90 && sa1 > -180) ? 0.4 : 1.1
     missAngle = 180 - 90 - (90 - (Math.abs(sa1 - sa0) * mMult + sa0))
     let vert = sr * Math.sin((missAngle * Math.PI) / 180)
     let hor = sr * Math.cos((missAngle * Math.PI) / 180)
-    // let vertCoord = (sa1 > 90 || sa1 < -90) ? vert/2 + ((Math.abs(sa1-sa0) * 0.1) * 5) : vert/2 + ((Math.abs(sa1-sa0) * 0.1) * 5);
-    // let horCoord = (sa1 > 90 || sa1 < -90) ? hor/2 + ((Math.abs(sa1-sa0) * 0.1) * 10) : hor/2 + ((Math.abs(sa1-sa0) * 0.1) * 10);
     let vertCoord = vert / 2 + Math.abs(sa1 - sa0) * 0.1 * 5
     let adjustHi = -1
     if (sa1 > -90 && sa1 < 90) {
@@ -147,14 +112,11 @@
     let horCoord = hor / 2 + adjustHi
 
     // second control point
-    // let missTangle = 180 - 90 - (90-(sa0 - ((sa1 - sa0) * 0.6)));
     let missTangle
     let mMultT = (sa1 > 0 && sa1 < 90) || (sa1 < -90 && sa1 > -180) ? 1.1 : 0.4
     missTangle = 180 - 90 - (90 - (sa1 - Math.abs(sa1 - sa0) * mMultT))
     let vertT = sr * Math.sin((missTangle * Math.PI) / 180)
     let horT = sr * Math.cos((missTangle * Math.PI) / 180)
-    // let vertTCoord = (sa1 > 90 || sa1 < -90) ? vertT/2 + ((Math.abs(sa1-sa0) * 0.1) * 5) : vertT/2 + ((Math.abs(sa1-sa0) * 0.1) * 5);
-    // let horTCoord = (sa1 > 90 || sa1 < -90) ? horT/2 + ((Math.abs(sa1-sa0) * 0.1) * 10) : horT/2 + ((Math.abs(sa1-sa0) * 0.1) * 10);
     let vertTCoord = vertT / 2 + Math.abs(sa1 - sa0) * 0.1 * 5
     let adjustH = -1
     if (sa1 > -90 && sa1 < 90) {
@@ -169,14 +131,18 @@
       argg.push(m * ((chordCHeight * 2 + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.9125))
     }
 
-    context.quadraticCurveTo(horCoord, vertCoord, d.half == 0 ? rectWidth/2 : -rectWidth/2, argg[d.death]) // to
+    context.quadraticCurveTo(
+        horCoord, 
+        vertCoord, 
+        d.half == 0 ? rectWidth/2 : -rectWidth/2, 
+        argg[d.death]) // to
 
     context.quadraticCurveTo(
       horTCoord,
       vertTCoord,
       sr * Math.cos((sa0 * Math.PI) / 180),
-      sr * Math.sin((sa0 * Math.PI) / 180)
-    ) //back
+      sr * Math.sin((sa0 * Math.PI) / 180)) //back
+
     if (buffer) return (context = null), buffer + '' || null
   }
 
@@ -185,10 +151,7 @@
     if (locs && medLocs) {
       allMediums = d3.groups(medLocs, d => d.artist)
 
-      oldestYear = d3.min(locs, d => d.year)
-      youngestYear = d3.max(locs, d => d.year)
       allLocations = d3.groups(locs, d => d.artist)
-      filterLocations(oldestYear!)
 
       for (let i = 0; i < allLocations.length; i++) {
         centuryGroupedData[Math.floor(Number(allLocations[i][1][0].year) / 100) - 10].nums[0]++
@@ -243,7 +206,7 @@
         let totalAngle = 2 * angleD
         let totalAngleR = (totalAngle * Math.PI) / 180
         let unitAngleR = totalAngleR / mediumsTotalEntries
-        // let unitAngleR = angleR / mediumsTotalEntries;
+        // let unitAngleR = angleR / mediumsTotalEntries; // Old way just in case
         let padR = (chordCHeight / 270) * 0.02
         let colorIndex = -1
         let forwardAngle = (Math.PI - angleR) / 2
@@ -267,17 +230,10 @@
               if (runningRTally < (angleD * Math.PI) / 180) {
                 retArr.push({
                   index: colorIndex,
-                  // 'startAngle' : (i * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) + padR,
                   startAngle: padCheck && i > 0 ? padR + forwardAngle : forwardAngle,
-                  // 'endAngle' : ((i + 1) * ((angleR) / Math.floor(n/2))) + ((Math.PI - angleR) / 2) - padR,
-                  endAngle:
-                    padCheck && i > 0
-                      ? padR + unitAngleR * currSegment + forwardAngle
-                      : unitAngleR * currSegment + forwardAngle,
+                  endAngle: padCheck && i > 0 ? padR + unitAngleR * currSegment + forwardAngle : unitAngleR * currSegment + forwardAngle,
                   value: 29630,
-                  // 'nums': sortedArr[i].nums[j],
                   nums: sortedArr[i].meds[j],
-                  // 'death': sortedArr[i].death[j],
                   death: j,
                   colorIndex: colorIndex,
                   half: 0,
@@ -287,19 +243,10 @@
                 let baseTerm = 2 * Math.PI
                 retArr.push({
                   index: colorIndex,
-                  // 'startAngle' : Math.PI + (i * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) + padR,
-                  // 'startAngle' : (j == 0) ? ((baseTerm) + padR + forwardAngleD) : (baseTerm + forwardAngleD),
-                  startAngle:
-                    padCheck && i > 0
-                      ? baseTerm - padR - unitAngleR * currSegment - forwardAngleD
-                      : baseTerm - unitAngleR * currSegment - forwardAngleD,
-                  // 'endAngle' : Math.PI + ((i + 1) * ((angleR) / (n - Math.floor(n/2)))) + ((Math.PI - angleR) / 2) - padR,
-                  // 'endAngle' : (j == 0) ? (baseTerm + padR + (unitAngleR * currSegment) + forwardAngleD) : (baseTerm + (unitAngleR * currSegment) + forwardAngleD),
+                  startAngle: padCheck && i > 0 ? baseTerm - padR - unitAngleR * currSegment - forwardAngleD : baseTerm - unitAngleR * currSegment - forwardAngleD,
                   endAngle: padCheck && i > 0 ? baseTerm - padR - forwardAngleD : baseTerm - forwardAngleD,
                   value: 29630,
-                  // 'nums': sortedArr[i].nums[j],
                   nums: sortedArr[i].meds[j],
-                  // 'death': sortedArr[i].death[j],
                   death: j,
                   colorIndex: colorIndex,
                   half: 1,
@@ -383,6 +330,5 @@
 </script>
 
 <svg id="svg" bind:this={svg} class="inline-block" width={width} height={height}>
-  <!-- <g id="chordViz" bind:this={chordViz} transform="translate(600, 450)" /> -->
   <g id="chordViz" bind:this={chordViz} transform="translate({chartRad * 1.12}, {chordCHeight * 1.1})" width={width} height={height} />
 </svg>
