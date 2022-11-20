@@ -7,10 +7,12 @@
   $: width = 0
   $: height = 0
 
-  $: network_width = width / 2
+  const horizontalPadding = 20;
+
+  $: network_width = (width - horizontalPadding) / 2
   $: network_height = height / 2
 
-  $: chord_width = width / 2
+  $: chord_width = (width - horizontalPadding) / 2
   $: chord_height = height * 0.65
 
   let allArtists: Types.ArtistData[]

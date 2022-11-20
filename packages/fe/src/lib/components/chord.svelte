@@ -15,7 +15,7 @@
   $: chartRad = ((width * 0.45) > 390) ? 390 : (width * 0.45) // Max size for more possible screens
   $: angleD = (chordCHeight / 270) * 90 - 5
   $: rectWidth = (chartRad / 370) * 120
-  $: attrFontSize = (height <= width) ? ((chordCHeight / 270) * 16) : ((chartRad / 370) * 16)
+  $: attrFontSize = (height <= width) ? ((chordCHeight / 270) * 15) : ((chartRad / 370) * 15)
 
   type ArtistLocation = {
     artist: string
