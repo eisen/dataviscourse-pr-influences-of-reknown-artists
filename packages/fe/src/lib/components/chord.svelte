@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as d3 from 'd3'
   import { Types } from '$lib/utilities'
-    import { once } from 'svelte/internal'
+  import { once } from 'svelte/internal'
 
   let grouping = 'Century'
   let attribute = 'Artistic Mediums'
@@ -10,15 +10,15 @@
   export let height: number
 
   // Sizing dependent on window
-  $: chordCHeight = ((height * 0.45) > 275) ? 275 : (height * 0.45)
-  $: chartRad = ((width * 0.45) > 390) ? 390 : (width * 0.45) // Max size for more possible screens
+  $: chordCHeight = height * 0.45 > 275 ? 275 : height * 0.45
+  $: chartRad = width * 0.45 > 390 ? 390 : width * 0.45 // Max size for more possible screens
   $: angleD = (chordCHeight / 270) * 90 - 5
   $: rectWidth = (chartRad / 370) * 120
-  $: attrFontSize = (height <= width) ? ((chordCHeight / 270) * 15) : ((chartRad / 370) * 15)
-  $: titleFontSize = (height <= width) ? ((chordCHeight / 170) * 20) : ((chartRad / 270) * 20)
+  $: attrFontSize = height <= width ? (chordCHeight / 270) * 15 : (chartRad / 370) * 15
+  $: titleFontSize = height <= width ? (chordCHeight / 170) * 20 : (chartRad / 270) * 20
 
   let svg: SVGSVGElement
-  let chordViz: SVGGElement 
+  let chordViz: SVGGElement
 
   let allLocations: [string, Types.ArtistLocation[]][]
   $: allLocations = []
@@ -124,26 +124,22 @@
 
     let argg = []
     for (let m = 0; m < gtMediums.length; m++) {
-      argg.push(m * ((chordCHeight * 2 + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.9125))
+      argg.push(m * ((chordCHeight * 2 + 0.05 * chordCHeight) / gtMediums.length) - chordCHeight * 0.9125)
     }
 
-    context.quadraticCurveTo(
-        horCoord, 
-        vertCoord, 
-        d.half == 0 ? rectWidth/2 : -rectWidth/2, 
-        argg[d.death]) // to
+    context.quadraticCurveTo(horCoord, vertCoord, d.half == 0 ? rectWidth / 2 : -rectWidth / 2, argg[d.death]) // to
 
     context.quadraticCurveTo(
       horTCoord,
       vertTCoord,
       sr * Math.cos((sa0 * Math.PI) / 180),
-      sr * Math.sin((sa0 * Math.PI) / 180)) //back
+      sr * Math.sin((sa0 * Math.PI) / 180)
+    ) //back
 
     if (buffer) return (context = null), buffer + '' || null
   }
 
-  export const Initialize = ( (locs:Types.ArtistLocation[], medLocs:Types.ArtistMedium[]) => {
-
+  export const Initialize = (locs: Types.ArtistLocation[], medLocs: Types.ArtistMedium[]) => {
     if (locs && medLocs) {
       allMediums = d3.groups(medLocs, d => d.artist)
 
@@ -173,7 +169,7 @@
         }
       }
 
-    let arcGen = d3
+      let arcGen = d3
         .arc()
         .innerRadius(chartRad * 0.925)
         .outerRadius(chartRad)
@@ -227,28 +223,34 @@
                 retArr.push({
                   index: colorIndex,
                   startAngle: padCheck && i > 0 ? padR + forwardAngle : forwardAngle,
-                  endAngle: padCheck && i > 0 ? padR + unitAngleR * currSegment + forwardAngle : unitAngleR * currSegment + forwardAngle,
+                  endAngle:
+                    padCheck && i > 0
+                      ? padR + unitAngleR * currSegment + forwardAngle
+                      : unitAngleR * currSegment + forwardAngle,
                   value: 29630,
                   nums: sortedArr[i].meds[j],
                   death: j,
                   colorIndex: colorIndex,
                   half: 0,
                   cent: sortedArr[i].cent,
-                //   addLabel: ()
+                  //   addLabel: ()
                 })
                 forwardAngle += padCheck && i > 0 ? padR + unitAngleR * currSegment : unitAngleR * currSegment
               } else {
                 let baseTerm = 2 * Math.PI
                 retArr.push({
                   index: colorIndex,
-                  startAngle: padCheck && i > 0 ? baseTerm - padR - unitAngleR * currSegment - forwardAngleD : baseTerm - unitAngleR * currSegment - forwardAngleD,
+                  startAngle:
+                    padCheck && i > 0
+                      ? baseTerm - padR - unitAngleR * currSegment - forwardAngleD
+                      : baseTerm - unitAngleR * currSegment - forwardAngleD,
                   endAngle: padCheck && i > 0 ? baseTerm - padR - forwardAngleD : baseTerm - forwardAngleD,
                   value: 29630,
                   nums: sortedArr[i].meds[j],
                   death: j,
                   colorIndex: colorIndex,
                   half: 1,
-                  cent: sortedArr[i].cent
+                  cent: sortedArr[i].cent,
                 })
                 forwardAngleD += padCheck && i > 0 ? padR + unitAngleR * currSegment : unitAngleR * currSegment
               }
@@ -305,8 +307,14 @@
       groupChord
         .append('rect')
         .data(gtMediums)
-        .attr('x', -1* rectWidth/2)
-        .attr('y', (d, i) => i * ((chordCHeight * 2 + + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.9) - (0.05 * chordCHeight))
+        .attr('x', (-1 * rectWidth) / 2)
+        .attr(
+          'y',
+          (d, i) =>
+            i * ((chordCHeight * 2 + +(0.05 * chordCHeight)) / gtMediums.length) -
+            chordCHeight * 0.9 -
+            0.05 * chordCHeight
+        )
         .attr('rx', 6)
         .attr('ry', 6)
         .attr('width', rectWidth)
@@ -317,33 +325,33 @@
         .append('text')
         .data(gtMediums)
         .attr('x', 0)
-        .attr('y', (d, i) => i * ((chordCHeight * 2 + + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.875))
+        .attr(
+          'y',
+          (d, i) => i * ((chordCHeight * 2 + +(0.05 * chordCHeight)) / gtMediums.length) - chordCHeight * 0.875
+        )
         .attr('fill', 'white')
         .style('text-anchor', 'middle')
         .style('font-size', attrFontSize)
         .text(d => d.charAt(0).toUpperCase() + d.slice(1))
-    // groupChord
-    //     .append('text')
-    //     .data(chords=>chords)
-    //     .attr('x', 0)
-    //     .attr('y', (d, i) => i * ((chordCHeight * 2 + + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.875))
-    //     .attr('fill', 'white')
-    //     .style('text-anchor', 'middle')
-    //     .style('font-size', attrFontSize)
-    //     .text(d => d.cent)
-    // Placeholders / title
-    let onceGroupChord = d3
-        .select(chordViz)
-        .append('g')
-        .attr('class', 'groups')
-    onceGroupChord
+      // groupChord
+      //     .append('text')
+      //     .data(chords=>chords)
+      //     .attr('x', 0)
+      //     .attr('y', (d, i) => i * ((chordCHeight * 2 + + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.875))
+      //     .attr('fill', 'white')
+      //     .style('text-anchor', 'middle')
+      //     .style('font-size', attrFontSize)
+      //     .text(d => d.cent)
+      // Placeholders / title
+      let onceGroupChord = d3.select(chordViz).append('g').attr('class', 'groups')
+      onceGroupChord
         .append('text')
         .attr('x', 0)
         .attr('y', (chordCHeight / 270) * -270)
         .style('text-anchor', 'middle')
-        .style('font-size', (titleFontSize > 20) ? 20: titleFontSize)
+        .style('font-size', titleFontSize > 20 ? 20 : titleFontSize)
         .text('Distribution of Artists by ' + grouping + ' Over ' + attribute)
-    onceGroupChord
+      onceGroupChord
         .append('rect')
         .attr('x', 195)
         .attr('y', (chordCHeight / 270) * 300)
@@ -351,7 +359,7 @@
         .attr('height', 30)
         .attr('fill', 'white')
         .attr('stroke', 'black')
-    onceGroupChord
+      onceGroupChord
         .append('rect')
         .attr('x', -195 - rectWidth)
         .attr('y', (chordCHeight / 270) * 300)
@@ -359,13 +367,13 @@
         .attr('height', 30)
         .attr('fill', 'white')
         .attr('stroke', 'black')
-    onceGroupChord
+      onceGroupChord
         .append('text')
         .attr('x', 195)
         .attr('y', (chordCHeight / 270) * 300 - 10)
         .style('font-size', 14)
         .text('Select an Attribute:')
-    onceGroupChord
+      onceGroupChord
         .append('text')
         .attr('x', -195 - rectWidth)
         .attr('y', (chordCHeight / 270) * 300 - 10)
@@ -374,9 +382,15 @@
     } else {
       console.error('Unable to load Artist Locations!')
     }
-  })
+  }
 </script>
 
-<svg id="svg" bind:this={svg} class="inline-block" width={width} height={height}>
-  <g id="chordViz" bind:this={chordViz} transform="translate({chartRad * 1.12}, {chordCHeight * 1.1})" width={width} height={height} />
-</svg>
+<div
+  id="container"
+  class="inline-block relative align-top overflow-hidden"
+  style="width: {width}px; height: {height}px;"
+>
+  <svg class="inline-block absolute top-0 left-0" viewBox="0, 0, {width}, {height}" preserveAspectRatio="xMidYMid meet">
+    <g id="chordViz" bind:this={chordViz} transform="translate({chartRad * 1.12}, {chordCHeight * 1.1})" />
+  </svg>
+</div>
