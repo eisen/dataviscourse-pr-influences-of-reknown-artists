@@ -1,21 +1,17 @@
 <script lang="ts">
   import * as d3 from 'd3'
-  import { geoWinkel3 } from 'd3-geo-projection'
-  import { json } from 'd3-fetch'
   import { feature } from 'topojson'
-  import { onMount } from 'svelte'
+  import { geoWinkel3 } from 'd3-geo-projection'
   import { Config, Types } from '$lib/utilities'
 
   const RADIUS = 15
   const TEXT_Y_OFFSET = 30
   let sim: d3.Simulation<d3.SimulationNodeDatum, undefined>
 
-  let svg: SVGSVGElement
-  let map: SVGGElement
-  let timeline: SVGGElement
-
-  let width = 800
-  let height = 600
+  export let width: number
+  $: width = 0
+  export let height: number
+  $: height = 0
 
   let world_data: any
   $: world_data = null
@@ -51,8 +47,8 @@
   const graticuleUle = graticuleGen.lines()
   const graticuleOutline = graticuleGen.outline()
 
-  const projection = geoWinkel3().translate([width / 2, height / 2])
-  const path = d3.geoPath().projection(projection)
+  let projection: any
+  let path: any
 
   const tickEvery = 20
   const yearEvery = 100
@@ -207,19 +203,17 @@
     d3.select(target + '-text').attr('opacity', 0)
   }
 
-  onMount(async () => {
-    const features: any = await json(`${Config.server_url}/data/world.json`)
+  export const Initialize = (features: any, influence_data: Types.ArtistInfluence[], locs: Types.ArtistLocation[]) => {
+    projection = geoWinkel3().translate([width / 2, height / 2])
+    path = d3.geoPath().projection(projection)
+
     world_data = feature(features, features.objects.countries)
 
-    const influence_data: Types.ArtistInfluence[] | undefined = await json(
-      `${Config.server_url}/data/artist-influences.json`
-    )
     if (influence_data) {
       allInfluencees = d3.groups(influence_data, (d: Types.ArtistInfluence) => d.artist)
       allInfluencers = d3.groups(influence_data, (d: Types.ArtistInfluence) => d.influenced)
     }
 
-    const locs: Types.ArtistLocation[] | undefined = await json(`${Config.server_url}/data/artist-locations.json`)
     if (locs) {
       oldestYear = d3.min(locs, d => d.year)
       year = oldestYear!
@@ -238,14 +232,13 @@
           return Number(d) % yearEvery === 0 ? String(d) : ''
         })
         .ticks((youngestYear! - oldestYear!) / tickEvery)
-      d3.select(timeline).call(tl_x_axis)
     } else {
       console.error('Unable to load Artist Locations!')
     }
-  })
+  }
 </script>
 
-<svg id="svg" {width} {height} bind:this={svg} class="inline-block">
+<svg id="svg" {width} {height} class="inline-block">
   <style>
     .pointer {
       cursor: pointer;
@@ -259,70 +252,72 @@
       stroke-miterlimit: 10;
     }
   </style>
-  <g id="map" bind:this={map} transform={map_pos}>
-    <g id="graticules">
-      {#each graticuleUle as line}
-        <path d={path(line)} fill="none" stroke="lightgray" />
-      {/each}
-    </g>
-    <g id="countries">
-      {#if world_data}
-        {#each world_data.features as feature}
-          <path id={feature.id} d={path(feature)} stroke="lightgray" fill="white" />
+  {#if path}
+    <g id="map">
+      <g id="graticules">
+        {#each graticuleUle as line}
+          <path d={path(line)} fill="none" stroke="lightgray" />
         {/each}
-      {/if}
-    </g>
-    <g id="artists">
-      {#if showInfluences}
-        {#each influences as location}
-          <g>
-            <line
-              x2={getXfromLatLon(location[1])}
-              y2={getYfromLatLon(location[1])}
-              x1={getX(location)}
-              y1={getY(location)}
-              stroke="black"
-            />
-            <circle cx={getXfromLatLon(location[1])} cy={getYfromLatLon(location[1])} r="2" fill="black" />
+      </g>
+      <g id="countries">
+        {#if world_data}
+          {#each world_data.features as feature}
+            <path id={feature.id} d={path(feature)} stroke="lightgray" fill="white" />
+          {/each}
+        {/if}
+      </g>
+      <g id="artists">
+        {#if showInfluences}
+          {#each influences as location}
+            <g>
+              <line
+                x2={getXfromLatLon(location[1])}
+                y2={getYfromLatLon(location[1])}
+                x1={getX(location)}
+                y1={getY(location)}
+                stroke="black"
+              />
+              <circle cx={getXfromLatLon(location[1])} cy={getYfromLatLon(location[1])} r="2" fill="black" />
 
-            <line
-              x2={getX(location)}
-              y2={getY(location)}
-              x1={getX(selected)}
-              y1={getY(selected)}
-              stroke="red"
-              opacity="0.5"
-              stroke-width={getYearGap(selected, location)}
-            />
-          </g>
-        {/each}
-        {#each influences as location}
-          <g id={location[0].replace(/[[\s\.]]/g, '') + '-group'} class="pointer">
-            {#if location[0] === selected[0]}
-              <circle cx={getX(location)} cy={getY(location)} r={RADIUS * 2} stroke="black" fill="white" />
-              <text
-                id={location[0].replace(/[\s\.]/g, '') + '-text'}
-                opacity="1"
-                x={getX(location)}
-                y={getY(location) + TEXT_Y_OFFSET + RADIUS}
-                text-anchor="middle">{location[0]}</text
-              >
-            {:else}
-              <circle cx={getX(location)} cy={getY(location)} r={RADIUS} stroke="black" fill="white" />
-              <text
-                id={location[0].replace(/[\s\.]/g, '') + '-text'}
-                opacity="1"
-                x={getX(location)}
-                y={getY(location) + TEXT_Y_OFFSET}
-                text-anchor="middle">{location[0]}</text
-              >
-            {/if}
-          </g>
-        {/each}
-      {/if}
+              <line
+                x2={getX(location)}
+                y2={getY(location)}
+                x1={getX(selected)}
+                y1={getY(selected)}
+                stroke="red"
+                opacity="0.5"
+                stroke-width={getYearGap(selected, location)}
+              />
+            </g>
+          {/each}
+          {#each influences as location}
+            <g id={location[0].replace(/[[\s\.]]/g, '') + '-group'} class="pointer">
+              {#if location[0] === selected[0]}
+                <circle cx={getX(location)} cy={getY(location)} r={RADIUS * 2} stroke="black" fill="white" />
+                <text
+                  id={location[0].replace(/[\s\.]/g, '') + '-text'}
+                  opacity="1"
+                  x={getX(location)}
+                  y={getY(location) + TEXT_Y_OFFSET + RADIUS}
+                  text-anchor="middle">{location[0]}</text
+                >
+              {:else}
+                <circle cx={getX(location)} cy={getY(location)} r={RADIUS} stroke="black" fill="white" />
+                <text
+                  id={location[0].replace(/[\s\.]/g, '') + '-text'}
+                  opacity="1"
+                  x={getX(location)}
+                  y={getY(location) + TEXT_Y_OFFSET}
+                  text-anchor="middle">{location[0]}</text
+                >
+              {/if}
+            </g>
+          {/each}
+        {/if}
+      </g>
+      <g id="outline">
+        <path d={path(graticuleOutline)} fill="none" stroke="black" stroke-width="2" />
+      </g>
     </g>
-    <g id="outline">
-      <path d={path(graticuleOutline)} fill="none" stroke="black" stroke-width="2" />
-    </g>
-  </g>
+  {/if}
 </svg>
