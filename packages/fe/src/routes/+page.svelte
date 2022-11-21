@@ -38,7 +38,11 @@
 
 <svelte:window bind:outerWidth={width} bind:outerHeight={height} />
 
+<div class="flex absolute top-4 left-4 w-full font-bold text-4xl">Influences of Reknown Artists</div>
 <div class="grid-cols-2">
   <Network bind:this={network} width={network_width} height={network_height} />
   <Chord bind:this={chord} width={chord_width} height={chord_height} />
 </div>
+<footer class="flex justify-center absolute bottom-4 w-full">
+  <span>Team members: Nishita Kharche, Nick Lord-Ender-Laing, Eisen Montalvo</span>
+</footer>
