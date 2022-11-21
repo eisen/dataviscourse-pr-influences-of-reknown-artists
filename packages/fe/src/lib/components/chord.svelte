@@ -1,9 +1,10 @@
 <script lang="ts">
   import * as d3 from 'd3'
   import { Types } from '$lib/utilities'
+    import { once } from 'svelte/internal'
 
-  let grouping = 'century'
-  let attribute = 'medium'
+  let grouping = 'Century'
+  let attribute = 'Artistic Mediums'
 
   export let width: number
   export let height: number
@@ -14,21 +15,16 @@
   $: angleD = (chordCHeight / 270) * 90 - 5
   $: rectWidth = (chartRad / 370) * 120
   $: attrFontSize = (height <= width) ? ((chordCHeight / 270) * 15) : ((chartRad / 370) * 15)
+  $: titleFontSize = (height <= width) ? ((chordCHeight / 170) * 20) : ((chartRad / 270) * 20)
 
   let svg: SVGSVGElement
   let chordViz: SVGGElement 
 
   let allLocations: [string, Types.ArtistLocation[]][]
   $: allLocations = []
-  let locations: [string, Types.ArtistLocation[]][]
-  $: locations = []
+
   let allMediums: [string, Types.ArtistMedium[]][]
   $: allMediums = []
-
-  let oldestYear: number | undefined
-  $: oldestYear = 0
-  let youngestYear: number | undefined
-  $: youngestYear = 2100
 
   let chordColors = [
     'rgb(211, 157, 69)',
@@ -237,6 +233,8 @@
                   death: j,
                   colorIndex: colorIndex,
                   half: 0,
+                  cent: sortedArr[i].cent,
+                //   addLabel: ()
                 })
                 forwardAngle += padCheck && i > 0 ? padR + unitAngleR * currSegment : unitAngleR * currSegment
               } else {
@@ -250,6 +248,7 @@
                   death: j,
                   colorIndex: colorIndex,
                   half: 1,
+                  cent: sortedArr[i].cent
                 })
                 forwardAngleD += padCheck && i > 0 ? padR + unitAngleR * currSegment : unitAngleR * currSegment
               }
@@ -323,6 +322,55 @@
         .style('text-anchor', 'middle')
         .style('font-size', attrFontSize)
         .text(d => d.charAt(0).toUpperCase() + d.slice(1))
+    // groupChord
+    //     .append('text')
+    //     .data(chords=>chords)
+    //     .attr('x', 0)
+    //     .attr('y', (d, i) => i * ((chordCHeight * 2 + + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.875))
+    //     .attr('fill', 'white')
+    //     .style('text-anchor', 'middle')
+    //     .style('font-size', attrFontSize)
+    //     .text(d => d.cent)
+    // Placeholders / title
+    let onceGroupChord = d3
+        .select(chordViz)
+        .append('g')
+        .attr('class', 'groups')
+    onceGroupChord
+        .append('text')
+        .attr('x', 0)
+        .attr('y', (chordCHeight / 270) * -270)
+        .style('text-anchor', 'middle')
+        .style('font-size', (titleFontSize > 20) ? 20: titleFontSize)
+        .text('Distribution of Artists by ' + grouping + ' Over ' + attribute)
+    onceGroupChord
+        .append('rect')
+        .attr('x', 195)
+        .attr('y', (chordCHeight / 270) * 300)
+        .attr('width', rectWidth)
+        .attr('height', 30)
+        .attr('fill', 'white')
+        .attr('stroke', 'black')
+    onceGroupChord
+        .append('rect')
+        .attr('x', -195 - rectWidth)
+        .attr('y', (chordCHeight / 270) * 300)
+        .attr('width', rectWidth)
+        .attr('height', 30)
+        .attr('fill', 'white')
+        .attr('stroke', 'black')
+    onceGroupChord
+        .append('text')
+        .attr('x', 195)
+        .attr('y', (chordCHeight / 270) * 300 - 10)
+        .style('font-size', 14)
+        .text('Select an Attribute:')
+    onceGroupChord
+        .append('text')
+        .attr('x', -195 - rectWidth)
+        .attr('y', (chordCHeight / 270) * 300 - 10)
+        .style('font-size', 14)
+        .text('Select a Grouping:')
     } else {
       console.error('Unable to load Artist Locations!')
     }
