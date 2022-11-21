@@ -2,7 +2,7 @@
   import * as d3 from 'd3'
   import { feature } from 'topojson'
   import { geoWinkel3 } from 'd3-geo-projection'
-  import { Config, Types } from '$lib/utilities'
+  import { Types } from '$lib/utilities'
 
   const RADIUS = 15
   const TEXT_Y_OFFSET = 30
