@@ -3,7 +3,6 @@
   import { Types } from '$lib/utilities'
   import type { ArtistData } from '$lib/utilities/types'
 
-  const RADIUS = 15
   const DURATION = 500
   const PADDING = 20
   const OFFSET_X = 40
@@ -23,6 +22,8 @@
   export let width: number = 0
   export let height: number = 0
 
+  $: RADIUS = height / 40
+
   const Translate = (x: number | undefined, y: number | undefined) => `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
 
   const ArtistName = (datum: ArtistData) => {
@@ -37,14 +38,14 @@
         d3
           .forceLink()
           .id(d => (d as ArtistData).artist)
-          .distance(RADIUS * 3)
+          .distance(RADIUS * 2)
           .strength(1)
       )
       .force('charge', d3.forceManyBody().strength(15))
       .force('y', d3.forceY(height / 2))
       .force(
         'collide',
-        d3.forceCollide().radius(d => RADIUS + 15)
+        d3.forceCollide().radius(d => RADIUS * 2)
       )
 
     sim.force('link')!.links(edges)
@@ -219,7 +220,7 @@
         </g>
       {/each}
     </g>
-    <g transform={Translate(PADDING * 3, PADDING * 4)}>
+    <g transform={Translate(width - PADDING * 5, height - PADDING * 4)}>
       <rect x="-3" y="0" width="140" height="60" fill="white" stroke="black" rx="15" />
       <line marker-end="url(#arrowhead)" x1="20" y1="20" x2="115" y2="20" stroke="black" />
       <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="black" />
