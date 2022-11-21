@@ -189,46 +189,52 @@
   }
 </script>
 
-<svg class="inline-block" {width} {height}>
-  <g id="adjacency_matrix" />
-  <g id="linesVertical">
-    {#each lines as line}
-      <g>
-        <line
-          x1={offset_x + matrixScale(line)}
-          y1={PADDING.top}
-          x2={offset_x + matrixScale(line)}
-          y2={height - PADDING.bottom}
-          stroke-width="0.5"
-          stroke="#ccc"
-        />
-      </g>
-    {/each}
-  </g>
+<div
+  id="container"
+  class="inline-block relative align-top overflow-hidden"
+  style="width: {width}px; height: {height}px;"
+>
+  <svg class="inline-block absolute top-0 left-0" viewBox="0, 0, {width}, {height}" preserveAspectRatio="xMidYMid meet">
+    <g id="adjacency_matrix" />
+    <g id="linesVertical">
+      {#each lines as line}
+        <g>
+          <line
+            x1={offset_x + matrixScale(line)}
+            y1={PADDING.top}
+            x2={offset_x + matrixScale(line)}
+            y2={height - PADDING.bottom}
+            stroke-width="0.5"
+            stroke="#ccc"
+          />
+        </g>
+      {/each}
+    </g>
 
-  <g id="linesHorizontal">
-    {#each lines as line}
-      <g>
-        <line
-          x1={offset_x}
-          y1={offset_y + matrixScale(line)}
-          x2={offset_x + CHART.side}
-          y2={offset_y + matrixScale(line)}
-          stroke-width="0.5"
-          stroke="#ccc"
-        />
-      </g>
-    {/each}
-  </g>
+    <g id="linesHorizontal">
+      {#each lines as line}
+        <g>
+          <line
+            x1={offset_x}
+            y1={offset_y + matrixScale(line)}
+            x2={offset_x + CHART.side}
+            y2={offset_y + matrixScale(line)}
+            stroke-width="0.5"
+            stroke="#ccc"
+          />
+        </g>
+      {/each}
+    </g>
 
-  <g>
-    <rect
-      x={offset_x - 0.5}
-      y={offset_y - 0.5}
-      width={CHART.side + 1}
-      height={CHART.side + 1}
-      stroke="#000000"
-      fill="none"
-    />
-  </g>
-</svg>
+    <g>
+      <rect
+        x={offset_x - 0.5}
+        y={offset_y - 0.5}
+        width={CHART.side + 1}
+        height={CHART.side + 1}
+        stroke="#000000"
+        fill="none"
+      />
+    </g>
+  </svg>
+</div>

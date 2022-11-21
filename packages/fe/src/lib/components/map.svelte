@@ -238,86 +238,92 @@
   }
 </script>
 
-<svg id="svg" {width} {height} class="inline-block">
-  <style>
-    .pointer {
-      cursor: pointer;
-    }
-    .slider {
-      cursor: ew-resize;
-    }
-    #handle {
-      fill: #000000;
-      stroke: #000000;
-      stroke-miterlimit: 10;
-    }
-  </style>
-  {#if path}
-    <g id="map">
-      <g id="graticules">
-        {#each graticuleUle as line}
-          <path d={path(line)} fill="none" stroke="lightgray" />
-        {/each}
-      </g>
-      <g id="countries">
-        {#if world_data}
-          {#each world_data.features as feature}
-            <path id={feature.id} d={path(feature)} stroke="lightgray" fill="white" />
+<div
+  id="container"
+  class="inline-block relative align-top overflow-hidden"
+  style="width: {width}px; height: {height}px;"
+>
+  <svg class="inline-block absolute top-0 left-0" viewBox="0, 0, {width}, {height}" preserveAspectRatio="xMidYMid meet">
+    <style>
+      .pointer {
+        cursor: pointer;
+      }
+      .slider {
+        cursor: ew-resize;
+      }
+      #handle {
+        fill: #000000;
+        stroke: #000000;
+        stroke-miterlimit: 10;
+      }
+    </style>
+    {#if path}
+      <g id="map">
+        <g id="graticules">
+          {#each graticuleUle as line}
+            <path d={path(line)} fill="none" stroke="lightgray" />
           {/each}
-        {/if}
-      </g>
-      <g id="artists">
-        {#if showInfluences}
-          {#each influences as location}
-            <g>
-              <line
-                x2={getXfromLatLon(location[1])}
-                y2={getYfromLatLon(location[1])}
-                x1={getX(location)}
-                y1={getY(location)}
-                stroke="black"
-              />
-              <circle cx={getXfromLatLon(location[1])} cy={getYfromLatLon(location[1])} r="2" fill="black" />
+        </g>
+        <g id="countries">
+          {#if world_data}
+            {#each world_data.features as feature}
+              <path id={feature.id} d={path(feature)} stroke="lightgray" fill="white" />
+            {/each}
+          {/if}
+        </g>
+        <g id="artists">
+          {#if showInfluences}
+            {#each influences as location}
+              <g>
+                <line
+                  x2={getXfromLatLon(location[1])}
+                  y2={getYfromLatLon(location[1])}
+                  x1={getX(location)}
+                  y1={getY(location)}
+                  stroke="black"
+                />
+                <circle cx={getXfromLatLon(location[1])} cy={getYfromLatLon(location[1])} r="2" fill="black" />
 
-              <line
-                x2={getX(location)}
-                y2={getY(location)}
-                x1={getX(selected)}
-                y1={getY(selected)}
-                stroke="red"
-                opacity="0.5"
-                stroke-width={getYearGap(selected, location)}
-              />
-            </g>
-          {/each}
-          {#each influences as location}
-            <g id={location[0].replace(/[[\s\.]]/g, '') + '-group'} class="pointer">
-              {#if location[0] === selected[0]}
-                <circle cx={getX(location)} cy={getY(location)} r={RADIUS * 2} stroke="black" fill="white" />
-                <text
-                  id={location[0].replace(/[\s\.]/g, '') + '-text'}
-                  opacity="1"
-                  x={getX(location)}
-                  y={getY(location) + TEXT_Y_OFFSET + RADIUS}
-                  text-anchor="middle">{location[0]}</text
-                >
-              {:else}
-                <circle cx={getX(location)} cy={getY(location)} r={RADIUS} stroke="black" fill="white" />
-                <text
-                  id={location[0].replace(/[\s\.]/g, '') + '-text'}
-                  opacity="1"
-                  x={getX(location)}
-                  y={getY(location) + TEXT_Y_OFFSET}
-                  text-anchor="middle">{location[0]}</text
-                >
-              {/if}
-            </g>
-          {/each}
-        {/if}
+                <line
+                  x2={getX(location)}
+                  y2={getY(location)}
+                  x1={getX(selected)}
+                  y1={getY(selected)}
+                  stroke="red"
+                  opacity="0.5"
+                  stroke-width={getYearGap(selected, location)}
+                />
+              </g>
+            {/each}
+            {#each influences as location}
+              <g id={location[0].replace(/[[\s\.]]/g, '') + '-group'} class="pointer">
+                {#if location[0] === selected[0]}
+                  <circle cx={getX(location)} cy={getY(location)} r={RADIUS * 2} stroke="black" fill="white" />
+                  <text
+                    id={location[0].replace(/[\s\.]/g, '') + '-text'}
+                    opacity="1"
+                    x={getX(location)}
+                    y={getY(location) + TEXT_Y_OFFSET + RADIUS}
+                    text-anchor="middle">{location[0]}</text
+                  >
+                {:else}
+                  <circle cx={getX(location)} cy={getY(location)} r={RADIUS} stroke="black" fill="white" />
+                  <text
+                    id={location[0].replace(/[\s\.]/g, '') + '-text'}
+                    opacity="1"
+                    x={getX(location)}
+                    y={getY(location) + TEXT_Y_OFFSET}
+                    text-anchor="middle">{location[0]}</text
+                  >
+                {/if}
+              </g>
+            {/each}
+          {/if}
+        </g>
+        <g id="outline">
+          <path d={path(graticuleOutline)} fill="none" stroke="black" stroke-width="2" />
+        </g>
       </g>
-      <g id="outline">
-        <path d={path(graticuleOutline)} fill="none" stroke="black" stroke-width="2" />
-      </g>
-    </g>
-  {/if}
-</svg>
+    {/if}
+  </svg>
+</div>

@@ -8,18 +8,19 @@
   $: height = 0
 
   const horizontalPadding = 20
+  const verticalPadding = 30
 
   $: network_width = Math.abs(width - horizontalPadding) / 2
-  $: network_height = height / 2
+  $: network_height = Math.abs(height - verticalPadding) / 2
 
   $: chord_width = Math.abs(width - horizontalPadding) / 2
-  $: chord_height = height * 0.65
+  $: chord_height = Math.abs(height - verticalPadding) / 2
 
   $: matrix_width = Math.abs(width - horizontalPadding) / 2
-  $: matrix_height = height / 2
+  $: matrix_height = Math.abs(height - verticalPadding) / 2
 
   $: map_width = Math.abs(width - horizontalPadding) / 2
-  $: map_height = height / 2
+  $: map_height = Math.abs(height - verticalPadding) / 2
 
   let allArtists: Types.ArtistData[]
   $: allArtists = []
@@ -47,9 +48,9 @@
   })
 </script>
 
-<svelte:window bind:outerWidth={width} bind:outerHeight={height} />
+<svelte:window bind:innerWidth={width} bind:innerHeight={height} />
 
-<div class="flex absolute top-4 left-4 w-full font-bold text-4xl">Influences of Reknown Artists</div>
+<header class="flex absolute top-4 left-4 w-full font-bold text-4xl">Influences of Reknown Artists</header>
 <div class="grid-cols-2">
   <Network bind:this={network} width={network_width} height={network_height} />
   <Chord bind:this={chord} width={chord_width} height={chord_height} />
