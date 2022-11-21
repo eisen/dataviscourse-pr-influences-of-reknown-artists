@@ -23,7 +23,7 @@
   export let width: number = 0
   export let height: number = 0
 
-  const Translate = (x: number | undefined, y: number | undefined) => `translate(${x - OFFSET_X}, ${y - OFFSET_Y})`
+  const Translate = (x: number | undefined, y: number | undefined) => `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
 
   const ArtistName = (datum: ArtistData) => {
     return datum.artist.replace(/[\s\.]/g, '')
@@ -36,7 +36,7 @@
         'link',
         d3
           .forceLink()
-          .id(d => d['artist'])
+          .id(d => (d as ArtistData).artist)
           .distance(RADIUS * 3)
           .strength(1)
       )
