@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as d3 from 'd3'
-  import { Chord, Network } from '$lib/components'
+  import { Chord, Matrix, Network } from '$lib/components'
   import { Config, Types } from '$lib/utilities'
   import { onMount } from 'svelte'
 
@@ -15,6 +15,9 @@
   $: chord_width = Math.abs(width - horizontalPadding) / 2
   $: chord_height = height * 0.65
 
+  $: matrix_width = Math.abs(width - horizontalPadding) / 2
+  $: matrix_height = height / 2
+
   let allArtists: Types.ArtistData[]
   $: allArtists = []
   let allLinks: Types.ArtistLink[]
@@ -22,6 +25,7 @@
 
   let network: Network
   let chord: Chord
+  let matrix: Matrix
 
   onMount(async () => {
     const locs: Types.ArtistLocation[] | undefined = await d3.json(`${Config.server_url}/data/artist-locations.json`)
@@ -32,6 +36,7 @@
     )
 
     chord.Initialize(locs!, medLocs!)
+    matrix.Initialize(artist_data!, influence_data!)
     network.Initialize(artist_data!, influence_data!)
   })
 </script>
@@ -42,6 +47,7 @@
 <div class="grid-cols-2">
   <Network bind:this={network} width={network_width} height={network_height} />
   <Chord bind:this={chord} width={chord_width} height={chord_height} />
+  <Matrix bind:this={matrix} width={matrix_width} height={matrix_height}/>
 </div>
 <footer class="flex justify-center absolute bottom-4 w-full">
   <span>Team members: Nishita Kharche, Nick Lord-Ender-Laing, Eisen Montalvo</span>
