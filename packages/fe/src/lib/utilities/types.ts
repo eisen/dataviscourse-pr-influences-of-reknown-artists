@@ -5,12 +5,18 @@ export type ArtistLocation = {
   country: string
   lat: number
   lon: number
+  x?: number
+  y?: number
 }
+
+export type LocationGroup = [name: string, location: ArtistLocation[], x?: number, y?: number]
 
 export type ArtistInfluence = {
   artist: string
   influenced: string
 }
+
+export type InfluenceGroup = [name: string, influence: ArtistInfluence[]]
 
 export type ArtistLink = {
   source: string
