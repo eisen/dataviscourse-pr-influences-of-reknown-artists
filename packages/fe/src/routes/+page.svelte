@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as d3 from 'd3'
-  import { Chord, Map, Network } from '$lib/components'
+  import { Chord, Map, Matrix, Network } from '$lib/components'
   import { Config, Types } from '$lib/utilities'
   import { onMount } from 'svelte'
 
@@ -15,6 +15,9 @@
   $: chord_width = Math.abs(width - horizontalPadding) / 2
   $: chord_height = height * 0.65
 
+  $: matrix_width = Math.abs(width - horizontalPadding) / 2
+  $: matrix_height = height / 2
+
   $: map_width = Math.abs(width - horizontalPadding) / 2
   $: map_height = height / 2
 
@@ -26,6 +29,7 @@
   let network: Network
   let chord: Chord
   let map: Map
+  let matrix: Matrix
 
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
@@ -38,6 +42,7 @@
 
     chord.Initialize(locs!, medLocs!)
     map.Initialize(features, influence_data!, locs!)
+    matrix.Initialize(artist_data!, influence_data!)
     network.Initialize(artist_data!, influence_data!)
   })
 </script>
@@ -48,7 +53,7 @@
 <div class="grid-cols-2">
   <Network bind:this={network} width={network_width} height={network_height} />
   <Chord bind:this={chord} width={chord_width} height={chord_height} />
-  <!-- Adjecency Matrix goes here -->
+  <Matrix bind:this={matrix} width={matrix_width} height={matrix_height} />
   <Map bind:this={map} width={map_width} height={map_height} />
 </div>
 <footer class="flex justify-center absolute w-full">
