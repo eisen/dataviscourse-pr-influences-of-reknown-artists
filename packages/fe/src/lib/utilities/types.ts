@@ -2,6 +2,8 @@ export type AdjacencyData = {
   x: number
   y: number
   z: number
+  influencer: string
+  influencee: string
 }
 
 export type ArtistLocation = {
