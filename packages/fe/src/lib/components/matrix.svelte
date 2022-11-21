@@ -86,7 +86,7 @@
         // }
         // let matrixScale = d3.scaleBand().range([0+PADDING.left, side-PADDING.right]).domain(arr_domain);
         let colourRelation = '#6a87a3'
-        let colourNoRelation = '#eeeeee'
+        let colourNoRelation = 'transparent'
 
         let svg = d3.select('#adjacency_matrix')
 
@@ -183,23 +183,40 @@
     }
 </script>
 
-<svg width={width} height={height} id="adjacency_matrix" >
-    <g>
-        <rect x={offset_x - 0.5} y={offset_y - 0.5} width={CHART.side + 1} height={CHART.side + 1} fill="#000000" />
-    </g>
-    <!-- <g id="linesVertical"> 
+<svg width={width} height={height} >
+    <g id="adjacency_matrix"/>
+    <g id="linesVertical"> 
         {#each lines as line}
         <g>
             <line
-                x1 = {matrixScale(line)} 
+                x1 = {offset_x + matrixScale(line)} 
                 y1 = {PADDING.top}
-                x2 = {matrixScale(line)}
+                x2 = {offset_x + matrixScale(line)}
                 y2 = {height - PADDING.bottom}
                 stroke-width= "0.5"
-                stroke= "#000000"
+                stroke= "#ccc"
             /> 
         </g>
         {/each}
-    </g> -->
+    </g>
+
+    <g id="linesHorizontal"> 
+        {#each lines as line}
+        <g>
+            <line
+                x1 = {offset_x} 
+                y1 = {offset_y + matrixScale(line)}
+                x2 = {offset_x + CHART.side}
+                y2 = {offset_y + matrixScale(line)}
+                stroke-width= "0.5"
+                stroke= "#ccc"
+            /> 
+        </g>
+        {/each}
+    </g>
+
+    <g>
+        <rect x={offset_x - 0.5} y={offset_y - 0.5} width={CHART.side + 1} height={CHART.side + 1} stroke="#000000" fill="none" />
+    </g>
 
 </svg>
