@@ -6,6 +6,8 @@
   const RADIUS = 15
   const DURATION = 500
   const PADDING = 20
+  const OFFSET_X = 40
+  const OFFSET_Y = 100
 
   let sim: d3.Simulation<d3.SimulationNodeDatum, d3.SimulationLinkDatum<d3.SimulationNodeDatum>>
   let sim_running = false
@@ -21,7 +23,7 @@
   export let width: number = 0
   export let height: number = 0
 
-  const Translate = (x: number | undefined, y: number | undefined) => `translate(${x}, ${y})`
+  const Translate = (x: number | undefined, y: number | undefined) => `translate(${x - OFFSET_X}, ${y - OFFSET_Y})`
 
   const ArtistName = (datum: ArtistData) => {
     return datum.artist.replace(/[\s\.]/g, '')
@@ -164,10 +166,10 @@
       <g>
         <line
           marker-end="url(#arrowhead)"
-          x1={link.source.x + width / 2}
-          y1={link.source.y}
-          x2={link.target.x + width / 2}
-          y2={link.target.y}
+          x1={link.source.x + width / 2 - OFFSET_X}
+          y1={link.source.y - OFFSET_Y}
+          x2={link.target.x + width / 2 - OFFSET_X}
+          y2={link.target.y - OFFSET_Y}
           stroke="black"
         />
       </g>
@@ -211,5 +213,14 @@
         >
       </g>
     {/each}
+  </g>
+  <g transform={Translate(width - 110, height - 50)}>
+    <rect x="-3" y="0" width="140" height="60" fill="white" stroke="black" rx="15" />
+    <line marker-end="url(#arrowhead)" x1="20" y1="20" x2="115" y2="20" stroke="black" />
+    <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="black" />
+    <text x="15" y="25">A</text>
+    <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="black" />
+    <text x="110" y="25">B</text>
+    <text x="15" y="50">A influenced B</text>
   </g>
 </svg>
