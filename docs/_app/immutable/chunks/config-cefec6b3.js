@@ -1,1 +1,0 @@
-function n(t){if(!t.ok)throw new Error(t.status+" "+t.statusText);if(!(t.status===204||t.status===205))return t.json()}function s(t,r){return fetch(t,r).then(n)}const o=5173,u=`http://localhost:${o}`;export{s as j,u as s};

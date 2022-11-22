@@ -17,7 +17,6 @@ const config = {
       assets: "docs",
       paths: {
         base: dev ? '' : '/dataviscourse-pr-influences-of-reknown-artists',
-
       },
     })
   }
