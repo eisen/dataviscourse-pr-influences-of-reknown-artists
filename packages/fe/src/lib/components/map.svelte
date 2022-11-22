@@ -204,7 +204,9 @@
   }
 
   export const Initialize = (features: any, influence_data: Types.ArtistInfluence[], locs: Types.ArtistLocation[]) => {
-    projection = geoWinkel3().translate([width / 2, height / 2])
+    projection = geoWinkel3()
+      .translate([width / 2, height / 2])
+      .scale(height / 3.5)
     path = d3.geoPath().projection(projection)
 
     world_data = feature(features, features.objects.countries)
