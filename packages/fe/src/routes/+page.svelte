@@ -12,7 +12,7 @@
   $: width = 0
   $: height = 0
 
-  const horizontalPadding = 20
+  const horizontalPadding = 24
   const verticalPadding = 30
 
   $: network_width = Math.abs(width - horizontalPadding) / 2
