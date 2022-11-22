@@ -203,7 +203,7 @@
         >
           <image
             id={ArtistName(artist) + "-image"}
-            href={artist.thumbnail}
+            href={Config.server_url + artist.thumbnail}
             height={RADIUS * 2}
             width={RADIUS * 2}
             x={-RADIUS}
