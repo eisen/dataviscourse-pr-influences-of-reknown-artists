@@ -173,11 +173,22 @@
         viewBox="-0 -5 10 10"
         refX={RADIUS * 2}
         refY="0"
-        orient="auto"
+        orient="auto-start-reverse"
         markerWidth="7"
         markerHeight="7"
       >
         <path d="M 0,-5 L 10 ,0 L 0,5" fill="black" stroke="none" />
+      </marker>
+      <marker
+        id="arrowtail"
+        viewBox="-0 -5 10 10"
+        refX={RADIUS * 2}
+        refY="0"
+        orient="auto"
+        markerWidth="7"
+        markerHeight="7"
+      >
+        <circle cx="8" cy="0" r="5" fill="black" stroke="none" />
       </marker>
     </defs>
 
@@ -185,7 +196,8 @@
       {#each links as link}
         <g>
           <line
-            marker-end="url(#arrowhead)"
+            marker-start="url(#arrowhead)"
+            marker-end="url(#arrowtail)"
             x1={link.source.x + width / 2 - OFFSET_X}
             y1={link.source.y - OFFSET_Y}
             x2={link.target.x + width / 2 - OFFSET_X}
@@ -269,10 +281,11 @@
         rx="15"
       />
       <line
-        marker-end="url(#arrowhead)"
-        x1="20"
+        marker-start="url(#arrowhead)"
+        marker-end="url(#arrowtail)"
+        x1="115"
         y1="20"
-        x2="115"
+        x2="20"
         y2="20"
         stroke="black"
       />
