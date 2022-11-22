@@ -200,6 +200,7 @@
         <g
           transform={Translate(artist.x + width / 2, artist.y)}
           id={ArtistName(artist) + "-group"}
+          class="cursor-pointer"
         >
           <image
             id={ArtistName(artist) + "-image"}
