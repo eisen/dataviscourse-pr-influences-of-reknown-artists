@@ -2,7 +2,7 @@ import { base } from "$app/paths"
 
 let url
 if (base.length > 0) {
-  url = `http://${base}`
+  url = `${base}/`
 } else {
   url = `http://localhost:5173`
 }
