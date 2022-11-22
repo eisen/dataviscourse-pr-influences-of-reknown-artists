@@ -13,12 +13,13 @@ const config = {
 
   kit: {
     adapter: adapter({
-      fallback: '200.html',
+      pages: "docs",
+      assets: "docs",
       paths: {
         base: dev ? '' : '/dataviscourse-pr-influences-of-reknown-artists',
+
       },
-    }),
-    prerender: { entries: [] }
+    })
   }
 }
 
