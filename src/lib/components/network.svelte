@@ -173,7 +173,7 @@
         viewBox="-0 -5 10 10"
         refX={RADIUS * 2}
         refY="0"
-        orient="auto-start-reverse"
+        orient="auto"
         markerWidth="7"
         markerHeight="7"
       >
@@ -184,7 +184,7 @@
         viewBox="-0 -5 10 10"
         refX={RADIUS * 2}
         refY="0"
-        orient="auto"
+        orient="auto-start-reverse"
         markerWidth="7"
         markerHeight="7"
       >
@@ -196,8 +196,8 @@
       {#each links as link}
         <g>
           <line
-            marker-start="url(#arrowhead)"
-            marker-end="url(#arrowtail)"
+            marker-end="url(#arrowhead)"
+            marker-start="url(#arrowtail)"
             x1={link.source.x + width / 2 - OFFSET_X}
             y1={link.source.y - OFFSET_Y}
             x2={link.target.x + width / 2 - OFFSET_X}
@@ -281,11 +281,11 @@
         rx="15"
       />
       <line
-        marker-start="url(#arrowhead)"
-        marker-end="url(#arrowtail)"
-        x1="115"
+        marker-end="url(#arrowhead)"
+        marker-start="url(#arrowtail)"
+        x1="20"
         y1="20"
-        x2="20"
+        x2="115"
         y2="20"
         stroke="black"
       />
