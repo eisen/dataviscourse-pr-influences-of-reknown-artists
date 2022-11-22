@@ -15,6 +15,7 @@
 	"devDependencies": {
 		"@playwright/test": "^1.25.0",
 		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-static": "^1.0.0-next.48",
 		"@sveltejs/kit": "^1.0.0-next.528",
 		"@types/topojson": "^3.2.3",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
