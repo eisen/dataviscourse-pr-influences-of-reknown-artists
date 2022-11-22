@@ -12,12 +12,12 @@ const config = {
   }),
 
   kit: {
+    paths: {
+      base: dev ? '' : '/dataviscourse-pr-influences-of-reknown-artists',
+    },
     adapter: adapter({
       pages: "docs",
-      assets: "docs",
-      paths: {
-        base: dev ? '' : '/dataviscourse-pr-influences-of-reknown-artists',
-      },
+      assets: "docs"
     })
   }
 }
