@@ -7,9 +7,10 @@
   export let width: number = 0
   export let height: number = 0
 
-  const colourRelation = '#6a87a3'
+  const colourRelation = '#800080'
   const colourNoRelation = 'transparent'
-  const colourHoverRelation = '#c74b0e'
+  const colourHoverRelation = '#F93B3B'
+  const colourHoverBackground = '#dddddd'
 
   let adjMatrix: Types.AdjacencyData[][]
   $: adjMatrix = []
@@ -42,7 +43,7 @@
   let text_width: number
   $: text_width = 0
 
-  const PADDING = { left: 50, right: 50, top: 50, bottom: 50 }
+  const PADDING = { left: 50, right: 50, top: 150, bottom: 5 }
   const CHART = { side: 200 }
 
   const ArrayDomain = (matrix_size: number) => {
@@ -127,93 +128,206 @@
     // console.log('final adjMatrix', adjMatrix)
   }
 
-  const OnMouseOverInfluencee = (target: any) => {
+  const OnMouseOverInfluencee = (target: any, name: string) => {
     // console.log('in')
     d3.select(target+'-cols-path-fill')
       .attr('fill', 'black')
-    // d3.select(target + '-group').raise()
-    // d3.select(target + '-text')
-    //   .transition()
-    //   .duration(DURATION)
-    //   .attr('opacity', 1)
-    // d3.select(target + '-rect')
-    //   .transition()
-    //   .duration(DURATION)
-    //   .attr('opacity', 1)
-    // d3.select(target + '-image')
-    //   .transition()
-    //   .duration(DURATION)
-    //   .attr('width', 100)
-    //   .attr('height', 100)
-    //   .attr('x', -50)
-    //   .attr('y', -50)
-    // d3.select(target + '-circle')
-    //   .transition()
-    //   .duration(DURATION)
-    //   .attr('r', 50)
+    
+    // All text to display 
+    let col_name = artists.filter( d => d.artist===name)[0].artist
+    
+    let all_influencers = influences.filter( d => d.influenced===col_name)
+    let string_influencers = ''
+    let i=0;
+    for(i=0; i<all_influencers.length-2; i++){
+      string_influencers = string_influencers + all_influencers[i].artist + ', '
+    }
+    string_influencers = string_influencers + all_influencers[i].artist + ' and ' + all_influencers[i++].artist
+
+    d3.select('#text-display')
+      .append('text')
+      .attr('x', PADDING.left)
+      .attr('y', offset_y - 2.5*tabPadding) 
+      .text(d => {
+        return col_name + ' was influenced by ' + string_influencers
+      })
+      .attr('opacity', 1)
+
+    
+    let x = 0
+    for(let relation of all_influencers){
+      for(let row in influencers){
+        for(let col in influencees){
+          if(adjMatrix[row][col].influencer===relation.artist && adjMatrix[row][col].influencee===col_name){
+            let rect_id = '#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee)
+            d3.select(rect_id)
+              .attr('fill', colourHoverRelation)
+
+            // x for the rect 
+            x = matrixScale(adjMatrix[row][col].y) + offset_x
+          }
+        }
+      }
+    }
+
+    // add a group to add more rectangles for the whle row and column 
+    let rect_hover = d3.select('#rect-hover')
+    rect_hover.append('rect')
+      .attr('id', 'hover-col')
+      .attr('x', x)
+      .attr('y', offset_y)
+      .attr('width', matrixScale.bandwidth())
+      .attr('height', chart_height)
+      .attr('fill', colourHoverBackground)
+      .attr('opacity', 1)
   }
 
   const OnMouseOutInfluencee = (target: any) => {
     // console.log('out')
     d3.select(target+'-cols-path-fill')
       .attr('fill', 'white')
-    // d3.select(target + '-text')
-    //   .transition()
-    //   .duration(DURATION)
-    //   .attr('opacity', 0)
-    // d3.select(target + '-rect')
-    //   .transition()
-    //   .duration(DURATION)
-    //   .attr('opacity', 0)
-    // d3.select(target + '-image')
-    //   .transition()
-    //   .duration(DURATION)
-    //   .attr('width', RADIUS * 2)
-    //   .attr('height', RADIUS * 2)
-    //   .attr('x', -RADIUS)
-    //   .attr('y', -RADIUS)
-    // d3.select(target + '-circle')
-    //   .transition()
-    //   .duration(DURATION)
-    //   .attr('r', RADIUS)
+    d3.select('#text-display')
+      .selectAll('text')
+      .attr('opacity', 0)
+    d3.select('#adjacency_matrix')
+      .selectAll('rect')
+      .attr('fill', colourRelation)
+    d3.select('#rect-hover')
+      .selectAll('rect')
+      .attr('opacity', 0)
   }
 
-  const OnMouseOverInfluencer = (target: any) => {
-    // console.log('in row', target)
+  const OnMouseOverInfluencer = (target: any, name: string) => {
+    // console.log('in row', target, name)
     d3.select(target+'-rows-path-fill')
       .attr('fill', 'black')
+
+    // All text to display - influencees
+    let row_name = artists.filter( d => d.artist===name)[0].artist
+    let all_influencees = influences.filter( d => d.artist===row_name)  //all influences
+    let string_influencees = ''
+    let i=0;
+    for(i=0; i<all_influencees.length-2; i++){
+      string_influencees = string_influencees + all_influencees[i].artist + ', '
+    }
+    string_influencees = string_influencees + all_influencees[i].artist + ' and ' + all_influencees[i++].artist
+
+    d3.select('#text-display')
+      .append('text')
+      .attr('x', PADDING.left)
+      .attr('y', offset_y - 2.5*tabPadding) 
+      .text(d => {
+        return row_name + ' influenced ' + string_influencees
+      })
+      .attr('opacity', 1)
+
+    let y = 0
+    for(let relation of all_influencees){
+      for(let row in influencers){
+        for(let col in influencees){
+          if(adjMatrix[row][col].influencer===row_name && adjMatrix[row][col].influencee===relation.influenced){
+            let rect_id = '#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee)
+            d3.select(rect_id)
+              .attr('fill', colourHoverRelation)
+
+            // y for the rect 
+            y = matrixScale(adjMatrix[row][col].x) + offset_y
+          }
+        }
+      }
+    }
+
+    // add a group to add more rectangles for the whle row and column 
+    let rect_hover = d3.select('#rect-hover')
+    rect_hover.append('rect')
+      .attr('id', 'hover-row')
+      .attr('x', offset_x)
+      .attr('y', y)
+      .attr('width', chart_width)
+      .attr('height', matrixScale.bandwidth())
+      .attr('fill', colourHoverBackground)
+      .attr('opacity', 1)
   }
 
   const OnMouseOutInfluencer = (target: any) => {
     // console.log('out')
     d3.select(target+'-rows-path-fill')
       .attr('fill', 'white')
+    d3.select('#text-display')
+      .selectAll('text')
+      .attr('opacity', 0)
+    d3.select('#adjacency_matrix')
+      .selectAll('rect')
+      .attr('fill', colourRelation)
+    d3.select('#rect-hover')
+      .selectAll('rect')
+      .attr('opacity', 0)
+
   }
 
-  const OnMouseOverRect = (target: any) => {
-    console.log('in row', target)
+  const OnMouseOverRect = (target: any, row: number, col: number) => {
+    // console.log('in row', target, x, y)
+    let x = matrixScale(adjMatrix[row][col].y) + offset_x
+    let y = matrixScale(adjMatrix[row][col].x) + offset_y
     d3.select(target)
       .attr('fill', colourHoverRelation)
 
     // add a group to add more rectangles for the whle row and column 
+    let rect_hover = d3.select('#rect-hover')
+    rect_hover.append('rect')
+      .attr('id', 'hover-col')
+      .attr('x', x)
+      .attr('y', offset_y)
+      .attr('width', matrixScale.bandwidth())
+      .attr('height', chart_height)
+      .attr('fill', colourHoverBackground)
+      .attr('opacity', 1)
+    rect_hover.append('rect')
+      .attr('id', 'hover-col')
+      .attr('x', offset_x)
+      .attr('y', y)
+      .attr('width', chart_width)
+      .attr('height', matrixScale.bandwidth())
+      .attr('fill', colourHoverBackground)
+      .attr('opacity', 1)
 
-    // d3.select('#adjacency_matrix') 
-    //   .selectAll('rect')
-    //   .attr('fill', 'black')
+    let influencerName = adjMatrix[row][col].influencer
+    let influenceeName = adjMatrix[row][col].influencee
+    d3.select('#text-display')
+      .append('text')
+      .attr('x', offset_x)
+      .attr('y', offset_y - 2.5*tabPadding) 
+      .text(d => {
+        return influencerName + ' influenced ' + influenceeName
+      })
+      .attr('opacity', 1)
+
   }
 
   const OnMouseOutRect = (target: any) => {
     // console.log('out')
     d3.select(target)
       .attr('fill', colourRelation)
+    d3.select('#rect-hover')
+      .selectAll('rect')
+      .attr('opacity', 0)
+    d3.select('#text-display')
+      .selectAll('text')
+      .attr('opacity', 0)
+    
   }
 
   export const Initialize = (artist_data: Types.ArtistData[], influence_data: Types.ArtistInfluence[]) => {
+
+    height = 700
+    width = 900
+
     influences = influence_data
     artists = artist_data!.sort((a, b) => (a.artist < b.artist ? -1 : 1))
 
     let shorter = width < height ? width : height
-    CHART.side = shorter - (PADDING.right + PADDING.left)
+    let chart_padding = width < height ? (PADDING.right + PADDING.left) : (PADDING.top + PADDING.bottom)
+    CHART.side = shorter - chart_padding
     offset_x = (width - CHART.side) / 2
     offset_y = (height - CHART.side) / 2
 
@@ -239,14 +353,16 @@
   style="width: {width}px; height: {height}px;"
 >
   <svg class="inline-block absolute top-0 left-0" viewBox="0, 0, {width}, {height}" preserveAspectRatio="xMidYMid meet">
+    <g id="text-display"/>
     <g id="adjacency_matrix">
+      <g id="rect-hover"/>
       {#each influencers as i, row}
         {#each influencees as j, col}
           {#if adjMatrix[row][col].z === 1}
             <!-- TODO: check the x and y, I changed them as the boxes were diff -->
             <rect
-              on:mouseover={ev => OnMouseOverRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee), i, j)} 
-              on:focus={ev => OnMouseOverRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee))} 
+              on:mouseover={ev => OnMouseOverRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee), row, col)} 
+              on:focus={ev => OnMouseOverRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee), row, col)} 
               on:mouseout={ev => OnMouseOutRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee))}
               on:blur={ev => OnMouseOutRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee))} 
               id={ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee)}
@@ -294,8 +410,8 @@
     <g id="influencer_tabs">
       {#each influencers as influencer, idx}
         <g id={ArtistName(influencer) + '-row'} 
-          on:mouseover={ev => OnMouseOverInfluencer('#' + ArtistName(influencer))} 
-          on:focus={ev => OnMouseOverInfluencer('#' + ArtistName(influencer))} 
+          on:mouseover={ev => OnMouseOverInfluencer('#' + ArtistName(influencer), influencer)} 
+          on:focus={ev => OnMouseOverInfluencer('#' + ArtistName(influencer), influencer)} 
           on:mouseout={ev => OnMouseOutInfluencer('#' + ArtistName(influencer))}
           on:blur={ev => OnMouseOutInfluencer('#' + ArtistName(influencer))} 
           transform="translate({offset_x - tabPadding} {matrixScale(idx) + offset_y + 1}) scale({tabScale}, {tabScale})">
@@ -310,8 +426,8 @@
     <g id="influencee_tabs">
       {#each influencees as influencee, idx}
         <g id={ArtistName(influencee) + '-col'} 
-          on:mouseover={ev => OnMouseOverInfluencee('#' + ArtistName(influencee))} 
-          on:focus={ev => OnMouseOverInfluencee('#' + ArtistName(influencee))} 
+          on:mouseover={ev => OnMouseOverInfluencee('#' + ArtistName(influencee), influencee)} 
+          on:focus={ev => OnMouseOverInfluencee('#' + ArtistName(influencee), influencee)} 
           on:mouseout={ev => OnMouseOutInfluencee('#' + ArtistName(influencee))}
           on:blur={ev => OnMouseOutInfluencee('#' + ArtistName(influencee))} 
           transform="translate({matrixScale(idx) + offset_x + 1}, {offset_y - tabPadding}) scale({tabScale}, {tabScale})">
@@ -333,8 +449,8 @@
     </g>
 
     <g id="axes-titles">
-      <text transform="translate({offset_x + (chart_width/2) - (text_width/2)}, {offset_y - tabPadding - 5})">Influencees</text>
-      <text transform="translate({offset_x - tabPadding - 5}, {offset_y + chart_height/2 + (text_width/2)}) rotate(-90)">Influencers</text>
+      <text transform="translate({offset_x + (chart_width/2) - (text_width/2)}, {offset_y - tabPadding - 5})" font-weight=700>Influencees</text> 
+      <text transform="translate({offset_x - tabPadding - 5}, {offset_y + chart_height/2 + (text_width/2)}) rotate(-90)" font-weight=700>Influencers</text>
     </g>
 
   </svg>
