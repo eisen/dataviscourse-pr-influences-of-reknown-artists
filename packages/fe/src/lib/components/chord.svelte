@@ -208,7 +208,7 @@
         let otherSide = false;
 
         // placeholder for data gaps
-        sortedArr[0].meds[5] = 1
+        sortedArr[0].meds[0] = 1
         sortedArr[1].meds[11] = 1
 
         console.log(centuryGroupedData)
