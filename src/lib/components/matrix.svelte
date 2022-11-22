@@ -302,9 +302,15 @@
       })
       .attr('opacity', 1)
 
+    let row_path_id = '#' + ArtistName(adjMatrix[row][col].influencer) + '-rows-path-fill'
+    let col_path_id = '#' + ArtistName(adjMatrix[row][col].influencee) + '-cols-path-fill'
+    d3.select(row_path_id)
+      .attr('fill', 'black')
+    d3.select(col_path_id)
+      .attr('fill', 'black')
   }
 
-  const OnMouseOutRect = (target: any) => {
+  const OnMouseOutRect = (target: any, row: number, col: number) => {
     // console.log('out')
     d3.select(target)
       .attr('fill', colourRelation)
@@ -314,6 +320,13 @@
     d3.select('#text-display')
       .selectAll('text')
       .attr('opacity', 0)
+
+    let row_path_id = '#' + ArtistName(adjMatrix[row][col].influencer) + '-rows-path-fill'
+    let col_path_id = '#' + ArtistName(adjMatrix[row][col].influencee) + '-cols-path-fill'
+    d3.select(row_path_id)
+      .attr('fill', 'white')
+    d3.select(col_path_id)
+      .attr('fill', 'white')
     
   }
 
@@ -363,8 +376,8 @@
             <rect
               on:mouseover={ev => OnMouseOverRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee), row, col)} 
               on:focus={ev => OnMouseOverRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee), row, col)} 
-              on:mouseout={ev => OnMouseOutRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee))}
-              on:blur={ev => OnMouseOutRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee))} 
+              on:mouseout={ev => OnMouseOutRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee), row, col)}
+              on:blur={ev => OnMouseOutRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee), row, col)} 
               id={ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee)}
               x={matrixScale(adjMatrix[row][col].y) + offset_x}
               y={matrixScale(adjMatrix[row][col].x) + offset_y}
