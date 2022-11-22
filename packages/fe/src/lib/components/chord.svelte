@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as d3 from 'd3'
   import { Types } from '$lib/utilities'
-  import { once } from 'svelte/internal'
+  import { attr, once } from 'svelte/internal'
 
   let grouping = 'Century'
   let attribute = 'Artistic Mediums'
@@ -12,7 +12,8 @@
   // Sizing dependent on window
   $: chordCHeight = height * 0.45 > 275 ? 275 : height * 0.45
   $: chartRad = width * 0.45 > 390 ? 390 : width * 0.45 // Max size for more possible screens
-  $: angleD = (chordCHeight / 270) * 90 - 5
+//   $: angleD = (chordCHeight / 270) * 90 - 5
+  $: angleD = (chordCHeight / 270) * 90 - 10
   $: rectWidth = (chartRad / 370) * 120
   $: attrFontSize = height <= width ? (chordCHeight / 270) * 15 : (chartRad / 370) * 15
   $: titleFontSize = height <= width ? (chordCHeight / 170) * 20 : (chartRad / 270) * 20
@@ -204,6 +205,7 @@
         let forwardAngle = (Math.PI - angleR) / 2
         let forwardAngleD = (Math.PI - angleR) / 2
         let runningRTally = 0.0
+        let otherSide = false;
 
         // placeholder for data gaps
         sortedArr[0].meds[5] = 1
@@ -233,7 +235,7 @@
                   colorIndex: colorIndex,
                   half: 0,
                   cent: sortedArr[i].cent,
-                  //   addLabel: ()
+                  addLabel: (padCheck) ? true : false
                 })
                 forwardAngle += padCheck && i > 0 ? padR + unitAngleR * currSegment : unitAngleR * currSegment
               } else {
@@ -251,7 +253,12 @@
                   colorIndex: colorIndex,
                   half: 1,
                   cent: sortedArr[i].cent,
+                  addLabel: (padCheck || !otherSide) ? true : false
                 })
+                if(!otherSide)
+                {
+                    otherSide = true
+                }
                 forwardAngleD += padCheck && i > 0 ? padR + unitAngleR * currSegment : unitAngleR * currSegment
               }
               if (padCheck) {
@@ -333,16 +340,43 @@
         .style('text-anchor', 'middle')
         .style('font-size', attrFontSize)
         .text(d => d.charAt(0).toUpperCase() + d.slice(1))
-      // groupChord
-      //     .append('text')
-      //     .data(chords=>chords)
-      //     .attr('x', 0)
-      //     .attr('y', (d, i) => i * ((chordCHeight * 2 + + (0.05 * chordCHeight)) / gtMediums.length) - (chordCHeight * 0.875))
-      //     .attr('fill', 'white')
-      //     .style('text-anchor', 'middle')
-      //     .style('font-size', attrFontSize)
-      //     .text(d => d.cent)
-      // Placeholders / title
+    
+    let srT = chartRad * 0.9125
+      groupChord
+          .append('text')
+          .data(chords=>chords)
+          .attr('x', function(d, i){
+            let retX = (d.half == 0) ? srT * Math.cos((((d.endAngle * 180) / Math.PI - 90) * Math.PI) / 180) : srT * Math.cos((((d.startAngle * 180) / Math.PI - 90) * Math.PI) / 180)
+            if(d.half == 0)
+            {
+                retX += 65 * (width / 930)
+            }
+            else{
+                retX -= 65 * (width / 930)
+            }
+            if(d.addLabel)
+            {
+                console.log('Angle: ', (d.startAngle * 180) / Math.PI - 90)
+            }
+            return retX
+          })
+          .attr('y', function(d, i)
+          {
+            let retY = (d.half == 0) ? srT * Math.sin((((d.endAngle * 180) / Math.PI - 90) * Math.PI) / 180) : srT * Math.sin((((d.startAngle * 180) / Math.PI - 90) * Math.PI) / 180)
+            if(Math.abs(((d.startAngle * 180) / Math.PI - 90) - ((d.endAngle * 180) / Math.PI - 90)) < 1.5 * (((2 * angleD)) / mediumsTotalEntries))
+            {
+                retY -= 15
+            }
+            return retY;
+          })
+          .attr('fill', 'black')
+        //   .attr('transform', function(d, i){
+        //     return 'rotate(' + (1) + ')'
+        // })
+          .style('text-anchor', 'middle')
+          .style('font-size', attrFontSize)
+          .text(d => (d.addLabel) ? d.cent : '')
+    //   Placeholders / title
       let onceGroupChord = d3.select(chordViz).append('g').attr('class', 'groups')
       onceGroupChord
         .append('text')
@@ -353,31 +387,31 @@
         .text('Distribution of Artists by ' + grouping + ' Over ' + attribute)
       onceGroupChord
         .append('rect')
-        .attr('x', 195)
-        .attr('y', (chordCHeight / 270) * 300)
-        .attr('width', rectWidth)
-        .attr('height', 30)
+        .attr('x', chartRad * 0.17 + 125)
+        .attr('y', (chordCHeight / 270) * 300 - 15)
+        .attr('width', rectWidth * 0.5)
+        .attr('height', 0.05 * chordCHeight)
         .attr('fill', 'white')
         .attr('stroke', 'black')
       onceGroupChord
         .append('rect')
-        .attr('x', -195 - rectWidth)
-        .attr('y', (chordCHeight / 270) * 300)
-        .attr('width', rectWidth)
-        .attr('height', 30)
+        .attr('x', -chartRad * 0.7 + 120)
+        .attr('y', (chordCHeight / 270) * 300 - 15)
+        .attr('width', rectWidth * 0.5)
+        .attr('height', 0.05 * chordCHeight)
         .attr('fill', 'white')
         .attr('stroke', 'black')
       onceGroupChord
         .append('text')
-        .attr('x', 195)
-        .attr('y', (chordCHeight / 270) * 300 - 10)
-        .style('font-size', 14)
+        .attr('x', chartRad * 0.17)
+        .attr('y', (chordCHeight / 270) * 300 -5 )
+        .style('font-size', (titleFontSize - 6) > 14 ? 14 : titleFontSize - 6)
         .text('Select an Attribute:')
       onceGroupChord
         .append('text')
-        .attr('x', -195 - rectWidth)
-        .attr('y', (chordCHeight / 270) * 300 - 10)
-        .style('font-size', 14)
+        .attr('x', -chartRad * 0.7)
+        .attr('y', (chordCHeight / 270) * 300 -5)
+        .style('font-size', (titleFontSize - 6) > 14 ? 14 : titleFontSize - 6)
         .text('Select a Grouping:')
     } else {
       console.error('Unable to load Artist Locations!')
@@ -391,6 +425,6 @@
   style="width: {width}px; height: {height}px;"
 >
   <svg class="inline-block absolute top-0 left-0" viewBox="0, 0, {width}, {height}" preserveAspectRatio="xMidYMid meet">
-    <g id="chordViz" bind:this={chordViz} transform="translate({chartRad * 1.12}, {chordCHeight * 1.1})" />
+    <g id="chordViz" bind:this={chordViz} transform="translate({width / 2}, {chordCHeight * 1.1})" />
   </svg>
 </div>
