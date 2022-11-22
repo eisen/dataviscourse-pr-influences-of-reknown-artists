@@ -1,9 +1,15 @@
 <script lang="ts">
   import { Types } from '$lib/utilities'
+  import type { ArtistData, ArtistInfluence } from '$lib/utilities/types'
   import * as d3 from 'd3'
+    import { index } from 'd3'
 
-  export let width: number
-  export let height: number
+  export let width: number = 0
+  export let height: number = 0
+
+  const colourRelation = '#6a87a3'
+  const colourNoRelation = 'transparent'
+  const colourHoverRelation = '#c74b0e'
 
   let adjMatrix: Types.AdjacencyData[][]
   $: adjMatrix = []
@@ -11,8 +17,30 @@
   let lines: any[]
   $: lines = []
   let matrixScale: any
-  let offset_x: number
-  let offset_y: number
+  let offset_x: number = 0
+  let offset_y: number = 0
+
+  let influences: ArtistInfluence[]
+  $: influences
+  let artists: ArtistData[]
+  $: artists
+
+  let influencers: string[]
+  $: influencers = []
+  let influencees: string[]
+  $: influencees = []
+
+  let tabScale: number
+  $: tabScale = 0
+  let tabPadding: number
+  $: tabPadding = 0
+
+  let chart_height: number
+  $: chart_height = 0
+  let chart_width: number
+  $: chart_width = 0
+  let text_width: number
+  $: text_width = 0
 
   const PADDING = { left: 50, right: 50, top: 50, bottom: 50 }
   const CHART = { side: 200 }
@@ -25,167 +53,183 @@
     return arr_domain // MAKE 500 a parameter
   }
 
-  function createAdjacencyMatrix(artist_data: Types.ArtistData[] | undefined) {
+  const ArtistName = (datum: string) => {
+    return datum.replace(/[\s\.]/g, '')
+  }
+
+  const CreateAdjacencyMatrix = () => {
     // console.log("artist_data: ", artist_data)
 
-    matrix_size = artist_data!.length
+    matrix_size = artists!.length
     // console.log('matrix_size', matrix_size)
 
     // Create rows for the matrix
-    for (let [index] of artist_data!.entries()) {
-      artist_data![index].index = index
+    for (let [index] of artists!.entries()) {
+      artists![index].index = index
     }
 
-    for (let indexRow = 0; indexRow < matrix_size!; indexRow++) {
-      // creating each row
-      // console.log(indexRow)
+    for (let index = 0; index < matrix_size!; index++) {
+      const artist = artists[index].artist
+      const list_influencer = influences.filter(d => d.artist === artist)
+
+      if (list_influencer.length > 0) {
+        // console.log('row', index, 'artist_influencer', artist, 'list_influencer', list_influencer)
+        influencers.push(artist)
+      }
+      const list_influencee = influences.filter(d => d.influenced === artist)
+
+      if (list_influencee.length > 0) {
+        // console.log('col', index, 'artist_influencee', artist, 'list_influencee', list_influencee)
+        influencees.push(artist)
+      }
+    }
+    // console.log("Influencers", influencers)
+    // console.log("Influencees", influencees)
+
+    for (let row = 0; row < influencers.length!; row++) {
       const adjacencyRow: Types.AdjacencyData[] = []
-      for (let indexCol = 0; indexCol < matrix_size!; indexCol++) {
+      const influencer_name = influencers[row]
+      for (let col = 0; col < influencees.length; col++) {
+        const influencee_name = influencees[col]
         const adjacency: Types.AdjacencyData = {
-          x: indexCol,
-          y: indexRow,
+          x: row,
+          y: col,
           z: 0,
+          influencer: influencer_name,
+          influencee: influencee_name,
         }
         adjacencyRow.push(adjacency)
       }
       adjMatrix.push(adjacencyRow)
     }
     // console.log('initial adjMatrix', adjMatrix)
-    return artist_data // MIGHT not be needed
+    return artists // MIGHT not be needed
   }
 
-  function populateAdjacencyMatrix(
-    influence_data: Types.ArtistInfluence[] | undefined,
-    artist_data_with_index: Types.ArtistData[] | undefined
-  ) {
-    // console.log('influence_data: ', influence_data)
+  const PopulateAdjacencyMatrix = (artist_data_with_index: Types.ArtistData[]) => {
+    // console.log('influence_data: ', influences)
     // console.log('artist_data_with_index', artist_data_with_index)
 
-    for (let [entry] of influence_data!.entries()) {
-      // take each row in infuence_data
-      // console.log('entry', entry)
-      var row: number = 0
-      var col = 0
-      for (let [idx] of artist_data_with_index!.entries()) {
-        // find index of the artist in artist_data
-        if (influence_data![entry].artist === artist_data_with_index![idx].artist) {
-          row! = artist_data_with_index![idx].index
-          // console.log('artist', influence_data![entry].artist, row)
-        }
-        if (influence_data![entry].influenced === artist_data_with_index![idx].artist) {
-          col! = artist_data_with_index![idx].index
-          // console.log('influenced', influence_data![entry].influenced, col)
+    const matrixRow = influencers.length //adjMatrix.length
+    const matrixCol = influencees.length //adjMatrix[0].length
+
+    for (let row = 0; row < matrixRow; row++) {
+      for (let col = 0; col < matrixCol; col++) {
+        let influencer_name = influencers[row] //adjMatrix[row][col].influencer
+        let influencee_name = influencees[col] //adjMatrix[row][col].influencee
+
+        const list_influencee = influences.filter(d => d.artist === influencer_name && d.influenced === influencee_name)
+        if (list_influencee.length > 0) {
+          adjMatrix[row][col].z = 1
         }
       }
-      adjMatrix[row][col].z = 1
     }
     // console.log('final adjMatrix', adjMatrix)
   }
 
-  function drawMatrix() {
-    let side = 500
-    // let num = matrix_size
-    // let arr_domain = new Array(matrix_size);
-    // for(let i=0; i<matrix_size; i++){
-    //     arr_domain[i] = i
-    // }
-    // let matrixScale = d3.scaleBand().range([0+PADDING.left, side-PADDING.right]).domain(arr_domain);
-    let colourRelation = '#6a87a3'
-    let colourNoRelation = 'transparent'
+  const OnMouseOverInfluencee = (target: any) => {
+    // console.log('in')
+    d3.select(target+'-cols-path-fill')
+      .attr('fill', 'black')
+    // d3.select(target + '-group').raise()
+    // d3.select(target + '-text')
+    //   .transition()
+    //   .duration(DURATION)
+    //   .attr('opacity', 1)
+    // d3.select(target + '-rect')
+    //   .transition()
+    //   .duration(DURATION)
+    //   .attr('opacity', 1)
+    // d3.select(target + '-image')
+    //   .transition()
+    //   .duration(DURATION)
+    //   .attr('width', 100)
+    //   .attr('height', 100)
+    //   .attr('x', -50)
+    //   .attr('y', -50)
+    // d3.select(target + '-circle')
+    //   .transition()
+    //   .duration(DURATION)
+    //   .attr('r', 50)
+  }
 
-    let svg = d3.select('#adjacency_matrix')
+  const OnMouseOutInfluencee = (target: any) => {
+    // console.log('out')
+    d3.select(target+'-cols-path-fill')
+      .attr('fill', 'white')
+    // d3.select(target + '-text')
+    //   .transition()
+    //   .duration(DURATION)
+    //   .attr('opacity', 0)
+    // d3.select(target + '-rect')
+    //   .transition()
+    //   .duration(DURATION)
+    //   .attr('opacity', 0)
+    // d3.select(target + '-image')
+    //   .transition()
+    //   .duration(DURATION)
+    //   .attr('width', RADIUS * 2)
+    //   .attr('height', RADIUS * 2)
+    //   .attr('x', -RADIUS)
+    //   .attr('y', -RADIUS)
+    // d3.select(target + '-circle')
+    //   .transition()
+    //   .duration(DURATION)
+    //   .attr('r', RADIUS)
+  }
 
-    let rows = svg
-      .selectAll('.row')
-      .data(adjMatrix)
-      .enter()
-      .append('g')
-      .attr('class', 'row')
-      .attr('transform', (d, i) => {
-        // console.log('d', d)
-        // console.log('i', i)
-        return 'translate(0,' + (matrixScale(i) + offset_y) + ')'
-      })
+  const OnMouseOverInfluencer = (target: any) => {
+    // console.log('in row', target)
+    d3.select(target+'-rows-path-fill')
+      .attr('fill', 'black')
+  }
 
-    let squares = rows
-      .selectAll('.cell')
-      .data(d => {
-        // console.log('d', d)
-        // return d.filter(item => {
-        //     // console.log('item', item)
-        //     return item.z > 0
-        // })
-        return d
-      })
-      .enter()
-      .append('rect')
-      .attr('class', 'cell')
-      .attr('x', d => {
-        // console.log('d', d)
-        return matrixScale(d.x) + offset_x
-      })
-      .attr('width', matrixScale.bandwidth())
-      .attr('height', matrixScale.bandwidth())
-      .style('opacity', 1)
-      .style('fill', d => {
-        return d.z > 0 ? colourRelation : colourNoRelation
-      })
-    // .on("mouseover", mouseover)
-    // .on("mouseout", mouseout);
+  const OnMouseOutInfluencer = (target: any) => {
+    // console.log('out')
+    d3.select(target+'-rows-path-fill')
+      .attr('fill', 'white')
+  }
 
-    // var linesVertical = rows.selectAll('line')
-    //     .data(d => {
-    //         return adjMatrix
-    //         // console.log(d)
-    //         // return d
-    //     })
-    //     .join('line')
-    //     .attr('x1',(d,i)=> matrixScale(i)) // DRAWING multiple right now, should minimise
-    //     .attr('y1',(d,i)=> PADDING.top)
-    //     .attr('x2',(d,i)=> matrixScale(i))
-    //     .attr('y2',(d,i)=> side - PADDING.right)
-    //     .style('stroke-width', 0.5)
-    //     .style('stroke', 'black')
+  const OnMouseOverRect = (target: any) => {
+    console.log('in row', target)
+    d3.select(target)
+      .attr('fill', colourHoverRelation)
 
-    // lines = arr_domain
-    // console.log(lines)
+    // add a group to add more rectangles for the whle row and column 
 
-    // var linesHorizontal = rows.selectAll('line')
-    //     .data(d => {
-    //         return adjMatrix
-    //         // console.log(d)
-    //         // return d
-    //     })
-    //     .join('line')
-    //     .attr('x1',(d,i)=> PADDING.left)
-    //     .attr('y1',(d,i)=> matrixScale(i))
-    //     .attr('x2',(d,i)=> side - PADDING.right)
-    //     .attr('y2',(d,i)=> matrixScale(i))
-    //     .style('stroke-width', 0.5)
-    //     .style('stroke', 'black')
+    // d3.select('#adjacency_matrix') 
+    //   .selectAll('rect')
+    //   .attr('fill', 'black')
+  }
+
+  const OnMouseOutRect = (target: any) => {
+    // console.log('out')
+    d3.select(target)
+      .attr('fill', colourRelation)
   }
 
   export const Initialize = (artist_data: Types.ArtistData[], influence_data: Types.ArtistInfluence[]) => {
-    const sorted_artist_data = artist_data!.sort((a, b) => (a['artist'] < b['artist'] ? -1 : 1))
+    influences = influence_data
+    artists = artist_data!.sort((a, b) => (a.artist < b.artist ? -1 : 1))
 
-    lines = ArrayDomain(sorted_artist_data.length)
     let shorter = width < height ? width : height
     CHART.side = shorter - (PADDING.right + PADDING.left)
     offset_x = (width - CHART.side) / 2
     offset_y = (height - CHART.side) / 2
-    // matrixScale = d3.scaleBand().range([0+PADDING.left, 500-PADDING.right]).domain(lines)
-    matrixScale = d3.scaleBand().range([0, CHART.side]).domain(lines)
-
-    //matrixScale()
-    // if (influence_data) {
-    // allInfluencees = groups(influence_data, (d: ArtistInfluence) => d.artist)
-    // allInfluencers = groups(influence_data, (d: ArtistInfluence) => d.influenced)
-    // }
 
     // sort artist data in ascending
-    const artist_data_with_index = createAdjacencyMatrix(sorted_artist_data)
-    populateAdjacencyMatrix(influence_data, artist_data_with_index)
-    drawMatrix()
+    const artist_data_with_index = CreateAdjacencyMatrix()
+    PopulateAdjacencyMatrix(artist_data_with_index)
+    lines = ArrayDomain(adjMatrix[0].length > adjMatrix.length ? adjMatrix[0].length : adjMatrix.length)
+    matrixScale = d3.scaleBand().range([0, CHART.side]).domain(lines)
+
+    tabScale = matrixScale.bandwidth() / 32
+    tabPadding = tabScale * 57 + 2
+
+    text_width = 100
+    chart_height = influencers.length * matrixScale.bandwidth()
+    chart_width = influencees.length * matrixScale.bandwidth()
+
   }
 </script>
 
@@ -195,15 +239,36 @@
   style="width: {width}px; height: {height}px;"
 >
   <svg class="inline-block absolute top-0 left-0" viewBox="0, 0, {width}, {height}" preserveAspectRatio="xMidYMid meet">
-    <g id="adjacency_matrix" />
+    <g id="adjacency_matrix">
+      {#each influencers as i, row}
+        {#each influencees as j, col}
+          {#if adjMatrix[row][col].z === 1}
+            <!-- TODO: check the x and y, I changed them as the boxes were diff -->
+            <rect
+              on:mouseover={ev => OnMouseOverRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee), i, j)} 
+              on:focus={ev => OnMouseOverRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee))} 
+              on:mouseout={ev => OnMouseOutRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee))}
+              on:blur={ev => OnMouseOutRect('#' + ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee))} 
+              id={ArtistName(adjMatrix[row][col].influencer + '_' + adjMatrix[row][col].influencee)}
+              x={matrixScale(adjMatrix[row][col].y) + offset_x}
+              y={matrixScale(adjMatrix[row][col].x) + offset_y}
+              width={matrixScale.bandwidth()}
+              height={matrixScale.bandwidth()}
+              fill={colourRelation}
+            />
+          {/if}
+        {/each}
+      {/each}
+    </g>
+
     <g id="linesVertical">
-      {#each lines as line}
+      {#each influencees as influencer, idx}
         <g>
           <line
-            x1={offset_x + matrixScale(line)}
-            y1={PADDING.top}
-            x2={offset_x + matrixScale(line)}
-            y2={height - PADDING.bottom}
+            x1={offset_x + (matrixScale ? matrixScale(idx) : 0)}
+            y1={offset_y}
+            x2={offset_x + (matrixScale ? matrixScale(idx) : 0)}
+            y2={offset_y + chart_height}
             stroke-width="0.5"
             stroke="#ccc"
           />
@@ -212,13 +277,13 @@
     </g>
 
     <g id="linesHorizontal">
-      {#each lines as line}
+      {#each influencers as influencer, idx}
         <g>
           <line
             x1={offset_x}
-            y1={offset_y + matrixScale(line)}
-            x2={offset_x + CHART.side}
-            y2={offset_y + matrixScale(line)}
+            y1={offset_y + (matrixScale ? matrixScale(idx) : 0)}
+            x2={offset_x + chart_width}
+            y2={offset_y + (matrixScale ? matrixScale(idx) : 0)}
             stroke-width="0.5"
             stroke="#ccc"
           />
@@ -226,15 +291,51 @@
       {/each}
     </g>
 
-    <g>
+    <g id="influencer_tabs">
+      {#each influencers as influencer, idx}
+        <g id={ArtistName(influencer) + '-row'} 
+          on:mouseover={ev => OnMouseOverInfluencer('#' + ArtistName(influencer))} 
+          on:focus={ev => OnMouseOverInfluencer('#' + ArtistName(influencer))} 
+          on:mouseout={ev => OnMouseOutInfluencer('#' + ArtistName(influencer))}
+          on:blur={ev => OnMouseOutInfluencer('#' + ArtistName(influencer))} 
+          transform="translate({offset_x - tabPadding} {matrixScale(idx) + offset_y + 1}) scale({tabScale}, {tabScale})">
+          <path id={ArtistName(influencer) + '-rows-path-fill'}  d="M39.66-.09H-.05s0,28.18,0,28.18H39.66s14.08-14.09,14.08-14.09L39.66-.09Z" fill="white"/>
+          <path d="M39.71-.09H0S0,28.09,0,28.09H39.71s14.08-14.09,14.08-14.09L39.71-.09Zm-1.31,23.84H10.68s0-.02,0-.02H5.01s0-19.7,0-19.7H15.64s0,.05,0,.05h22.75s9.83,9.84,9.83,9.84l-9.83,9.83Z">
+          </path>
+          
+        </g>
+      {/each}
+    </g>
+
+    <g id="influencee_tabs">
+      {#each influencees as influencee, idx}
+        <g id={ArtistName(influencee) + '-col'} 
+          on:mouseover={ev => OnMouseOverInfluencee('#' + ArtistName(influencee))} 
+          on:focus={ev => OnMouseOverInfluencee('#' + ArtistName(influencee))} 
+          on:mouseout={ev => OnMouseOutInfluencee('#' + ArtistName(influencee))}
+          on:blur={ev => OnMouseOutInfluencee('#' + ArtistName(influencee))} 
+          transform="translate({matrixScale(idx) + offset_x + 1}, {offset_y - tabPadding}) scale({tabScale}, {tabScale})">
+          <path id={ArtistName(influencee) + '-cols-path-fill'} d="M28.18,39.66V-.05S0-.04,0-.04V39.66s14.09,14.08,14.09,14.08l14.1-14.09Z" fill="white"/>
+          <path d="M28.18,39.71V0S0,0,0,0V39.71s14.09,14.08,14.09,14.08l14.1-14.09Zm-23.84-1.31V10.68s.02,0,.02,0V5.01s19.7,0,19.7,0V15.64s-.05,0-.05,0v22.75s-9.84,9.83-9.84,9.83l-9.83-9.83Z"/>
+        </g>
+      {/each}
+    </g>
+    
+    <g id="matrix_outline">
       <rect
         x={offset_x - 0.5}
         y={offset_y - 0.5}
-        width={CHART.side + 1}
-        height={CHART.side + 1}
+        width={chart_width}
+        height={chart_height}
         stroke="#000000"
         fill="none"
       />
     </g>
+
+    <g id="axes-titles">
+      <text transform="translate({offset_x + (chart_width/2) - (text_width/2)}, {offset_y - tabPadding - 5})">Influencees</text>
+      <text transform="translate({offset_x - tabPadding - 5}, {offset_y + chart_height/2 + (text_width/2)}) rotate(-90)">Influencers</text>
+    </g>
+
   </svg>
 </div>
