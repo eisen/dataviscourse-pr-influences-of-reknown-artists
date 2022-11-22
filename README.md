@@ -6,9 +6,7 @@ Team Members:
 * Nick Lord-Ender-Laing - u1368438@utah.edu
 * Eisen Montalvo - eisen.montalvo@utah.edu
 
-# Overview
-
-## Setup
+# Setup
 
 ```bash
 # run this in the datavispr root directory
@@ -16,7 +14,7 @@ Team Members:
 npm i
 ```
 
-### Usage
+# Usage
 
 ```bash
 #
@@ -26,12 +24,12 @@ npm run dev
 
 ```
 
-### Deployment 
+# Deployment 
 
-Visit 
+Visit the [Influences of Reknown Artists](https://eisen.github.io/dataviscourse-pr-influences-of-reknown-artists) page to see this project in action.
 
 
-### Process Book Status
+# Process Book Status
 
 - [ ] Overview & Motivation - So far, this is just the appropriate sections from our proposal pasted together
 - [x] Related Work - Fully up to date with our progress so far
