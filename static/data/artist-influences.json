@@ -1,0 +1,370 @@
+[
+    {
+        "artist": "Constantin Brancusi",
+        "influenced": "Alberto Giacometti"
+    },
+    {
+        "artist": "Paul Cézanne",
+        "influenced": "Amrita Sher-Gil"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "influenced": "Amrita Sher-Gil"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influenced": "Andy Warhol"
+    },
+    {
+        "artist": "Amrita Sher-Gil",
+        "influenced": "Arpita Singh"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "influenced": "Brett Whiteley"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Donatello"
+    },
+    {
+        "artist": "Utagawa Hiroshige",
+        "influenced": "Edgar Degas"
+    },
+    {
+        "artist": "Edvard Munch",
+        "influenced": "Egon Schiele"
+    },
+    {
+        "artist": "Titian",
+        "influenced": "El Greco"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "influenced": "Emil Nolde"
+    },
+    {
+        "artist": "Edvard Munch",
+        "influenced": "Erich Heckel"
+    },
+    {
+        "artist": "Rembrandt van Rijn",
+        "influenced": "Georges Seurat"
+    },
+    {
+        "artist": "Kitagawa Utamaro",
+        "influenced": "Henri de Toulouse-Lautrec"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "influenced": "Henri Émile Benoît Matisse"
+    },
+    {
+        "artist": "Paul Cézanne",
+        "influenced": "Henri Émile Benoît Matisse"
+    },
+    {
+        "artist": "Jean-Antoine Watteau",
+        "influenced": "J.M.W Turner"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influenced": "Jasper Johns"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influenced": "John Baldessari"
+    },
+    {
+        "artist": "Joan Miró",
+        "influenced": "John Olsen"
+    },
+    {
+        "artist": "Jean Dubuffet",
+        "influenced": "John Olsen"
+    },
+    {
+        "artist": "Antoni Tàpies",
+        "influenced": "John Olsen"
+    },
+    {
+        "artist": "Paul Cézanne",
+        "influenced": "Margaret Rose Preston"
+    },
+    {
+        "artist": "Paul Gauguin",
+        "influenced": "Margaret Rose Preston"
+    },
+    {
+        "artist": "Henri Émile Benoît Matisse",
+        "influenced": "Margaret Rose Preston"
+    },
+    {
+        "artist": "Kitagawa Utamaro",
+        "influenced": "Mary Stevenson Cassatt"
+    },
+    {
+        "artist": "Edvard Munch",
+        "influenced": "Max Beckmann"
+    },
+    {
+        "artist": "Donatello",
+        "influenced": "Michelangelo"
+    },
+    {
+        "artist": "Katsushika Hokusai",
+        "influenced": "Oscar-Claude Monet"
+    },
+    {
+        "artist": "Paul Cézanne",
+        "influenced": "Pablo Picasso"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influenced": "Paul Klee"
+    },
+    {
+        "artist": "Amrita Sher-Gil",
+        "influenced": "S. H. Raza"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influenced": "Salvador Dali"
+    },
+    {
+        "artist": "Raphael",
+        "influenced": "Salvador Dali"
+    },
+    {
+        "artist": "Johannes Vermeer",
+        "influenced": "Salvador Dali"
+    },
+    {
+        "artist": "Diego Velázquez",
+        "influenced": "Salvador Dali"
+    },
+    {
+        "artist": "Diego Rivera",
+        "influenced": "Satish Gujral"
+    },
+    {
+        "artist": "David Alfaro Siqueiros",
+        "influenced": "Satish Gujral"
+    },
+    {
+        "artist": "Francis Bacon",
+        "influenced": "Tyeb Mehta"
+    },
+    {
+        "artist": "Pierre-Auguste Renoir",
+        "influenced": "Vincent Willem van Gogh"
+    },
+    {
+        "artist": "Édouard Manet",
+        "influenced": "Vincent Willem van Gogh"
+    },
+    {
+        "artist": "Georges Seurat",
+        "influenced": "Vincent Willem van Gogh"
+    },
+    {
+        "artist": "Max Jacob",
+        "influenced": "Frida Kahlo"
+    },
+    {
+        "artist": "Marcel Duchamp",
+        "influenced": "Frida Kahlo"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influenced": "Frida Kahlo"
+    },
+    {
+        "artist": "Max Ernst",
+        "influenced": "Frida Kahlo"
+    },
+    {
+        "artist": "Giorgio de Chirico",
+        "influenced": "Frida Kahlo"
+    },
+    {
+        "artist": "Amedeo Modigliani",
+        "influenced": "Frida Kahlo"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influenced": "Francis Bacon"
+    },
+    {
+        "artist": "Diego Velázquez",
+        "influenced": "Francis Bacon"
+    },
+    {
+        "artist": "Vincent Willem van Gogh",
+        "influenced": "Francis Bacon"
+    },
+    {
+        "artist": "Francis Bacon",
+        "influenced": "Julian Schnabel"
+    },
+    {
+        "artist": "Francis Bacon",
+        "influenced": "Damien Hirst"
+    },
+    {
+        "artist": "Leonardo da Vinci",
+        "influenced": "Andy Warhol"
+    },
+    {
+        "artist": "Gustav Klimt",
+        "influenced": "Egon Schiele"
+    },
+    {
+        "artist": "Gustav Klimt",
+        "influenced": "Oskar Kokoschka"
+    },
+    {
+        "artist": "Christian Krohg",
+        "influenced": "Edvard Munch"
+    },
+    {
+        "artist": "Xia Chang",
+        "influenced": "Wen Zhengming"
+    },
+    {
+        "artist": "Shen Zhou",
+        "influenced": "Wen Zhengming"
+    },
+    {
+        "artist": "Wang Shimin",
+        "influenced": "Wang Hui"
+    },
+    {
+        "artist": "Mi Fu",
+        "influenced": "Jeong Seon"
+    },
+    {
+        "artist": "Peter Pelham",
+        "influenced": "John Singleton Copley"
+    },
+    {
+        "artist": "John Smibert",
+        "influenced": "John Singleton Copley"
+    },
+    {
+        "artist": "Oscar-Claude Monet",
+        "influenced": "Pieter Cornelis Mondriaan"
+    },
+    {
+        "artist": "Pablo Picasso",
+        "influenced": "Pieter Cornelis Mondriaan"
+    },
+    {
+        "artist": "Georges Braque",
+        "influenced": "Pieter Cornelis Mondriaan"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "influenced": "Isamu Noguchi"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "influenced": "Henry Moore"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "influenced": "Barbara Hepworth"
+    },
+    {
+        "artist": "Constantin Brancusi",
+        "influenced": "Jacob Epstein"
+    },
+    {
+        "artist": "Max Ernst",
+        "influenced": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Giorgio de Chirico",
+        "influenced": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Salvador Dali",
+        "influenced": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Umberto Boccioni",
+        "influenced": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Carlo Carrà",
+        "influenced": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "Pierre-Auguste Renoir",
+        "influenced": "René François Ghislain Magritte"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influenced": "Andy Warhol"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influenced": "Richard Wentworth"
+    },
+    {
+        "artist": "René François Ghislain Magritte",
+        "influenced": "Robert Rauschenberg"
+    },
+    {
+        "artist": "Domenico Ghirlandaio",
+        "influenced": "Michelangelo"
+    },
+    {
+        "artist": "Michelangelo",
+        "influenced": "Daniele da Volterra"
+    },
+    {
+        "artist": "Giotto",
+        "influenced": "Michelangelo"
+    },
+    {
+        "artist": "Masaccio",
+        "influenced": "Michelangelo"
+    },
+    {
+        "artist": "Michelangelo",
+        "influenced": "Peter Paul Rubens"
+    },
+    {
+        "artist": "Gherardo Starnina",
+        "influenced": "Lorenzo Ghiberti"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Donatello"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Masolino"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Michelozzo"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Paolo Uccello"
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "influenced": "Antonio del Pollaiuolo"
+    },
+    {
+        "artist": "Franz von Stuck",
+        "influenced": "Wassily Kandinsky"
+    },
+    {
+        "artist": "Oscar-Claude Monet",
+        "influenced": "Wassily Kandinsky"
+    }
+]

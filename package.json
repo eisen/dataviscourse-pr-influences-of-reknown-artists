@@ -1,29 +1,46 @@
 {
-  "name": "@datavis/root",
-  "version": "0.0.0",
-  "main": "index.js",
-  "author": "eisen.montalvo@v@utah.edu",
-  "license": "MIT",
-  "private": true,
-  "scripts": {
-    "clean": "rm -rf package-lock.json node_modules",
-    "clean:lerna": "npm lerna clean",
-    "clean:root": "rm -rf node_modules package-lock.json",
-    "clean:app": "rm -rf packages/app/node_modules",
-    "clean:full": "npm clean:lerna && npm clean:root && npm clean:app",
-    "test": "lerna exec --no-bail --concurrency 1 -- npm run test",
-    "echo": "echo @datavis/root",
-    "eco": "pm2 start configs/ecosystem.config.js && pm2 monit",
-    "status": "pm2 status",
-    "kill": "pm2 kill",
-    "logs": "pm2 logs",
-    "bootstrap": "npm install && npm lerna bootstrap",
-    "reset": "npm clean:full && npm bootstrap",
-    "bs": "npm bootstrap"
-  },
-  "devDependencies": {
-    "jest": "26.6.0",
-    "lerna": "^5.5.1",
-    "rollup": "^2.52.7"
-  }
+	"name": "fe",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"test": "playwright test",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write ."
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.25.0",
+		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-static": "^1.0.0-next.48",
+		"@sveltejs/kit": "^1.0.0-next.528",
+		"@types/topojson": "^3.2.3",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"autoprefixer": "^10.4.8",
+		"eslint": "^8.16.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-svelte3": "^4.0.0",
+		"postcss": "^8.4.16",
+		"prettier": "^2.6.2",
+		"prettier-plugin-svelte": "^2.7.0",
+		"svelte": "^3.44.0",
+		"svelte-check": "^2.7.1",
+		"svelte-loading-spinners": "^0.3.4",
+		"svelte-preprocess": "^4.10.7",
+		"tailwindcss": "^3.1.8",
+		"tslib": "^2.3.1",
+		"typescript": "^4.7.4",
+		"vite": "^3.1.0"
+	},
+	"type": "module",
+	"dependencies": {
+		"@types/d3": "^7.4.0",
+		"d3": "^7.6.1",
+		"d3-geo-projection": "^4.0.0",
+		"topojson": "^3.0.2"
+	}
 }
