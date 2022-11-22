@@ -1,10 +1,10 @@
 <script lang="ts">
-  import * as d3 from 'd3'
-  import { Chord, Map, Matrix, Network } from '$lib/components'
-  import { Config, Types } from '$lib/utilities'
-  import { fade } from 'svelte/transition'
-  import { Jellyfish } from 'svelte-loading-spinners'
-  import { onMount } from 'svelte'
+  import * as d3 from "d3"
+  import { Chord, Map, Matrix, Network } from "$lib/components"
+  import { Config, Types } from "$lib/utilities"
+  import { fade } from "svelte/transition"
+  import { Jellyfish } from "svelte-loading-spinners"
+  import { onMount } from "svelte"
 
   const DURATION = 1000
 
@@ -39,9 +39,15 @@
 
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
-    const locs: Types.ArtistLocation[] | undefined = await d3.json(`${Config.server_url}/data/artist-locations.json`)
-    const medLocs: Types.ArtistMedium[] | undefined = await d3.json(`${Config.server_url}/data/artist-mediums.json`)
-    const artist_data: Types.ArtistData[] | undefined = await d3.json(`${Config.server_url}/data/artist-data.json`)
+    const locs: Types.ArtistLocation[] | undefined = await d3.json(
+      `${Config.server_url}/data/artist-locations.json`
+    )
+    const medLocs: Types.ArtistMedium[] | undefined = await d3.json(
+      `${Config.server_url}/data/artist-mediums.json`
+    )
+    const artist_data: Types.ArtistData[] | undefined = await d3.json(
+      `${Config.server_url}/data/artist-data.json`
+    )
     const influence_data: Types.ArtistInfluence[] | undefined = await d3.json(
       `${Config.server_url}/data/artist-influences.json`
     )
@@ -57,8 +63,10 @@
 
 <svelte:window bind:innerWidth={width} bind:innerHeight={height} />
 
-<header class="flex absolute top-4 left-4 w-full font-bold text-4xl z-20">Influences of Reknown Artists</header>
-<div class="grid-cols-2" style={data_loaded ? 'opacity: 1;' : 'opacity:0;'}>
+<header class="flex absolute top-4 left-4 w-full font-bold text-4xl z-20">
+  Influences of Reknown Artists
+</header>
+<div class="grid-cols-2" style={data_loaded ? "opacity: 1;" : "opacity:0;"}>
   <Network bind:this={network} width={network_width} height={network_height} />
   <Chord bind:this={chord} width={chord_width} height={chord_height} />
   <Matrix bind:this={matrix} width={matrix_width} height={matrix_height} />
@@ -72,5 +80,7 @@
   </div>
 {/if}
 <footer class="flex justify-center absolute w-full">
-  <span>Team members: Nishita Kharche, Nick Lord-Ender-Laing, Eisen Montalvo</span>
+  <span
+    >Team members: Nishita Kharche, Nick Lord-Ender-Laing, Eisen Montalvo</span
+  >
 </footer>
