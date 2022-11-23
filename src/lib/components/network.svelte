@@ -1,19 +1,23 @@
 <script lang="ts">
   import * as d3 from "d3"
   import { Config, Types } from "$lib/utilities"
-  import type { ArtistData } from "$lib/utilities/types"
 
   const DURATION = 500
   const PADDING = 20
   const OFFSET_X = 40
   const OFFSET_Y = 0
-  const FORCE_FACTOR = 2.8
 
-  let sim: d3.Simulation<
-    d3.SimulationNodeDatum,
-    d3.SimulationLinkDatum<d3.SimulationNodeDatum>
-  >
-  let sim_running = false
+  let simWorker: Worker | undefined = new Worker(
+    new URL("workers/sim.worker.ts?worker", import.meta.url)
+  )
+
+  const OnWorkerMessage = (event: any) => {
+    console.log(event.data)
+    artists = event.data.nodes
+    links = event.data.links
+  }
+
+  simWorker.onmessage = OnWorkerMessage
 
   let artists: Types.ArtistData[]
   $: artists = []
@@ -26,48 +30,13 @@
   export let width: number = 0
   export let height: number = 0
 
-  $: RADIUS = height / 40
+  $: RADIUS = height / 35
 
   const Translate = (x: number | undefined, y: number | undefined) =>
     `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
 
-  const ArtistName = (datum: ArtistData) => {
+  const ArtistName = (datum: Types.ArtistData) => {
     return datum.artist.replace(/[\s\.]/g, "")
-  }
-
-  const RunSim = (nodes: any, edges: any) => {
-    sim = d3
-      .forceSimulation(nodes)
-      .force(
-        "link",
-        d3
-          .forceLink()
-          .id((d) => (d as ArtistData).artist)
-          .distance(RADIUS * FORCE_FACTOR)
-          .strength(1)
-      )
-      .force("charge", d3.forceManyBody().strength(-5))
-      .force("y", d3.forceY(height / 2))
-      .force(
-        "collide",
-        d3.forceCollide().radius((d) => RADIUS * FORCE_FACTOR)
-      )
-
-    sim.force("link")!.links(edges)
-
-    sim.on("tick", () => {
-      artists = nodes
-      links = edges
-
-      if (Math.abs(sim.alpha() - sim.alphaTarget()) < 0.1) {
-        sim.stop()
-        sim_running = false
-      }
-    })
-
-    sim.on("end", () => {
-      sim_running = false
-    })
   }
 
   const OnMouseOver = (target: any) => {
@@ -155,7 +124,13 @@
         return link
       }
     )
-    RunSim(allArtists, allLinks)
+
+    simWorker!.postMessage({
+      nodes: allArtists,
+      links: allLinks,
+      radius: RADIUS,
+      height: height,
+    })
   }
 </script>
 
