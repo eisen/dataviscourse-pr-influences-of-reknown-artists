@@ -12,18 +12,8 @@
   )
 
   const OnWorkerMessage = (event: any) => {
-    if (draw_links === false) {
-      draw_links = true
-    }
     artists = event.data.nodes
     links = event.data.links
-    if (event.data.type === "tick") {
-      setTimeout(() => {
-        simWorker!.postMessage({
-          type: "tick",
-        })
-      }, 50)
-    }
   }
 
   simWorker.onmessage = OnWorkerMessage
@@ -32,8 +22,6 @@
   $: artists = []
   let links: Types.ArtistLink[]
   $: links = []
-
-  $: draw_links = false
 
   let allArtists: Types.ArtistData[]
   let allLinks: Types.ArtistLink[]
@@ -51,6 +39,7 @@
   }
 
   const OnMouseOver = (target: any) => {
+    console.log(target)
     d3.select(target + "-group").raise()
     d3.select(target + "-text")
       .transition()
@@ -136,11 +125,9 @@
       }
     )
 
-    artists = allArtists
-    links = allLinks
+    artists = allArtists // Render them before starting the sim to calculate text bounding boxes
 
     simWorker!.postMessage({
-      type: "init",
       nodes: allArtists,
       links: allLinks,
       radius: RADIUS,
@@ -185,21 +172,19 @@
     </defs>
 
     <g id="links">
-      {#if draw_links}
-        {#each links as link}
-          <g>
-            <line
-              marker-end="url(#arrowhead)"
-              marker-start="url(#arrowtail)"
-              x1={link.source.x + width / 2 - OFFSET_X}
-              y1={link.source.y - OFFSET_Y}
-              x2={link.target.x + width / 2 - OFFSET_X}
-              y2={link.target.y - OFFSET_Y}
-              stroke="black"
-            />
-          </g>
-        {/each}
-      {/if}
+      {#each links as link}
+        <g>
+          <line
+            marker-end="url(#arrowhead)"
+            marker-start="url(#arrowtail)"
+            x1={link.source.x + width / 2 - OFFSET_X}
+            y1={link.source.y - OFFSET_Y}
+            x2={link.target.x + width / 2 - OFFSET_X}
+            y2={link.target.y - OFFSET_Y}
+            stroke="black"
+          />
+        </g>
+      {/each}
     </g>
     <g id="nodes">
       {#each artists as artist}
@@ -239,14 +224,16 @@
               artist.artist
             ) + PADDING}
             y={RADIUS +
-              60 -
+              65 -
               (TextHeight("#" + ArtistName(artist) + "-text", artist.artist) +
                 PADDING) /
                 2}
             height={TextHeight(
               "#" + ArtistName(artist) + "-text",
               artist.artist
-            ) + PADDING}
+            ) +
+              PADDING -
+              10}
             fill="white"
             stroke="black"
             rx="15"
