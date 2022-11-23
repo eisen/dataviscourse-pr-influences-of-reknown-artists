@@ -12,9 +12,18 @@
   )
 
   const OnWorkerMessage = (event: any) => {
-    console.log(event.data)
+    if (draw_links === false) {
+      draw_links = true
+    }
     artists = event.data.nodes
     links = event.data.links
+    if (event.data.type === "tick") {
+      setTimeout(() => {
+        simWorker!.postMessage({
+          type: "tick",
+        })
+      }, 50)
+    }
   }
 
   simWorker.onmessage = OnWorkerMessage
@@ -24,13 +33,15 @@
   let links: Types.ArtistLink[]
   $: links = []
 
+  $: draw_links = false
+
   let allArtists: Types.ArtistData[]
   let allLinks: Types.ArtistLink[]
 
   export let width: number = 0
   export let height: number = 0
 
-  $: RADIUS = height / 35
+  $: RADIUS = height / 37
 
   const Translate = (x: number | undefined, y: number | undefined) =>
     `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
@@ -125,7 +136,11 @@
       }
     )
 
+    artists = allArtists
+    links = allLinks
+
     simWorker!.postMessage({
+      type: "init",
       nodes: allArtists,
       links: allLinks,
       radius: RADIUS,
@@ -170,19 +185,21 @@
     </defs>
 
     <g id="links">
-      {#each links as link}
-        <g>
-          <line
-            marker-end="url(#arrowhead)"
-            marker-start="url(#arrowtail)"
-            x1={link.source.x + width / 2 - OFFSET_X}
-            y1={link.source.y - OFFSET_Y}
-            x2={link.target.x + width / 2 - OFFSET_X}
-            y2={link.target.y - OFFSET_Y}
-            stroke="black"
-          />
-        </g>
-      {/each}
+      {#if draw_links}
+        {#each links as link}
+          <g>
+            <line
+              marker-end="url(#arrowhead)"
+              marker-start="url(#arrowtail)"
+              x1={link.source.x + width / 2 - OFFSET_X}
+              y1={link.source.y - OFFSET_Y}
+              x2={link.target.x + width / 2 - OFFSET_X}
+              y2={link.target.y - OFFSET_Y}
+              stroke="black"
+            />
+          </g>
+        {/each}
+      {/if}
     </g>
     <g id="nodes">
       {#each artists as artist}
