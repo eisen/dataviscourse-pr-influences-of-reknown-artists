@@ -7,6 +7,7 @@
   const PADDING = 20
   const OFFSET_X = 40
   const OFFSET_Y = 0
+  const FORCE_FACTOR = 2.8
 
   let sim: d3.Simulation<
     d3.SimulationNodeDatum,
@@ -42,14 +43,14 @@
         d3
           .forceLink()
           .id((d) => (d as ArtistData).artist)
-          .distance(RADIUS * 2)
+          .distance(RADIUS * FORCE_FACTOR)
           .strength(1)
       )
-      .force("charge", d3.forceManyBody().strength(15))
+      .force("charge", d3.forceManyBody().strength(-5))
       .force("y", d3.forceY(height / 2))
       .force(
         "collide",
-        d3.forceCollide().radius((d) => RADIUS * 2)
+        d3.forceCollide().radius((d) => RADIUS * FORCE_FACTOR)
       )
 
     sim.force("link")!.links(edges)
@@ -139,7 +140,8 @@
     influence_data: Types.ArtistInfluence[]
   ) => {
     for (let artist of artist_data) {
-      artist.x = width / 2
+      artist.x = 0
+      artist.y = height / 2
     }
     allArtists = artist_data
 
