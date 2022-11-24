@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as d3 from "d3"
+  import { createEventDispatcher } from "svelte"
   import { Config, Helpers, Types } from "$lib/utilities"
 
   const DURATION = 500
@@ -22,12 +23,17 @@
   $: artists = []
   let links: Types.ArtistLink[]
   $: links = []
+  let influences: Types.ArtistInfluence[]
+  $: influences = []
 
   let allArtists: Types.ArtistData[]
   let allLinks: Types.ArtistLink[]
+  let allInfluences: Types.ArtistInfluence[]
 
   export let width: number = 0
   export let height: number = 0
+
+  const dispatch = createEventDispatcher()
 
   $: RADIUS = height / 37
 
@@ -35,7 +41,6 @@
     `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
 
   const OnMouseOver = (target: any) => {
-    console.log(target)
     d3.select(target + "-group").raise()
     d3.select(target + "-text")
       .transition()
@@ -80,7 +85,11 @@
       .attr("r", RADIUS)
   }
 
-  const OnMouseClick = (target: any) => {}
+  const OnMouseClick = (target: any) => {
+    dispatch("display_influence", {
+      artist: target,
+    })
+  }
 
   export const Initialize = (
     artist_data: Types.ArtistData[],
@@ -91,7 +100,7 @@
       artist.y = height / 2
     }
     allArtists = artist_data
-
+    allInfluences = influence_data
     allLinks = d3.map(
       influence_data,
       (d: Types.ArtistInfluence): Types.ArtistLink => {
@@ -178,11 +187,12 @@
             width={RADIUS * 2}
             x={-RADIUS}
             y={-RADIUS}
+            style="outline: none;"
             on:focus={(ev) => OnMouseOver("#" + Helpers.ArtistName(artist))}
             on:mouseover={(ev) => OnMouseOver("#" + Helpers.ArtistName(artist))}
             on:blur={(ev) => OnMouseOut("#" + Helpers.ArtistName(artist))}
             on:mouseout={(ev) => OnMouseOut("#" + Helpers.ArtistName(artist))}
-            on:click={(ev) => OnMouseClick("#" + Helpers.ArtistName(artist))}
+            on:click={(ev) => OnMouseClick(artist.artist)}
           />
           <circle
             id={Helpers.ArtistName(artist) + "-circle"}

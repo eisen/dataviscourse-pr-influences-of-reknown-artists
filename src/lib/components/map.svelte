@@ -79,25 +79,25 @@
     }
   }
 
-  export const DisplayInfluences = (location: Types.ArtistLocation) => {
+  export const DisplayInfluences = (artist: string) => {
     showInfluences = true
     influences = []
     influencers = []
     influencees = []
-    selected = allLocations.filter((d) => d[0] === location.artist)[0]
+    selected = allLocations.filter((d) => d[0] === artist)[0]
     influences.push(selected)
     const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
-      (d) => d[0] === location.artist
+      (d) => d[0] === artist
     )
     const artistInfluencers: Types.InfluenceGroup[] = allInfluencers.filter(
-      (d) => d[0] === location.artist
+      (d) => d[0] === artist
     )
 
     if (artistInfluencers.length > 0) {
       console.log("Influencers")
       for (let influence of artistInfluencers[0][1]) {
         const data = allLocations.find(
-          (loc) => loc[1][0].artist === influence.artist
+          (loc) => loc[1][0].artist === influence.influenced
         )
         if (data) {
           influences.push(data)
@@ -121,24 +121,23 @@
           influencees.push(data)
           console.log(influence)
           console.log(
-            allLocations.find(
-              (loc) => loc[1][0].artist === influence.influenced
-            )
+            allLocations.find((loc) => loc[1][0].artist === influence.artist)
           )
         }
       }
     }
+    console.log(influences)
     for (const location of influences) {
       location.x = Helpers.getXfromLatLon(projection, location[1])
       location.y = Helpers.getYfromLatLon(projection, location[1])
     }
 
-    simWorker!.postMessage({
-      nodes: influences,
-      radius: RADIUS,
-      projection: projection,
-      height: height,
-    })
+    // simWorker!.postMessage({
+    //   nodes: influences,
+    //   radius: RADIUS,
+    //   projection: projection,
+    //   height: height,
+    // })
   }
 
   const getX = (location: Types.LocationGroup) => {

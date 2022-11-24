@@ -85,6 +85,11 @@
     ScrollCharts(ev.target, -width * 2)
   }
 
+  const DisplayInfluence = (ev: any) => {
+    const artist = ev.detail.artist
+    map.DisplayInfluences(artist)
+  }
+
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
     const locs: Types.ArtistLocation[] | undefined = await d3.json(
@@ -175,6 +180,7 @@
         bind:this={network}
         width={network_width}
         height={network_height}
+        on:display_influence={DisplayInfluence}
       />
       <Matrix bind:this={matrix} width={matrix_width} height={matrix_height} />
       <Map bind:this={map} width={map_width} height={map_height} />
