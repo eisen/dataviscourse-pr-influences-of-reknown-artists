@@ -1016,7 +1016,7 @@
         "lon": 2.96163
     },
     {
-        "artist": "SATISH GUJRAL",
+        "artist": "Satish Gujral",
         "year": "1925",
         "city": "Jhelum",
         "country": "Pakistan",
@@ -1024,7 +1024,7 @@
         "lon": 73.73102
     },
     {
-        "artist": "SATISH GUJRAL",
+        "artist": "Satish Gujral",
         "year": "2020",
         "city": "New Delhi",
         "country": "India",
@@ -1553,6 +1553,70 @@
     },
     {
         "artist": "Lorenzo Ghiberti",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Paul Cézanne",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Paul Cézanne",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Amedeo Modigliani",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Amedeo Modigliani",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Pierre-Auguste Renoir",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Pierre-Auguste Renoir",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Johannes Vermeer",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Johannes Vermeer",
         "year": "1000",
         "city": "",
         "country": "",
