@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as d3 from "d3"
-  import { feature } from "topojson"
+  import { feature, neighbors } from "topojson"
   import { geoWinkel3 } from "d3-geo-projection"
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
@@ -25,6 +25,11 @@
 
   let world_data: any
   $: world_data = null
+  let neighbors_data: any
+  $: neighbors_data = null
+
+  let country_color: any
+  $: country_color = []
 
   let allArtists: Types.ArtistData[]
 
@@ -185,6 +190,13 @@
     path = d3.geoPath().projection(projection)
 
     world_data = feature(features, features.objects.countries)
+    neighbors_data = neighbors(features.objects.countries.geometries)
+
+    country_color = new Array(world_data.features.length)
+    for (let i = 0; i < country_color.length; ++i) {
+      country_color[i] =
+        (d3.max(neighbors_data[i], (j) => country_color[j]) + 1) | 0
+    }
 
     if (influence_data) {
       allInfluencees = d3.groups(
@@ -251,6 +263,9 @@
     </style>
     {#if path}
       <g id="map">
+        <g id="fill">
+          <path d={path(graticuleOutline)} fill="#def3f6" stroke="none" />
+        </g>
         <g id="graticules">
           {#each graticuleUle as line}
             <path d={path(line)} fill="none" stroke="lightgray" />
@@ -258,12 +273,12 @@
         </g>
         <g id="countries">
           {#if world_data}
-            {#each world_data.features as feature}
+            {#each world_data.features as feature, idx}
               <path
                 id={feature.id}
                 d={path(feature)}
-                stroke="lightgray"
-                fill="white"
+                stroke="none"
+                fill={d3.schemePastel2[country_color[idx]]}
               />
             {/each}
           {/if}
@@ -344,7 +359,7 @@
           <path
             d={path(graticuleOutline)}
             fill="none"
-            stroke="black"
+            stroke="lightgray"
             stroke-width="2"
           />
         </g>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as d3 from "d3"
-  import { Types } from "$lib/utilities"
+  import { Helpers, Types } from "$lib/utilities"
   import { attr, once } from "svelte/internal"
 
   let grouping = "Century"
@@ -28,21 +28,6 @@
 
   let allMediums: [string, Types.ArtistMedium[]][]
   $: allMediums = []
-
-  let chordColors = [
-    "rgb(211, 157, 69)",
-    "#ff69b4",
-    "#ffe4c4",
-    "rgb(20, 57, 59)",
-    "rgb(163, 0, 48)",
-    "rgb(222, 182, 254)",
-    "#1e90ff",
-    "#00ff00",
-    "#7624C2",
-    "rgb(195, 72, 54)",
-    "rgb(52, 25, 58)",
-    "rgb(252, 179, 75)",
-  ]
 
   let gtMediums = [
     "sculptor",
@@ -145,7 +130,7 @@
   let chordColorScale = d3
     .scaleOrdinal()
     .domain(d3.range(12))
-    .range(chordColors)
+    .range(Helpers.ColorScheme)
 
   function ribbonBasket(d) {
     var buffer,

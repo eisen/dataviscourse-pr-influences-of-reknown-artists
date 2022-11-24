@@ -1,6 +1,21 @@
 import * as d3 from "d3"
 import { Types } from "."
 
+export const ColorScheme = [
+  "rgb(211, 157, 69)",
+  "#ff69b4",
+  "#ffe4c4",
+  "rgb(20, 57, 59)",
+  "rgb(163, 0, 48)",
+  "rgb(222, 182, 254)",
+  "#1e90ff",
+  "#00ff00",
+  "#7624C2",
+  "rgb(195, 72, 54)",
+  "rgb(52, 25, 58)",
+  "rgb(252, 179, 75)",
+]
+
 export const ArtistName = (datum: Types.ArtistData) => {
   return datum.artist.replace(/[\s\.]/g, "")
 }
