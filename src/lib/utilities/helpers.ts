@@ -29,7 +29,7 @@ export const TextHeight = (id: string, text: string): number => {
   }
 }
 
-export const getXfromLatLon = (
+export const GetXfromLatLon = (
   projection: any,
   loc: {
     lat: number
@@ -40,7 +40,7 @@ export const getXfromLatLon = (
   return pos[0]
 }
 
-export const getYfromLatLon = (
+export const GetYfromLatLon = (
   projection: any,
   loc: {
     lat: number

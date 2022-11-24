@@ -3,6 +3,7 @@
   import { feature } from "topojson"
   import { geoWinkel3 } from "d3-geo-projection"
   import { Config, Helpers, Types } from "$lib/utilities"
+  import { fade } from "svelte/transition"
 
   const RADIUS = 15
   const TEXT_Y_OFFSET = 30
@@ -25,6 +26,8 @@
   let world_data: any
   $: world_data = null
 
+  let allArtists: Types.ArtistData[]
+
   let allLocations: Types.LocationGroup[]
   $: allLocations = []
   let locations: Types.LocationGroup[]
@@ -33,6 +36,7 @@
   $: allInfluencees = []
   let allInfluencers: Types.InfluenceGroup[]
   $: allInfluencers = []
+
   let influences: Types.LocationGroup[]
   $: influences = []
   let influencees: Types.LocationGroup[]
@@ -41,8 +45,6 @@
   $: influencers = []
   let selected: Types.LocationGroup
   $: selected
-  let showInfluences: boolean
-  $: showInfluences = false
 
   let oldestYear: number | undefined
   $: oldestYear = 0
@@ -65,6 +67,9 @@
 
   let influence_scale: d3.ScaleLinear<number, number, never>
 
+  const Translate = (x: number | undefined, y: number | undefined) =>
+    `translate(${x!}, ${y!})`
+
   const filterLocations = (year: number) => {
     locations = allLocations.filter(([, locations]) => {
       if (locations.length > 1) {
@@ -74,22 +79,24 @@
       }
     })
     for (const location of locations) {
-      location.x = Helpers.getXfromLatLon(projection, location[1])
-      location.y = Helpers.getYfromLatLon(projection, location[1])
+      location.x = Helpers.GetXfromLatLon(projection, location[1])
+      location.y = Helpers.GetYfromLatLon(projection, location[1])
     }
   }
 
   export const DisplayInfluences = (artist: string) => {
-    showInfluences = true
     const local_influences = []
     // influencers = []
     // influencees = []
+
     selected = allLocations.filter((d) => d[0] === artist)[0]
-    influences.push(selected)
-    const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
+    console.log("Selected: ", selected)
+    local_influences.push(selected)
+
+    const artistInfluencers: Types.InfluenceGroup[] = allInfluencers.filter(
       (d) => d[0] === artist
     )
-    const artistInfluencers: Types.InfluenceGroup[] = allInfluencers.filter(
+    const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
       (d) => d[0] === artist
     )
 
@@ -97,12 +104,11 @@
       console.log("Influencers")
       for (let influence of artistInfluencers[0][1]) {
         const data = allLocations.find(
-          (loc) => loc[1][0].artist === influence.influenced
+          (loc) => loc[1][0].artist === influence.artist
         )
         if (data) {
           local_influences.push(data)
           //influencers.push(data)
-          console.log(influence)
           console.log(
             allLocations.find((loc) => loc[1][0].artist === influence.artist)
           )
@@ -119,16 +125,17 @@
         if (data) {
           local_influences.push(data)
           //influencees.push(data)
-          console.log(influence)
           console.log(
-            allLocations.find((loc) => loc[1][0].artist === influence.artist)
+            allLocations.find(
+              (loc) => loc[1][0].artist === influence.influenced
+            )
           )
         }
       }
     }
     for (const location of local_influences) {
-      location.x = Helpers.getXfromLatLon(projection, location[1])
-      location.y = Helpers.getYfromLatLon(projection, location[1])
+      location.x = Helpers.GetXfromLatLon(projection, location[1])
+      location.y = Helpers.GetYfromLatLon(projection, location[1])
     }
 
     simWorker!.postMessage({
@@ -137,21 +144,21 @@
     })
   }
 
-  const getX = (location: Types.LocationGroup) => {
+  const GetX = (location: Types.LocationGroup) => {
     if (location.hasOwnProperty("x")) {
       return location.x
     }
-    return Helpers.getXfromLatLon(projection, location[1])
+    return Helpers.GetXfromLatLon(projection, location[1])
   }
 
-  const getY = (location: Types.LocationGroup) => {
+  const GetY = (location: Types.LocationGroup) => {
     if (location.hasOwnProperty("y")) {
       return location.y
     }
-    return Helpers.getYfromLatLon(projection, location[1])
+    return Helpers.GetYfromLatLon(projection, location[1])
   }
 
-  const getYearGap = (
+  const GetYearGap = (
     loc1: Types.LocationGroup,
     loc2: Types.LocationGroup
   ): number => {
@@ -161,10 +168,16 @@
     return influence_scale(Math.abs(middle2 - middle1))
   }
 
+  const GetThumbnail = (name: string) => {
+    const artist = allArtists.filter((d) => d.artist === name)[0]
+    return artist.thumbnail
+  }
+
   export const Initialize = (
     features: any,
     influence_data: Types.ArtistInfluence[],
-    locs: Types.ArtistLocation[]
+    locs: Types.ArtistLocation[],
+    artist_data: Types.ArtistData[]
   ) => {
     projection = geoWinkel3()
       .translate([width / 2, height / 2])
@@ -208,6 +221,8 @@
     } else {
       console.error("Unable to load Artist Locations!")
     }
+
+    allArtists = artist_data
   }
 </script>
 
@@ -254,81 +269,76 @@
           {/if}
         </g>
         <g id="artists">
-          {#if showInfluences}
-            {#each influences as location}
-              <g>
-                <line
-                  x2={Helpers.getXfromLatLon(projection, location[1])}
-                  y2={Helpers.getYfromLatLon(projection, location[1])}
-                  x1={getX(location)}
-                  y1={getY(location)}
-                  stroke="black"
-                />
-                <circle
-                  cx={Helpers.getXfromLatLon(projection, location[1])}
-                  cy={Helpers.getYfromLatLon(projection, location[1])}
-                  r="2"
-                  fill="black"
-                />
+          {#each influences as location}
+            <g>
+              <line
+                x2={Helpers.GetXfromLatLon(projection, location[1])}
+                y2={Helpers.GetYfromLatLon(projection, location[1])}
+                x1={GetX(location)}
+                y1={GetY(location)}
+                stroke="black"
+              />
+              <circle
+                cx={Helpers.GetXfromLatLon(projection, location[1])}
+                cy={Helpers.GetYfromLatLon(projection, location[1])}
+                r="2"
+                fill="black"
+              />
 
-                <line
-                  x2={getX(location)}
-                  y2={getY(location)}
-                  x1={getX(selected)}
-                  y1={getY(selected)}
-                  stroke="red"
-                  opacity="0.5"
-                  stroke-width={getYearGap(selected, location)}
+              <line
+                x2={GetX(location)}
+                y2={GetY(location)}
+                x1={GetX(selected)}
+                y1={GetY(selected)}
+                stroke="red"
+                opacity="0.5"
+                stroke-width={GetYearGap(selected, location)}
+              />
+            </g>
+          {/each}
+          {#each influences as location}
+            <g
+              id={Helpers.ArtistID(location[0]) + "-group"}
+              transform={Translate(GetX(location), GetY(location))}
+              transition:fade
+            >
+              {#if location[0] === selected[0]}
+                <image
+                  id={Helpers.ArtistID(location[0]) + "-image"}
+                  href={Config.server_url + GetThumbnail(location[0])}
+                  height={RADIUS * 2}
+                  width={RADIUS * 2}
+                  x={-RADIUS}
+                  y={-RADIUS}
                 />
-              </g>
-            {/each}
-            {#each influences as location}
-              <g
-                id={location[0].replace(/[[\s\.]]/g, "") + "-group"}
-                class="pointer"
-              >
-                {#if location[0] === selected[0]}
-                  <!-- <image
-                    id={Helpers.ArtistID(location[0]) + "-image"}
-                    href={Config.server_url + location[1]["thumbnail"]}
-                    height={RADIUS * 2}
-                    width={RADIUS * 2}
-                    x={-RADIUS}
-                    y={-RADIUS}
-                  /> -->
-                  <circle
-                    cx={getX(location)}
-                    cy={getY(location)}
-                    r={RADIUS}
-                    stroke="black"
-                    fill="white"
-                  />
-                  <text
-                    id={location[0].replace(/[\s\.]/g, "") + "-text"}
-                    opacity="1"
-                    x={getX(location)}
-                    y={getY(location) + TEXT_Y_OFFSET + RADIUS}
-                    text-anchor="middle">{location[0]}</text
-                  >
-                {:else}
-                  <circle
-                    cx={getX(location)}
-                    cy={getY(location)}
-                    r={RADIUS}
-                    stroke="black"
-                    fill="white"
-                  />
-                  <text
-                    id={location[0].replace(/[\s\.]/g, "") + "-text"}
-                    opacity="1"
-                    x={getX(location)}
-                    y={getY(location) + TEXT_Y_OFFSET}
-                    text-anchor="middle">{location[0]}</text
-                  >
-                {/if}
-              </g>
-            {/each}
-          {/if}
+                <circle cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
+                <text
+                  id={Helpers.ArtistID(location[0]) + "-text"}
+                  opacity="1"
+                  x="0"
+                  y={TEXT_Y_OFFSET}
+                  text-anchor="middle">{location[0]}</text
+                >
+              {:else}
+                <image
+                  id={Helpers.ArtistID(location[0]) + "-image"}
+                  href={Config.server_url + GetThumbnail(location[0])}
+                  height={RADIUS * 2}
+                  width={RADIUS * 2}
+                  x={-RADIUS}
+                  y={-RADIUS}
+                />
+                <circle cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
+                <text
+                  id={Helpers.ArtistID(location[0]) + "-text"}
+                  opacity="1"
+                  x="0"
+                  y={TEXT_Y_OFFSET}
+                  text-anchor="middle">{location[0]}</text
+                >
+              {/if}
+            </g>
+          {/each}
         </g>
         <g id="outline">
           <path

@@ -108,7 +108,7 @@
     area.Initialize()
     chord_deaths.Initialize(locs!, medLocs!)
     chord_mediums.Initialize(locs!, medLocs!)
-    map.Initialize(features, influence_data!, locs!)
+    map.Initialize(features, influence_data!, locs!, artist_data!)
     matrix.Initialize(artist_data!, influence_data!)
     network.Initialize(artist_data!, influence_data!)
     scatter.Initialize()
