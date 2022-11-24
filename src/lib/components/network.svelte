@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as d3 from "d3"
-  import { Config, Types } from "$lib/utilities"
+  import { Config, Helpers, Types } from "$lib/utilities"
 
   const DURATION = 500
   const PADDING = 20
@@ -8,7 +8,7 @@
   const OFFSET_Y = 0
 
   let simWorker: Worker | undefined = new Worker(
-    new URL("workers/sim.worker.ts?worker", import.meta.url)
+    new URL("workers/sim-links.worker.ts?worker", import.meta.url)
   )
 
   const OnWorkerMessage = (event: any) => {
@@ -33,10 +33,6 @@
 
   const Translate = (x: number | undefined, y: number | undefined) =>
     `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
-
-  const ArtistName = (datum: Types.ArtistData) => {
-    return datum.artist.replace(/[\s\.]/g, "")
-  }
 
   const OnMouseOver = (target: any) => {
     console.log(target)
@@ -84,25 +80,7 @@
       .attr("r", RADIUS)
   }
 
-  const TextWidth = (id: string, text: string): number => {
-    const node = d3.select(id).node()! as Element
-    if (node) {
-      const bbox = node.getBoundingClientRect()
-      return bbox.width
-    } else {
-      return 0
-    }
-  }
-
-  const TextHeight = (id: string, text: string): number => {
-    const node = d3.select(id).node()! as Element
-    if (node) {
-      const bbox = node.getBoundingClientRect()
-      return bbox.height
-    } else {
-      return 0
-    }
-  }
+  const OnMouseClick = (target: any) => {}
 
   export const Initialize = (
     artist_data: Types.ArtistData[],
@@ -190,23 +168,24 @@
       {#each artists as artist}
         <g
           transform={Translate(artist.x + width / 2, artist.y)}
-          id={ArtistName(artist) + "-group"}
+          id={Helpers.ArtistName(artist) + "-group"}
           class="cursor-pointer"
         >
           <image
-            id={ArtistName(artist) + "-image"}
+            id={Helpers.ArtistName(artist) + "-image"}
             href={Config.server_url + artist.thumbnail}
             height={RADIUS * 2}
             width={RADIUS * 2}
             x={-RADIUS}
             y={-RADIUS}
-            on:focus={(ev) => OnMouseOver("#" + ArtistName(artist))}
-            on:mouseover={(ev) => OnMouseOver("#" + ArtistName(artist))}
-            on:blur={(ev) => OnMouseOut("#" + ArtistName(artist))}
-            on:mouseout={(ev) => OnMouseOut("#" + ArtistName(artist))}
+            on:focus={(ev) => OnMouseOver("#" + Helpers.ArtistName(artist))}
+            on:mouseover={(ev) => OnMouseOver("#" + Helpers.ArtistName(artist))}
+            on:blur={(ev) => OnMouseOut("#" + Helpers.ArtistName(artist))}
+            on:mouseout={(ev) => OnMouseOut("#" + Helpers.ArtistName(artist))}
+            on:click={(ev) => OnMouseClick("#" + Helpers.ArtistName(artist))}
           />
           <circle
-            id={ArtistName(artist) + "-circle"}
+            id={Helpers.ArtistName(artist) + "-circle"}
             cx="0"
             cy="0"
             r={RADIUS}
@@ -214,22 +193,27 @@
             fill="none"
           />
           <rect
-            id={ArtistName(artist) + "-rect"}
+            id={Helpers.ArtistName(artist) + "-rect"}
             x={-(
-              TextWidth("#" + ArtistName(artist) + "-text", artist.artist) +
-              PADDING
+              Helpers.TextWidth(
+                "#" + Helpers.ArtistName(artist) + "-text",
+                artist.artist
+              ) + PADDING
             ) / 2}
-            width={TextWidth(
-              "#" + ArtistName(artist) + "-text",
+            width={Helpers.TextWidth(
+              "#" + Helpers.ArtistName(artist) + "-text",
               artist.artist
             ) + PADDING}
             y={RADIUS +
               65 -
-              (TextHeight("#" + ArtistName(artist) + "-text", artist.artist) +
+              (Helpers.TextHeight(
+                "#" + Helpers.ArtistName(artist) + "-text",
+                artist.artist
+              ) +
                 PADDING) /
                 2}
-            height={TextHeight(
-              "#" + ArtistName(artist) + "-text",
+            height={Helpers.TextHeight(
+              "#" + Helpers.ArtistName(artist) + "-text",
               artist.artist
             ) +
               PADDING -
@@ -242,7 +226,7 @@
           />
           <text
             class="cursor-default pointer-events-none"
-            id={ArtistName(artist) + "-text"}
+            id={Helpers.ArtistName(artist) + "-text"}
             x="0"
             y={RADIUS + 65}
             opacity="0"
