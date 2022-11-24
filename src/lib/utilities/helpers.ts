@@ -5,6 +5,10 @@ export const ArtistName = (datum: Types.ArtistData) => {
   return datum.artist.replace(/[\s\.]/g, "")
 }
 
+export const ArtistID = (datum: string) => {
+  return datum.replace(/[\s\.]/g, "")
+}
+
 export const TextWidth = (id: string, text: string): number => {
   const node = d3.select(id).node()! as Element
   if (node) {

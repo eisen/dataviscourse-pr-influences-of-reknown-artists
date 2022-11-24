@@ -81,9 +81,9 @@
 
   export const DisplayInfluences = (artist: string) => {
     showInfluences = true
-    influences = []
-    influencers = []
-    influencees = []
+    const local_influences = []
+    // influencers = []
+    // influencees = []
     selected = allLocations.filter((d) => d[0] === artist)[0]
     influences.push(selected)
     const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
@@ -100,8 +100,8 @@
           (loc) => loc[1][0].artist === influence.influenced
         )
         if (data) {
-          influences.push(data)
-          influencers.push(data)
+          local_influences.push(data)
+          //influencers.push(data)
           console.log(influence)
           console.log(
             allLocations.find((loc) => loc[1][0].artist === influence.artist)
@@ -117,8 +117,8 @@
           (loc) => loc[1][0].artist === influence.influenced
         )
         if (data) {
-          influences.push(data)
-          influencees.push(data)
+          local_influences.push(data)
+          //influencees.push(data)
           console.log(influence)
           console.log(
             allLocations.find((loc) => loc[1][0].artist === influence.artist)
@@ -126,18 +126,15 @@
         }
       }
     }
-    console.log(influences)
-    for (const location of influences) {
+    for (const location of local_influences) {
       location.x = Helpers.getXfromLatLon(projection, location[1])
       location.y = Helpers.getYfromLatLon(projection, location[1])
     }
 
-    // simWorker!.postMessage({
-    //   nodes: influences,
-    //   radius: RADIUS,
-    //   projection: projection,
-    //   height: height,
-    // })
+    simWorker!.postMessage({
+      nodes: local_influences,
+      radius: RADIUS,
+    })
   }
 
   const getX = (location: Types.LocationGroup) => {
@@ -291,18 +288,18 @@
                 class="pointer"
               >
                 {#if location[0] === selected[0]}
-                  <image
-                    id={Helpers.ArtistName(location[0]) + "-image"}
+                  <!-- <image
+                    id={Helpers.ArtistID(location[0]) + "-image"}
                     href={Config.server_url + location[1]["thumbnail"]}
                     height={RADIUS * 2}
                     width={RADIUS * 2}
                     x={-RADIUS}
                     y={-RADIUS}
-                  />
+                  /> -->
                   <circle
                     cx={getX(location)}
                     cy={getY(location)}
-                    r={RADIUS * 2}
+                    r={RADIUS}
                     stroke="black"
                     fill="white"
                   />
