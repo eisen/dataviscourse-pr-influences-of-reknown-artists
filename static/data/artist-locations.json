@@ -1542,5 +1542,21 @@
         "country": "",
         "lat": 0,
         "lon": 0
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
     }
 ]
