@@ -90,63 +90,20 @@
     }
   }
 
-  export const DisplayInfluences = (artist: string) => {
-    const local_influences = []
-    // influencers = []
-    // influencees = []
-
+  export const DisplayInfluences = (
+    artist: string,
+    influences: Types.LocationGroup[]
+  ) => {
     selected = allLocations.filter((d) => d[0] === artist)[0]
-    console.log("Selected: ", selected)
-    local_influences.push(selected)
+    influences.push(selected)
 
-    const artistInfluencers: Types.InfluenceGroup[] = allInfluencers.filter(
-      (d) => d[0] === artist
-    )
-    const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
-      (d) => d[0] === artist
-    )
-
-    if (artistInfluencers.length > 0) {
-      console.log("Influencers")
-      for (let influence of artistInfluencers[0][1]) {
-        const data = allLocations.find(
-          (loc) => loc[1][0].artist === influence.artist
-        )
-        console.log(influence.artist)
-        if (data) {
-          local_influences.push(data)
-          //influencers.push(data)
-          console.log(
-            allLocations.find((loc) => loc[1][0].artist === influence.artist)
-          )
-        }
-      }
-    }
-
-    if (artistInfluencees.length > 0) {
-      console.log("Influencees")
-      for (let influence of artistInfluencees[0][1]) {
-        const data = allLocations.find(
-          (loc) => loc[1][0].artist === influence.influenced
-        )
-        if (data) {
-          local_influences.push(data)
-          //influencees.push(data)
-          console.log(
-            allLocations.find(
-              (loc) => loc[1][0].artist === influence.influenced
-            )
-          )
-        }
-      }
-    }
-    for (const location of local_influences) {
+    for (const location of influences) {
       location.x = Helpers.GetXfromLatLon(projection, location[1])
       location.y = Helpers.GetYfromLatLon(projection, location[1])
     }
 
     simWorker!.postMessage({
-      nodes: local_influences,
+      nodes: influences,
       radius: RADIUS,
     })
   }
@@ -182,7 +139,8 @@
 
   export const Initialize = (
     features: any,
-    influence_data: Types.ArtistInfluence[],
+    influencers_data: Types.InfluenceGroup[],
+    influencees_data: Types.InfluenceGroup[],
     locs: Types.ArtistLocation[],
     artist_data: Types.ArtistData[]
   ) => {
@@ -200,16 +158,8 @@
         (d3.max(neighbors_data[i], (j) => country_color[j]) + 1) | 0
     }
 
-    if (influence_data) {
-      allInfluencees = d3.groups(
-        influence_data,
-        (d: Types.ArtistInfluence) => d.artist
-      )
-      allInfluencers = d3.groups(
-        influence_data,
-        (d: Types.ArtistInfluence) => d.influenced
-      )
-    }
+    allInfluencees = influencees_data
+    allInfluencers = influencers_data
 
     if (locs) {
       oldestYear = d3.min(locs, (d) => d.year)

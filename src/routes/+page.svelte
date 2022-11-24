@@ -48,6 +48,12 @@
   $: allArtists = []
   let allLinks: Types.ArtistLink[]
   $: allLinks = []
+  let allLocations: Types.LocationGroup[]
+  $: allLocations = []
+  let allInfluencees: Types.InfluenceGroup[]
+  $: allInfluencees = []
+  let allInfluencers: Types.InfluenceGroup[]
+  $: allInfluencers = []
 
   let area: Area
   let network: Network
@@ -87,7 +93,53 @@
 
   const DisplayInfluence = (ev: any) => {
     const artist = ev.detail.artist
-    map.DisplayInfluences(artist)
+    const influences = []
+    // influencers = []
+    // influencees = []
+
+    const artistInfluencers: Types.InfluenceGroup[] = allInfluencers.filter(
+      (d) => d[0] === artist
+    )
+    const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
+      (d) => d[0] === artist
+    )
+
+    if (artistInfluencers.length > 0) {
+      //console.log("Influencers")
+      for (let influence of artistInfluencers[0][1]) {
+        const data = allLocations.find(
+          (loc) => loc[1][0].artist === influence.artist
+        )
+        if (data) {
+          influences.push(data)
+          //influencers.push(data)
+          // console.log(
+          //   allLocations.find((loc) => loc[1][0].artist === influence.artist)
+          // )
+        }
+      }
+    }
+
+    if (artistInfluencees.length > 0) {
+      //console.log("Influencees")
+      for (let influence of artistInfluencees[0][1]) {
+        const data = allLocations.find(
+          (loc) => loc[1][0].artist === influence.influenced
+        )
+        if (data) {
+          influences.push(data)
+          //influencees.push(data)
+          // console.log(
+          //   allLocations.find(
+          //     (loc) => loc[1][0].artist === influence.influenced
+          //   )
+          // )
+        }
+      }
+    }
+
+    map.DisplayInfluences(artist, influences)
+    network.DisplayInfluence(influences.map((d) => d[0]))
   }
 
   onMount(async () => {
@@ -105,10 +157,31 @@
       `${Config.server_url}/data/artist-influences.json`
     )
 
+    if (influence_data) {
+      allInfluencees = d3.groups(
+        influence_data,
+        (d: Types.ArtistInfluence) => d.artist
+      )
+      allInfluencers = d3.groups(
+        influence_data,
+        (d: Types.ArtistInfluence) => d.influenced
+      )
+    }
+
+    if (locs) {
+      allLocations = d3.groups(locs, (d) => d.artist)
+    }
+
     area.Initialize()
     chord_deaths.Initialize(locs!, medLocs!)
     chord_mediums.Initialize(locs!, medLocs!)
-    map.Initialize(features, influence_data!, locs!, artist_data!)
+    map.Initialize(
+      features,
+      allInfluencers!,
+      allInfluencees!,
+      locs!,
+      artist_data!
+    )
     matrix.Initialize(artist_data!, influence_data!)
     network.Initialize(artist_data!, influence_data!)
     scatter.Initialize()

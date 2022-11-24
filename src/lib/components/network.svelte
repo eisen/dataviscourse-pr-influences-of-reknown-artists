@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as d3 from "d3"
-  import { createEventDispatcher } from "svelte"
+  import { fade } from "svelte/transition"
+  import { createEventDispatcher, tick } from "svelte"
   import { Config, Helpers, Types } from "$lib/utilities"
 
   const DURATION = 500
@@ -23,8 +24,12 @@
   $: artists = []
   let links: Types.ArtistLink[]
   $: links = []
-  let influences: Types.ArtistInfluence[]
+  let positions: Types.ArtistPosition[]
+  $: positions = []
+  let influences: string[]
   $: influences = []
+
+  $: current_count = 0
 
   let allArtists: Types.ArtistData[]
   let allLinks: Types.ArtistLink[]
@@ -83,6 +88,23 @@
       .transition()
       .duration(DURATION)
       .attr("r", RADIUS)
+  }
+
+  export const DisplayInfluence = (in_influences: string[]) => {
+    positions = []
+    for (const influence of in_influences) {
+      const position = artists.filter((d) => d.artist === influence)[0]
+      positions.push({ x: position.x!, y: position.y! })
+    }
+    influences = in_influences
+    current_count += 1
+  }
+
+  const IsInfluenceLink = (link: any) => {
+    return (
+      influences.includes(link.source.artist) &&
+      influences.includes(link.target.artist)
+    )
   }
 
   const OnMouseClick = (target: any) => {
@@ -158,7 +180,36 @@
       </marker>
     </defs>
 
+    <g id="splat">
+      {#each positions as position}
+        <circle
+          cx={position.x + width / 2 - OFFSET_X}
+          cy={position.y}
+          r={RADIUS * 1.75}
+          fill="#F93B3B"
+          transition:fade
+        />
+      {/each}
+    </g>
+
     <g id="links">
+      {#key current_count}
+        {#each links as link}
+          {#if IsInfluenceLink(link)}
+            <g>
+              <line
+                x1={link.source.x + width / 2 - OFFSET_X}
+                y1={link.source.y - OFFSET_Y}
+                x2={link.target.x + width / 2 - OFFSET_X}
+                y2={link.target.y - OFFSET_Y}
+                stroke="#F93B3B"
+                stroke-width={RADIUS * 1.5}
+                transition:fade
+              />
+            </g>
+          {/if}
+        {/each}
+      {/key}
       {#each links as link}
         <g>
           <line

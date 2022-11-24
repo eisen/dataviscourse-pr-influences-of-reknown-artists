@@ -17,7 +17,17 @@ export type ArtistLocation = {
   y?: number
 }
 
-export type LocationGroup = [name: string, location: ArtistLocation[], x?: number, y?: number]
+export type ArtistPosition = {
+  x: number
+  y: number
+}
+
+export type LocationGroup = [
+  name: string,
+  location: ArtistLocation[],
+  x?: number,
+  y?: number
+]
 
 export type ArtistInfluence = {
   artist: string
