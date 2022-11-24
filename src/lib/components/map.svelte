@@ -6,7 +6,8 @@
   import { fade } from "svelte/transition"
 
   const RADIUS = 15
-  const TEXT_Y_OFFSET = 30
+  const TEXT_Y_OFFSET = 20
+  const PADDING = 20
 
   let simWorker: Worker | undefined = new Worker(
     new URL("workers/sim-nodes.worker.ts?worker", import.meta.url)
@@ -111,6 +112,7 @@
         const data = allLocations.find(
           (loc) => loc[1][0].artist === influence.artist
         )
+        console.log(influence.artist)
         if (data) {
           local_influences.push(data)
           //influencers.push(data)
@@ -283,6 +285,14 @@
             {/each}
           {/if}
         </g>
+        <g id="outline">
+          <path
+            d={path(graticuleOutline)}
+            fill="none"
+            stroke="lightgray"
+            stroke-width="2"
+          />
+        </g>
         <g id="artists">
           {#each influences as location}
             <g>
@@ -326,14 +336,14 @@
                   x={-RADIUS}
                   y={-RADIUS}
                 />
-                <circle cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
-                <text
-                  id={Helpers.ArtistID(location[0]) + "-text"}
-                  opacity="1"
-                  x="0"
-                  y={TEXT_Y_OFFSET}
-                  text-anchor="middle">{location[0]}</text
-                >
+                <circle
+                  cx="0"
+                  cy="0"
+                  r={RADIUS}
+                  stroke="white"
+                  stroke-width="2"
+                  fill="none"
+                />
               {:else}
                 <image
                   id={Helpers.ArtistID(location[0]) + "-image"}
@@ -344,24 +354,46 @@
                   y={-RADIUS}
                 />
                 <circle cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
-                <text
-                  id={Helpers.ArtistID(location[0]) + "-text"}
-                  opacity="1"
-                  x="0"
-                  y={TEXT_Y_OFFSET}
-                  text-anchor="middle">{location[0]}</text
-                >
               {/if}
+              <rect
+                id={Helpers.ArtistID(location[0]) + "-rect"}
+                x={-(
+                  Helpers.TextWidth(
+                    "#" + Helpers.ArtistID(location[0]) + "-text",
+                    location[0]
+                  ) + PADDING
+                ) / 2}
+                width={Helpers.TextWidth(
+                  "#" + Helpers.ArtistID(location[0]) + "-text",
+                  location[0]
+                ) + PADDING}
+                y={(TEXT_Y_OFFSET +
+                  Helpers.TextHeight(
+                    "#" + Helpers.ArtistID(location[0]) + "-text",
+                    location[0]
+                  )) /
+                  2}
+                height={Helpers.TextHeight(
+                  "#" + Helpers.ArtistID(location[0]) + "-text",
+                  location[0]
+                ) +
+                  PADDING -
+                  10}
+                fill="white"
+                stroke="black"
+                rx="15"
+                opacity="0.5"
+                class="pointer-events-none"
+              />
+              <text
+                id={Helpers.ArtistID(location[0]) + "-text"}
+                opacity="1"
+                x="0"
+                y={TEXT_Y_OFFSET * 2}
+                text-anchor="middle">{location[0]}</text
+              >
             </g>
           {/each}
-        </g>
-        <g id="outline">
-          <path
-            d={path(graticuleOutline)}
-            fill="none"
-            stroke="lightgray"
-            stroke-width="2"
-          />
         </g>
       </g>
     {/if}
