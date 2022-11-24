@@ -776,7 +776,7 @@
         "lon": 12.51133
     },
     {
-        "artist": "Miró",
+        "artist": "Joan Miró",
         "year": "1893",
         "city": "Barcelona",
         "country": "Spain",
@@ -784,7 +784,7 @@
         "lon": 2.15899
     },
     {
-        "artist": "Miró",
+        "artist": "Joan Miró",
         "year": "1983",
         "city": "Palma",
         "country": "Spain",
@@ -1206,5 +1206,357 @@
         "country": "China",
         "lat": 39.9075,
         "lon": 116.39723
+    },
+    {
+        "artist": "Barbara Hepworth",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Barbara Hepworth",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Carlo Carrà",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Carlo Carrà",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Georges Braque",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Georges Braque",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Henry Moore",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Henry Moore",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Isamu Noguchi",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Isamu Noguchi",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Jacob Epstein",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Jacob Epstein",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Pieter Cornelis Mondriaan",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Pieter Cornelis Mondriaan",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Richard Wentworth",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Richard Wentworth",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Robert Rauschenberg",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Robert Rauschenberg",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Umberto Boccioni",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Umberto Boccioni",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Domenico Ghirlandaio",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Domenico Ghirlandaio",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Daniele da Volterra",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Daniele da Volterra",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Giotto",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Giotto",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Masaccio",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Masaccio",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Peter Paul Rubens",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Peter Paul Rubens",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Gherardo Starnina",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Gherardo Starnina",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Masolino",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Masolino",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Michelozzo",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Michelozzo",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Paolo Uccello",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Paolo Uccello",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Antonio del Pollaiuolo",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Antonio del Pollaiuolo",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Franz von Stuck",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Franz von Stuck",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
+    },
+    {
+        "artist": "Lorenzo Ghiberti",
+        "year": "1000",
+        "city": "",
+        "country": "",
+        "lat": 0,
+        "lon": 0
     }
 ]
