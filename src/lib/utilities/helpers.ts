@@ -1,3 +1,4 @@
+import * as d3 from "d3"
 import { Types } from "."
 
 export const ArtistName = (datum: Types.ArtistData) => {

@@ -294,7 +294,7 @@
                 {#if location[0] === selected[0]}
                   <image
                     id={Helpers.ArtistName(location[0]) + "-image"}
-                    href={Config.server_url + artist.thumbnail}
+                    href={Config.server_url + location[1]["thumbnail"]}
                     height={RADIUS * 2}
                     width={RADIUS * 2}
                     x={-RADIUS}
