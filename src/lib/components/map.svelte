@@ -4,7 +4,6 @@
   import { geoWinkel3 } from "d3-geo-projection"
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
-  import { min } from "d3"
 
   const RADIUS = 15
   const TEXT_Y_OFFSET = 20
@@ -68,6 +67,8 @@
   let original_scale: number
   $: update_map = 0
 
+  let link = d3.linkVertical()
+
   let tl_x_scale: d3.ScaleLinear<number, number, never>
 
   let influence_scale: d3.ScaleLinear<number, number, never>
@@ -119,7 +120,6 @@
 
     const top_left = projection(feature[0])
     const bottom_right = projection(feature[1])
-    console.log(top_left, bottom_right)
 
     const scale =
       0.6 /
@@ -127,7 +127,6 @@
         Math.abs(bottom_right[1] - top_left[1]) / width,
         Math.abs(bottom_right[0] - top_left[0]) / height
       )
-    console.log(scale * original_scale)
 
     projection.center(location)
     projection.translate([width / 2, height / 2])
@@ -293,12 +292,13 @@
                 fill="black"
               />
 
-              <line
-                x2={GetX(location)}
-                y2={GetY(location)}
-                x1={GetX(selected)}
-                y1={GetY(selected)}
+              <path
+                d={link({
+                  source: [GetX(location), GetY(location)],
+                  target: [GetX(selected), GetY(selected)],
+                })}
                 stroke="red"
+                fill="none"
                 opacity="0.5"
                 stroke-width={GetYearGap(selected, location)}
               />
