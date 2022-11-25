@@ -4,6 +4,7 @@
   import { geoWinkel3 } from "d3-geo-projection"
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
+  import type { Path } from "d3"
 
   const RADIUS = 15
   const TEXT_Y_OFFSET = 20
@@ -67,7 +68,43 @@
   let original_scale: number
   $: update_map = 0
 
-  let link = d3.linkVertical()
+  $: compass_angle = 0
+  $: transform_compass =
+    compass_angle === 0
+      ? `translate(${width - 20}, ${
+          height - 60
+        }) rotate(${compass_angle}) scale(2)`
+      : `translate(${width - 60}, ${
+          height - 20
+        }) rotate(${compass_angle}) scale(2)`
+
+  const Magnitude = (x: number, y: number): number => {
+    return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
+  }
+
+  const GetCurve = (source: number[], target: number[]): string | Path => {
+    if (source[0] === target[0] && source[1] === target[1]) return ""
+
+    const path = d3.path()
+    const curve = d3.curveCatmullRom(path)
+
+    const tangent = [target[0] - source[0], target[1] - source[1]]
+    const normal = [
+      -tangent[1] / Magnitude(tangent[0], tangent[1]),
+      tangent[0] / Magnitude(tangent[0], tangent[1]),
+    ]
+
+    curve.lineStart()
+    curve.point(source[0], source[1])
+    curve.point(
+      RADIUS * 2 * normal[0] + (1 * (target[0] + source[0])) / 2,
+      RADIUS * 2 * normal[1] + (1 * (target[1] + source[1])) / 2
+    )
+    curve.point(target[0], target[1])
+    curve.lineEnd()
+
+    return path
+  }
 
   let tl_x_scale: d3.ScaleLinear<number, number, never>
 
@@ -102,6 +139,7 @@
     let max_lon = -180
     let max_lat = -180
     projection.scale(original_scale)
+    projection.angle(0)
     for (const loc of influences) {
       loc.x = Helpers.GetXfromLatLon(projection, loc[1])
       loc.y = Helpers.GetYfromLatLon(projection, loc[1])
@@ -122,7 +160,7 @@
     const bottom_right = projection(feature[1])
 
     const scale =
-      0.4 /
+      0.7 /
       Math.max(
         Math.abs(bottom_right[1] - top_left[1]) / width,
         Math.abs(bottom_right[0] - top_left[0]) / height
@@ -131,6 +169,16 @@
     projection.center(location)
     projection.translate([width / 2, height / 2])
     projection.scale(scale * original_scale)
+    if (
+      Math.abs(bottom_right[0] - top_left[0]) >
+      Math.abs(bottom_right[1] - top_left[1])
+    ) {
+      // Taller than wide
+      projection.angle(90)
+      compass_angle = -90
+    } else {
+      compass_angle = 0
+    }
 
     update_map += 1
 
@@ -293,10 +341,10 @@
               />
 
               <path
-                d={link({
-                  source: [GetX(location), GetY(location)],
-                  target: [GetX(selected), GetY(selected)],
-                })}
+                d={GetCurve(
+                  [GetX(location), GetY(location)],
+                  [GetX(selected), GetY(selected)]
+                )}
                 stroke="red"
                 fill="none"
                 opacity="0.5"
@@ -386,5 +434,37 @@
         </g>
       </g>
     {/if}
+    <svg
+      id="Layer_1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 {width} {height}"
+    >
+      <defs>
+        <style>
+          .cls-1,
+          .cls-2 {
+            fill: #c00;
+          }
+          .cls-2 {
+            stroke: #000;
+            stroke-miterlimit: 10;
+            stroke-width: 0.25px;
+          }
+        </style>
+      </defs>
+      <g transform={transform_compass}>
+        <path
+          d="M4.24,28.34l4.24-11.31L4.24,5.71,0,17.02l4.24,11.31Zm0-2.85l-2.8-7.47H7.04s-2.8,7.47-2.8,7.47Z"
+        />
+        <polygon
+          class="cls-1"
+          points="4.24 8.29 7.04 15.76 1.44 15.76 4.24 8.29"
+        />
+        <path
+          class="cls-2"
+          d="M1.83,.24h1.63l1.28,1.85h.01V.24h1.61V4.58h-1.62l-1.28-1.85h-.01v1.85H1.83V.24Z"
+        />
+      </g>
+    </svg>
   </svg>
 </div>
