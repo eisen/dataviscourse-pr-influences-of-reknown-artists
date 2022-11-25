@@ -4,6 +4,7 @@
   import { geoWinkel3 } from "d3-geo-projection"
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
+  import { min } from "d3"
 
   const RADIUS = 15
   const TEXT_Y_OFFSET = 20
@@ -64,12 +65,10 @@
 
   let projection: any
   let path: any
-
-  const tickEvery = 20
-  const yearEvery = 100
+  let original_scale: number
+  $: update_map = 0
 
   let tl_x_scale: d3.ScaleLinear<number, number, never>
-  let tl_x_axis = null
 
   let influence_scale: d3.ScaleLinear<number, number, never>
 
@@ -97,9 +96,48 @@
     selected = allLocations.filter((d) => d[0] === artist)[0]
     influences.push(selected)
 
-    for (const location of influences) {
-      location.x = Helpers.GetXfromLatLon(projection, location[1])
-      location.y = Helpers.GetYfromLatLon(projection, location[1])
+    let min_lon = 180
+    let min_lat = 180
+    let max_lon = -180
+    let max_lat = -180
+    projection.scale(original_scale)
+    for (const loc of influences) {
+      loc.x = Helpers.GetXfromLatLon(projection, loc[1])
+      loc.y = Helpers.GetYfromLatLon(projection, loc[1])
+      if (loc[1][0].lon > max_lon) max_lon = loc[1][0].lon
+      if (loc[1][0].lat > max_lat) max_lat = loc[1][0].lat
+      if (loc[1][0].lon < min_lon) min_lon = loc[1][0].lon
+      if (loc[1][0].lat < min_lat) min_lat = loc[1][0].lat
+    }
+
+    const location = [(max_lon + min_lon) / 2, (max_lat + min_lat) / 2]
+
+    const feature = [
+      [max_lat, min_lon],
+      [min_lat, max_lon],
+    ]
+
+    const top_left = projection(feature[0])
+    const bottom_right = projection(feature[1])
+    console.log(top_left, bottom_right)
+
+    const scale =
+      0.6 /
+      Math.max(
+        Math.abs(bottom_right[1] - top_left[1]) / width,
+        Math.abs(bottom_right[0] - top_left[0]) / height
+      )
+    console.log(scale * original_scale)
+
+    projection.center(location)
+    projection.translate([width / 2, height / 2])
+    projection.scale(scale * original_scale)
+
+    update_map += 1
+
+    for (const loc of influences) {
+      loc.x = Helpers.GetXfromLatLon(projection, loc[1])
+      loc.y = Helpers.GetYfromLatLon(projection, loc[1])
     }
 
     simWorker!.postMessage({
@@ -144,13 +182,12 @@
     locs: Types.ArtistLocation[],
     artist_data: Types.ArtistData[]
   ) => {
-    projection = geoWinkel3()
-      .translate([width / 2, height / 2])
-      .scale(height / 3.5)
-    path = d3.geoPath().projection(projection)
-
     world_data = feature(features, features.objects.countries)
     neighbors_data = neighbors(features.objects.countries.geometries)
+
+    projection = geoWinkel3().fitSize([width, height + 4], world_data)
+    path = d3.geoPath().projection(projection)
+    original_scale = projection.scale()
 
     country_color = new Array(world_data.features.length)
     for (let i = 0; i < country_color.length; ++i) {
@@ -176,12 +213,6 @@
         .scaleLinear()
         .domain([oldestYear!, youngestYear!])
         .range([0, width])
-      tl_x_axis = d3
-        .axisBottom(tl_x_scale)
-        .tickFormat((d) => {
-          return Number(d) % yearEvery === 0 ? String(d) : ""
-        })
-        .ticks((youngestYear! - oldestYear!) / tickEvery)
     } else {
       console.error("Unable to load Artist Locations!")
     }
@@ -215,34 +246,36 @@
     </style>
     {#if path}
       <g id="map">
-        <g id="fill">
-          <path d={path(graticuleOutline)} fill="#def3f6" stroke="none" />
-        </g>
-        <g id="graticules">
-          {#each graticuleUle as line}
-            <path d={path(line)} fill="none" stroke="lightgray" />
-          {/each}
-        </g>
-        <g id="countries">
-          {#if world_data}
-            {#each world_data.features as feature, idx}
-              <path
-                id={feature.id}
-                d={path(feature)}
-                stroke="none"
-                fill={d3.schemePastel2[country_color[idx]]}
-              />
+        {#key update_map}
+          <g id="fill">
+            <path d={path(graticuleOutline)} fill="#def3f6" stroke="none" />
+          </g>
+          <g id="graticules">
+            {#each graticuleUle as line}
+              <path d={path(line)} fill="none" stroke="lightgray" />
             {/each}
-          {/if}
-        </g>
-        <g id="outline">
-          <path
-            d={path(graticuleOutline)}
-            fill="none"
-            stroke="lightgray"
-            stroke-width="2"
-          />
-        </g>
+          </g>
+          <g id="countries">
+            {#if world_data}
+              {#each world_data.features as feature, idx}
+                <path
+                  id={feature.id}
+                  d={path(feature)}
+                  stroke="none"
+                  fill={d3.schemePastel2[country_color[idx]]}
+                />
+              {/each}
+            {/if}
+          </g>
+          <g id="outline">
+            <path
+              d={path(graticuleOutline)}
+              fill="none"
+              stroke="lightgray"
+              stroke-width="2"
+            />
+          </g>
+        {/key}
         <g id="artists">
           {#each influences as location}
             <g>
@@ -281,15 +314,15 @@
                 <image
                   id={Helpers.ArtistID(location[0]) + "-image"}
                   href={Config.server_url + GetThumbnail(location[0])}
-                  height={RADIUS * 2}
-                  width={RADIUS * 2}
-                  x={-RADIUS}
-                  y={-RADIUS}
+                  height={RADIUS * 4}
+                  width={RADIUS * 4}
+                  x={-RADIUS * 2}
+                  y={-RADIUS * 2}
                 />
                 <circle
                   cx="0"
                   cy="0"
-                  r={RADIUS}
+                  r={RADIUS * 2}
                   stroke="white"
                   stroke-width="2"
                   fill="none"
@@ -298,12 +331,18 @@
                 <image
                   id={Helpers.ArtistID(location[0]) + "-image"}
                   href={Config.server_url + GetThumbnail(location[0])}
-                  height={RADIUS * 2}
-                  width={RADIUS * 2}
-                  x={-RADIUS}
-                  y={-RADIUS}
+                  height={RADIUS * 4}
+                  width={RADIUS * 4}
+                  x={-RADIUS * 2}
+                  y={-RADIUS * 2}
                 />
-                <circle cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
+                <circle
+                  cx="0"
+                  cy="0"
+                  r={RADIUS * 2}
+                  stroke="black"
+                  fill="none"
+                />
               {/if}
               <rect
                 id={Helpers.ArtistID(location[0]) + "-rect"}
@@ -317,7 +356,7 @@
                   "#" + Helpers.ArtistID(location[0]) + "-text",
                   location[0]
                 ) + PADDING}
-                y={(TEXT_Y_OFFSET +
+                y={(TEXT_Y_OFFSET * 2.5 +
                   Helpers.TextHeight(
                     "#" + Helpers.ArtistID(location[0]) + "-text",
                     location[0]
@@ -339,7 +378,7 @@
                 id={Helpers.ArtistID(location[0]) + "-text"}
                 opacity="1"
                 x="0"
-                y={TEXT_Y_OFFSET * 2}
+                y={TEXT_Y_OFFSET * 2.75}
                 text-anchor="middle">{location[0]}</text
               >
             </g>

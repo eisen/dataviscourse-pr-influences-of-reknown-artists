@@ -26,7 +26,7 @@ onmessage = (event) => {
     )
     .force(
       "collide",
-      d3.forceCollide().radius((d) => RADIUS * 3)
+      d3.forceCollide().radius((d) => RADIUS * 4)
     )
     .stop()
 
