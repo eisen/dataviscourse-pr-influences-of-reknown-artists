@@ -16,6 +16,7 @@
 
   const OnWorkerMessage = (event: any) => {
     influences = event.data.nodes
+    selected = influences.filter((d) => d[0] === selected[0])[0]
   }
 
   simWorker.onmessage = OnWorkerMessage
@@ -339,7 +340,6 @@
                 r="2"
                 fill="black"
               />
-
               <path
                 d={GetCurve(
                   [GetX(location), GetY(location)],
