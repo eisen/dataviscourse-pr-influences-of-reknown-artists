@@ -122,7 +122,7 @@
     const bottom_right = projection(feature[1])
 
     const scale =
-      0.6 /
+      0.4 /
       Math.max(
         Math.abs(bottom_right[1] - top_left[1]) / width,
         Math.abs(bottom_right[0] - top_left[0]) / height
