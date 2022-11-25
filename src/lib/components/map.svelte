@@ -71,11 +71,11 @@
   $: compass_angle = 0
   $: transform_compass =
     compass_angle === 0
-      ? `translate(${width - 20}, ${
+      ? `translate(${width - 25}, ${
           height - 60
         }) rotate(${compass_angle}) scale(2)`
-      : `translate(${width - 60}, ${
-          height - 20
+      : `translate(${width - 65}, ${
+          height - 5
         }) rotate(${compass_angle}) scale(2)`
 
   const Magnitude = (x: number, y: number): number => {
