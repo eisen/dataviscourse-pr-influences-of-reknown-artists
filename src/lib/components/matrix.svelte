@@ -159,6 +159,26 @@
         return col_name + " was influenced by " + string_influencers
       })
       .attr("opacity", 1)
+
+    for (let relation of all_influencers) {
+      for (let row in influencers) {
+        for (let col in influencees) {
+          if (
+            adjMatrix[row][col].influencer === relation.artist &&
+            adjMatrix[row][col].influencee === col_name
+          ) {
+            let rect_id =
+              "#" +
+              ArtistName(
+                adjMatrix[row][col].influencer +
+                  "_" +
+                  adjMatrix[row][col].influencee
+              )
+            d3.select(rect_id).attr("fill", colourHoverRelation)
+          }
+        }
+      }
+    }
   }
 
   const DisplayInfluencees = (
@@ -185,6 +205,26 @@
         return row_name + " influenced " + string_influencees
       })
       .attr("opacity", 1)
+
+    for (let relation of all_influencees) {
+      for (let row in influencers) {
+        for (let col in influencees) {
+          if (
+            adjMatrix[row][col].influencer === row_name &&
+            adjMatrix[row][col].influencee === relation.influenced
+          ) {
+            let rect_id =
+              "#" +
+              ArtistName(
+                adjMatrix[row][col].influencer +
+                  "_" +
+                  adjMatrix[row][col].influencee
+              )
+            d3.select(rect_id).attr("fill", colourHoverRelation)
+          }
+        }
+      }
+    }
   }
 
   const OnMouseOverInfluencee = (name: string) => {
@@ -238,7 +278,6 @@
                   "_" +
                   adjMatrix[row][col].influencee
               )
-            d3.select(rect_id).attr("fill", colourHoverRelation)
 
             // y for the rect
             y = matrixScale(adjMatrix[row][col].x) + offset_y
@@ -288,7 +327,6 @@
                   "_" +
                   adjMatrix[row][col].influencee
               )
-            d3.select(rect_id).attr("fill", colourHoverRelation)
 
             // x for the rect
             x = matrixScale(adjMatrix[row][col].y) + offset_x
@@ -316,9 +354,6 @@
 
   export const RestoreInfluencer = (target: string) => {
     d3.select(target + "-rows-path-fill").attr("fill", "white")
-    d3.select("#adjacency_matrix")
-      .selectAll("rect")
-      .attr("fill", colourRelation)
     d3.select("#rect-hover")
       .selectAll("rect")
       .transition()
@@ -328,9 +363,6 @@
 
   export const RestoreInfluencee = (target: string) => {
     d3.select(target + "-cols-path-fill").attr("fill", "white")
-    d3.select("#adjacency_matrix")
-      .selectAll("rect")
-      .attr("fill", colourRelation)
     d3.select("#rect-hover")
       .selectAll("rect")
       .transition()
@@ -381,7 +413,7 @@
     // console.log('in row', target, x, y)
     let x = matrixScale(adjMatrix[row][col].y) + offset_x
     let y = matrixScale(adjMatrix[row][col].x) + offset_y
-    d3.select(target).attr("fill", colourHoverRelation)
+    //d3.select(target).attr("fill", colourHoverRelation)
 
     // add a group to add more rectangles for the whle row and column
     let rect_hover = d3.select("#rect-hover")
@@ -438,6 +470,9 @@
   }
 
   const OnMouseClickInfluencer = (row_name: any) => {
+    d3.select("#adjacency_matrix")
+      .selectAll("rect")
+      .attr("fill", colourRelation)
     d3.select("#text-display").selectAll("text").attr("opacity", 0)
     let all_influencees = influences.filter((d) => d.artist === row_name) //all influences
     DisplayInfluencees(all_influencees, row_name)
@@ -447,6 +482,9 @@
   }
 
   const OnMouseClickInfluencee = (col_name: string) => {
+    d3.select("#adjacency_matrix")
+      .selectAll("rect")
+      .attr("fill", colourRelation)
     d3.select("#text-display").selectAll("text").attr("opacity", 0)
     let all_influencers = influences.filter((d) => d.influenced === col_name)
     DisplayInfluencers(all_influencers, col_name)
