@@ -44,10 +44,6 @@
     height - verticalPadding - header_height - footer_height
   )
 
-  let allArtists: Types.ArtistData[]
-  $: allArtists = []
-  let allLinks: Types.ArtistLink[]
-  $: allLinks = []
   let allLocations: Types.LocationGroup[]
   $: allLocations = []
   let allInfluencees: Types.InfluenceGroup[]
@@ -91,35 +87,33 @@
     ScrollCharts(ev.target, -width * 2)
   }
 
-  const DisplayInfluence = (ev: any) => {
-    const artist = ev.detail.artist
-    const influences = []
-    // influencers = []
-    // influencees = []
-
+  const GetArtistInfluencers = (artist: string): Types.LocationGroup[] => {
+    const influencers: Types.LocationGroup[] = []
     const artistInfluencers: Types.InfluenceGroup[] = allInfluencers.filter(
       (d) => d[0] === artist
     )
-    const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
-      (d) => d[0] === artist
-    )
-
     if (artistInfluencers.length > 0) {
-      //console.log("Influencers")
+      // console.log("Influencers")
       for (let influence of artistInfluencers[0][1]) {
         const data = allLocations.find(
           (loc) => loc[1][0].artist === influence.artist
         )
         if (data) {
-          influences.push(data)
-          //influencers.push(data)
+          influencers.push(data)
           // console.log(
           //   allLocations.find((loc) => loc[1][0].artist === influence.artist)
           // )
         }
       }
     }
+    return influencers
+  }
 
+  const GetArtistInfluencees = (artist: string): Types.LocationGroup[] => {
+    const influencees: Types.LocationGroup[] = []
+    const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
+      (d) => d[0] === artist
+    )
     if (artistInfluencees.length > 0) {
       //console.log("Influencees")
       for (let influence of artistInfluencees[0][1]) {
@@ -127,8 +121,7 @@
           (loc) => loc[1][0].artist === influence.influenced
         )
         if (data) {
-          influences.push(data)
-          //influencees.push(data)
+          influencees.push(data)
           // console.log(
           //   allLocations.find(
           //     (loc) => loc[1][0].artist === influence.influenced
@@ -137,6 +130,45 @@
         }
       }
     }
+
+    return influencees
+  }
+
+  const DisplayInfluence = (ev: any) => {
+    const artist = ev.detail.artist
+
+    let influences: Types.LocationGroup[] = GetArtistInfluencers(artist)
+    influences = influences.concat(GetArtistInfluencees(artist))
+
+    map.DisplayInfluences(artist, influences)
+    network.DisplayInfluence(influences.map((d) => d[0]))
+  }
+
+  const HighlightArtist = (ev: any) => {
+    const artist = ev.detail.artist
+    network.OnMouseOver(artist)
+  }
+
+  const RestoreArtist = (ev: any) => {
+    const artist = ev.detail.artist
+    network.OnMouseOut(artist)
+  }
+
+  const SelectInfluencer = (ev: any) => {
+    const artist = ev.detail.artist
+    console.log(`Influencees for ${artist}`)
+
+    const influences = GetArtistInfluencees(artist)
+
+    map.DisplayInfluences(artist, influences)
+    network.DisplayInfluence(influences.map((d) => d[0]))
+  }
+
+  const SelectInfluencee = (ev: any) => {
+    const artist = ev.detail.artist
+    console.log(`Influencers for ${artist}`)
+
+    const influences = GetArtistInfluencers(artist)
 
     map.DisplayInfluences(artist, influences)
     network.DisplayInfluence(influences.map((d) => d[0]))
@@ -262,7 +294,15 @@
         height={network_height}
         on:display_influence={DisplayInfluence}
       />
-      <Matrix bind:this={matrix} width={matrix_width} height={matrix_height} />
+      <Matrix
+        bind:this={matrix}
+        width={matrix_width}
+        height={matrix_height}
+        on:highlight_artist={HighlightArtist}
+        on:restore_artist={RestoreArtist}
+        on:select_influencer={SelectInfluencer}
+        on:select_influencee={SelectInfluencee}
+      />
       <Map bind:this={map} width={map_width} height={map_height} />
     </div>
     <div

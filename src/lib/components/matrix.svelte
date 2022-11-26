@@ -1,8 +1,9 @@
 <script lang="ts">
   import { Types } from "$lib/utilities"
-  import type { ArtistData, ArtistInfluence } from "$lib/utilities/types"
   import * as d3 from "d3"
-  import { index } from "d3"
+  import { createEventDispatcher, tick } from "svelte"
+
+  const dispatch = createEventDispatcher()
 
   export let width: number = 0
   export let height: number = 0
@@ -21,9 +22,9 @@
   let offset_x: number = 0
   let offset_y: number = 0
 
-  let influences: ArtistInfluence[]
+  let influences: Types.ArtistInfluence[]
   $: influences
-  let artists: ArtistData[]
+  let artists: Types.ArtistData[]
   $: artists
 
   let influencers: string[]
@@ -135,6 +136,9 @@
 
   const OnMouseOverInfluencee = (target: any, name: string) => {
     // console.log('in')
+    dispatch("highlight_artist", {
+      artist: target,
+    })
     d3.select(target + "-cols-path-fill").attr("fill", "black")
 
     // All text to display
@@ -200,6 +204,9 @@
 
   const OnMouseOutInfluencee = (target: any) => {
     // console.log('out')
+    dispatch("restore_artist", {
+      artist: target,
+    })
     d3.select(target + "-cols-path-fill").attr("fill", "white")
     d3.select("#text-display").selectAll("text").attr("opacity", 0)
     d3.select("#adjacency_matrix")
@@ -210,6 +217,9 @@
 
   const OnMouseOverInfluencer = (target: any, name: string) => {
     // console.log('in row', target, name)
+    dispatch("highlight_artist", {
+      artist: target,
+    })
     d3.select(target + "-rows-path-fill").attr("fill", "black")
 
     // All text to display - influencees
@@ -274,6 +284,9 @@
 
   const OnMouseOutInfluencer = (target: any) => {
     // console.log('out')
+    dispatch("restore_artist", {
+      artist: target,
+    })
     d3.select(target + "-rows-path-fill").attr("fill", "white")
     d3.select("#text-display").selectAll("text").attr("opacity", 0)
     d3.select("#adjacency_matrix")
@@ -340,6 +353,18 @@
       "#" + ArtistName(adjMatrix[row][col].influencee) + "-cols-path-fill"
     d3.select(row_path_id).attr("fill", "white")
     d3.select(col_path_id).attr("fill", "white")
+  }
+
+  const OnMouseClickInfluencer = (target: any) => {
+    dispatch("select_influencer", {
+      artist: target,
+    })
+  }
+
+  const OnMouseClickInfluencee = (target: any) => {
+    dispatch("select_influencee", {
+      artist: target,
+    })
   }
 
   export const Initialize = (
@@ -492,6 +517,9 @@
       {#each influencers as influencer, idx}
         <g
           id={ArtistName(influencer) + "-row"}
+          class="cursor-pointer"
+          style="outline: none;"
+          on:click={(ev) => OnMouseClickInfluencer(influencer)}
           on:mouseover={(ev) =>
             OnMouseOverInfluencer("#" + ArtistName(influencer), influencer)}
           on:focus={(ev) =>
@@ -519,6 +547,9 @@
       {#each influencees as influencee, idx}
         <g
           id={ArtistName(influencee) + "-col"}
+          class="cursor-pointer"
+          style="outline: none;"
+          on:click={(ev) => OnMouseClickInfluencee(influencee)}
           on:mouseover={(ev) =>
             OnMouseOverInfluencee("#" + ArtistName(influencee), influencee)}
           on:focus={(ev) =>
@@ -554,12 +585,14 @@
 
     <g id="axes-titles">
       <text
+        class="cursor-default"
         transform="translate({offset_x +
           chart_width / 2 -
           text_width / 2}, {offset_y - tabPadding - 5})"
         font-weight="700">Influencees</text
       >
       <text
+        class="cursor-default"
         transform="translate({offset_x - tabPadding - 5}, {offset_y +
           chart_height / 2 +
           text_width / 2}) rotate(-90)"

@@ -45,7 +45,7 @@
   const Translate = (x: number | undefined, y: number | undefined) =>
     `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
 
-  const OnMouseOver = (target: any) => {
+  export const OnMouseOver = (target: any) => {
     d3.select(target + "-group").raise()
     d3.select(target + "-text")
       .transition()
@@ -68,7 +68,7 @@
       .attr("r", 50)
   }
 
-  const OnMouseOut = (target: any) => {
+  export const OnMouseOut = (target: any) => {
     d3.select(target + "-text")
       .transition()
       .duration(DURATION)
