@@ -13,7 +13,7 @@
   $: height = 0
 
   const horizontalPadding = 24
-  const verticalPadding = 30
+  const verticalPadding = 6
   const header_height = 72
   const footer_height = 24
 
