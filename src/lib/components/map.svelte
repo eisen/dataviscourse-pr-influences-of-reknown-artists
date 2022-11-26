@@ -8,6 +8,7 @@
   const RADIUS = 15
   const TEXT_Y_OFFSET = 20
   const PADDING = 20
+  const DURATION = 1000
 
   let simWorker: Worker | undefined = new Worker(
     new URL("workers/sim-nodes.worker.ts?worker", import.meta.url)
@@ -96,10 +97,10 @@
 
     curve.lineStart()
     curve.point(source[0], source[1])
-    curve.point(
-      RADIUS * 2 * normal[0] + (1 * (target[0] + source[0])) / 2,
-      RADIUS * 2 * normal[1] + (1 * (target[1] + source[1])) / 2
-    )
+    // curve.point(
+    //   RADIUS * 2 * normal[0] + (1 * (target[0] + source[0])) / 2,
+    //   RADIUS * 2 * normal[1] + (1 * (target[1] + source[1])) / 2
+    // )
     curve.point(target[0], target[1])
     curve.lineEnd()
 
@@ -143,6 +144,12 @@
     }
   }
 
+  const GetInfluenceAngle = (source: number[], target: number[]): number => {
+    return (
+      (Math.atan2(target[1] - source[1], target[0] - source[0]) * 180) / Math.PI
+    )
+  }
+
   export const DisplayInfluences = (
     artist: string,
     influences: Types.LocationGroup[]
@@ -176,7 +183,7 @@
     const bottom_right = projection(feature[1])
 
     const scale =
-      0.7 /
+      0.6 /
       Math.max(
         Math.abs(bottom_right[1] - top_left[1]) / width,
         Math.abs(bottom_right[0] - top_left[0]) / height
@@ -203,6 +210,12 @@
       loc.y = Helpers.GetYfromLatLon(projection, loc[1])
     }
 
+    simWorker!.postMessage({
+      nodes: influences,
+      radius: RADIUS,
+    })
+
+    // Run twice so the text elements are created and the TextWidth and TextHeight helper functions can properly work
     simWorker!.postMessage({
       nodes: influences,
       radius: RADIUS,
@@ -236,6 +249,28 @@
   const GetThumbnail = (name: string) => {
     const artist = allArtists.filter((d) => d.artist === name)[0]
     return artist.thumbnail
+  }
+
+  const OnMouseOver = (target: any) => {
+    d3.select(target + "-text-map")
+      .transition()
+      .duration(DURATION)
+      .attr("opacity", 1)
+    d3.select(target + "-rect-map")
+      .transition()
+      .duration(DURATION)
+      .attr("opacity", 1)
+  }
+
+  const OnMouseOut = (target: any) => {
+    d3.select(target + "-text-map")
+      .transition()
+      .duration(DURATION)
+      .attr("opacity", 0)
+    d3.select(target + "-rect-map")
+      .transition()
+      .duration(DURATION)
+      .attr("opacity", 0)
   }
 
   export const Initialize = (
@@ -295,39 +330,6 @@
     preserveAspectRatio="xMidYMid meet"
   >
     <defs>
-      <marker
-        id="influence-end"
-        viewBox="0 -5 14 14"
-        refX={-RADIUS * 2 - 5}
-        refY="10"
-        orient="auto"
-        markerWidth="7"
-        markerHeight="7"
-      >
-        <path
-          d="M 0,-5 L 10,0 L 0,5"
-          fill="none"
-          stroke="#cc0000"
-          stroke-width="2"
-        />
-      </marker>
-
-      <marker
-        id="influence-start"
-        viewBox="0 -5 14 14"
-        refX={RADIUS * 2 + 5}
-        refY="10"
-        orient="auto"
-        markerWidth="7"
-        markerHeight="7"
-      >
-        <path
-          d="M 0,-5 L 10,0 L 0,5"
-          fill="none"
-          stroke="#cc0000"
-          stroke-width="2"
-        />
-      </marker>
       <style>
         .pointer {
           cursor: pointer;
@@ -391,43 +393,86 @@
                 r="2"
                 fill="black"
               />
-              {#if InfluencedBy(selected[0], location[0])}
-                <path
-                  marker-start="url(#influence-end)"
-                  d={GetCurve(
-                    [GetX(location), GetY(location)],
-                    [GetX(selected), GetY(selected)]
-                  )}
-                  stroke="red"
-                  fill="none"
-                  opacity="0.5"
-                  stroke-width={GetYearGap(selected, location)}
-                />
-              {:else}
-                <path
-                  marker-end="url(#influence-start)"
-                  d={GetCurve(
-                    [GetX(selected), GetY(selected)],
-                    [GetX(location), GetY(location)]
-                  )}
-                  stroke="red"
-                  fill="none"
-                  opacity="0.5"
-                  stroke-width={GetYearGap(selected, location)}
-                />
+              {#if selected[0] !== location[0]}
+                {#if InfluencedBy(selected[0], location[0])}
+                  <g transform="translate({GetX(location)}, {GetY(location)})"
+                    ><g
+                      transform="rotate({GetInfluenceAngle(
+                        [GetX(location), GetY(location)],
+                        [GetX(selected), GetY(selected)]
+                      )})"
+                    >
+                      <g transform="translate({RADIUS * 2}, 0)">
+                        <path
+                          d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                          fill="#cc0000"
+                          stroke="black"
+                          stroke-width="2"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <path
+                    d={GetCurve(
+                      [GetX(location), GetY(location)],
+                      [GetX(selected), GetY(selected)]
+                    )}
+                    stroke="#c00"
+                    fill="none"
+                    opacity="0.5"
+                    stroke-width={GetYearGap(selected, location)}
+                  />
+                {:else}
+                  <g transform="translate({GetX(location)}, {GetY(location)})">
+                    <g
+                      transform="rotate({GetInfluenceAngle(
+                        [GetX(selected), GetY(selected)],
+                        [GetX(location), GetY(location)]
+                      )})"
+                    >
+                      <g transform="translate({-RADIUS * 2 - 10}, 0)">
+                        <path
+                          d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                          fill="#cc0000"
+                          stroke="black"
+                          stroke-width="2"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <path
+                    d={GetCurve(
+                      [GetX(selected), GetY(selected)],
+                      [GetX(location), GetY(location)]
+                    )}
+                    stroke="#c00"
+                    fill="none"
+                    opacity="0.5"
+                    stroke-width={GetYearGap(selected, location)}
+                  />
+                {/if}
               {/if}
             </g>
           {/each}
           {#each influences as location}
             <g
-              id={Helpers.ArtistID(location[0]) + "-group"}
+              id={Helpers.ArtistID(location[0]) + "-group-map"}
               transform={Translate(GetX(location), GetY(location))}
+              on:focus={(ev) =>
+                OnMouseOver("#" + Helpers.ArtistID(location[0]))}
+              on:mouseover={(ev) =>
+                OnMouseOver("#" + Helpers.ArtistID(location[0]))}
+              on:blur={(ev) => OnMouseOut("#" + Helpers.ArtistID(location[0]))}
+              on:mouseout={(ev) =>
+                OnMouseOut("#" + Helpers.ArtistID(location[0]))}
               transition:fade
+              style="outline: none;"
             >
               {#if location[0] === selected[0]}
                 <image
-                  id={Helpers.ArtistID(location[0]) + "-image"}
+                  id={Helpers.ArtistID(location[0]) + "-image-map"}
                   href={Config.server_url + GetThumbnail(location[0])}
+                  style="outline: none;"
                   height={RADIUS * 4}
                   width={RADIUS * 4}
                   x={-RADIUS * 2}
@@ -437,14 +482,15 @@
                   cx="0"
                   cy="0"
                   r={RADIUS * 2}
-                  stroke="white"
+                  stroke="#c00"
                   stroke-width="2"
                   fill="none"
                 />
               {:else}
                 <image
-                  id={Helpers.ArtistID(location[0]) + "-image"}
+                  id={Helpers.ArtistID(location[0]) + "-image-map"}
                   href={Config.server_url + GetThumbnail(location[0])}
+                  style="outline: none;"
                   height={RADIUS * 4}
                   width={RADIUS * 4}
                   x={-RADIUS * 2}
@@ -459,25 +505,25 @@
                 />
               {/if}
               <rect
-                id={Helpers.ArtistID(location[0]) + "-rect"}
+                id={Helpers.ArtistID(location[0]) + "-rect-map"}
                 x={-(
                   Helpers.TextWidth(
-                    "#" + Helpers.ArtistID(location[0]) + "-text",
+                    "#" + Helpers.ArtistID(location[0]) + "-text-map",
                     location[0]
                   ) + PADDING
                 ) / 2}
                 width={Helpers.TextWidth(
-                  "#" + Helpers.ArtistID(location[0]) + "-text",
+                  "#" + Helpers.ArtistID(location[0]) + "-text-map",
                   location[0]
                 ) + PADDING}
                 y={(TEXT_Y_OFFSET * 2.5 +
                   Helpers.TextHeight(
-                    "#" + Helpers.ArtistID(location[0]) + "-text",
+                    "#" + Helpers.ArtistID(location[0]) + "-text-map",
                     location[0]
                   )) /
                   2}
                 height={Helpers.TextHeight(
-                  "#" + Helpers.ArtistID(location[0]) + "-text",
+                  "#" + Helpers.ArtistID(location[0]) + "-text-map",
                   location[0]
                 ) +
                   PADDING -
@@ -489,7 +535,7 @@
                 class="pointer-events-none"
               />
               <text
-                id={Helpers.ArtistID(location[0]) + "-text"}
+                id={Helpers.ArtistID(location[0]) + "-text-map"}
                 opacity="0"
                 x="0"
                 y={TEXT_Y_OFFSET * 2.75}
