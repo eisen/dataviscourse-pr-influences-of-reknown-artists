@@ -60,7 +60,6 @@
 
   export const HighlightArtist = (name: string) => {
     const target = "#" + Helpers.ArtistID(name)
-    console.log(target)
     d3.select(target + "-group").raise()
     d3.select(target + "-text")
       .transition()
@@ -312,7 +311,7 @@
         </g>
       {/each}
     </g>
-    <g transform={Translate(width - PADDING * 5, height - PADDING * 4)}>
+    <g transform={Translate(width - PADDING * 6, height - PADDING * 4)}>
       <rect
         x="-3"
         y="0"
