@@ -146,17 +146,20 @@
 
   const HighlightArtist = (ev: any) => {
     const artist = ev.detail.artist
-    network.OnMouseOver(artist)
+    const influence_type = ev.detail.influence_type
+    network.HighlightArtist(artist)
+    matrix.HighlightArtist(artist, influence_type)
   }
 
   const RestoreArtist = (ev: any) => {
     const artist = ev.detail.artist
-    network.OnMouseOut(artist)
+    const influence_type = ev.detail.influence_type
+    network.RestoreArtist(artist)
+    matrix.RestoreArtist(artist, influence_type)
   }
 
   const SelectInfluencer = (ev: any) => {
     const artist = ev.detail.artist
-    console.log(`Influencees for ${artist}`)
 
     const influences = GetArtistInfluencees(artist)
 
@@ -166,7 +169,6 @@
 
   const SelectInfluencee = (ev: any) => {
     const artist = ev.detail.artist
-    console.log(`Influencers for ${artist}`)
 
     const influences = GetArtistInfluencers(artist)
 
@@ -293,6 +295,8 @@
         width={network_width}
         height={network_height}
         on:display_influence={DisplayInfluence}
+        on:highlight_artist={HighlightArtist}
+        on:restore_artist={RestoreArtist}
       />
       <Matrix
         bind:this={matrix}

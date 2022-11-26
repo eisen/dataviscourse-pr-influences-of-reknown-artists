@@ -45,7 +45,22 @@
   const Translate = (x: number | undefined, y: number | undefined) =>
     `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
 
-  export const OnMouseOver = (target: any) => {
+  const OnMouseOver = (name: any) => {
+    dispatch("highlight_artist", {
+      artist: name,
+      influence_type: Types.InfluenceType.Both,
+    })
+  }
+  const OnMouseOut = (name: any) => {
+    dispatch("restore_artist", {
+      artist: name,
+      influence_type: Types.InfluenceType.Both,
+    })
+  }
+
+  export const HighlightArtist = (name: string) => {
+    const target = "#" + Helpers.ArtistID(name)
+    console.log(target)
     d3.select(target + "-group").raise()
     d3.select(target + "-text")
       .transition()
@@ -68,7 +83,8 @@
       .attr("r", 50)
   }
 
-  export const OnMouseOut = (target: any) => {
+  export const RestoreArtist = (name: any) => {
+    const target = "#" + Helpers.ArtistID(name)
     d3.select(target + "-text")
       .transition()
       .duration(DURATION)
@@ -239,10 +255,10 @@
             x={-RADIUS}
             y={-RADIUS}
             style="outline: none;"
-            on:focus={(ev) => OnMouseOver("#" + Helpers.ArtistName(artist))}
-            on:mouseover={(ev) => OnMouseOver("#" + Helpers.ArtistName(artist))}
-            on:blur={(ev) => OnMouseOut("#" + Helpers.ArtistName(artist))}
-            on:mouseout={(ev) => OnMouseOut("#" + Helpers.ArtistName(artist))}
+            on:focus={(ev) => OnMouseOver(artist.artist)}
+            on:mouseover={(ev) => OnMouseOver(artist.artist)}
+            on:blur={(ev) => OnMouseOut(artist.artist)}
+            on:mouseout={(ev) => OnMouseOut(artist.artist)}
             on:click={(ev) => OnMouseClick(artist.artist)}
           />
           <circle
