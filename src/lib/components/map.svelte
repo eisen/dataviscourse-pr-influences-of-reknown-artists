@@ -504,6 +504,10 @@
                   fill="none"
                 />
               {/if}
+            </g>
+          {/each}
+          {#each influences as location}
+            <g transform={Translate(GetX(location), GetY(location))}>
               <rect
                 id={Helpers.ArtistID(location[0]) + "-rect-map"}
                 x={-(
