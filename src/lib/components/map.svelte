@@ -4,7 +4,6 @@
   import { geoWinkel3 } from "d3-geo-projection"
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
-  import type { Path } from "d3"
 
   const RADIUS = 15
   const TEXT_Y_OFFSET = 20
@@ -83,7 +82,7 @@
     return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
   }
 
-  const GetCurve = (source: number[], target: number[]): string | Path => {
+  const GetCurve = (source: number[], target: number[]): string => {
     if (source[0] === target[0] && source[1] === target[1]) return ""
 
     const path = d3.path()
@@ -104,7 +103,7 @@
     curve.point(target[0], target[1])
     curve.lineEnd()
 
-    return path
+    return path.toString()
   }
 
   let tl_x_scale: d3.ScaleLinear<number, number, never>
@@ -125,6 +124,22 @@
     for (const location of locations) {
       location.x = Helpers.GetXfromLatLon(projection, location[1])
       location.y = Helpers.GetYfromLatLon(projection, location[1])
+    }
+  }
+
+  const InfluencedBy = (influencee_name: string, influencer_name: string) => {
+    const influencer = allInfluencees.find((d) => d[0] === influencer_name)
+    if (influencer) {
+      const influenced = influencer[1].find(
+        (d) => d.influenced === influencee_name
+      )
+      if (influenced) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return false
     }
   }
 
@@ -279,19 +294,55 @@
     viewBox="0, 0, {width}, {height}"
     preserveAspectRatio="xMidYMid meet"
   >
-    <style>
-      .pointer {
-        cursor: pointer;
-      }
-      .slider {
-        cursor: ew-resize;
-      }
-      #handle {
-        fill: #000000;
-        stroke: #000000;
-        stroke-miterlimit: 10;
-      }
-    </style>
+    <defs>
+      <marker
+        id="influence-end"
+        viewBox="0 -5 14 14"
+        refX={-RADIUS * 2 - 5}
+        refY="10"
+        orient="auto"
+        markerWidth="7"
+        markerHeight="7"
+      >
+        <path
+          d="M 0,-5 L 10,0 L 0,5"
+          fill="none"
+          stroke="#cc0000"
+          stroke-width="2"
+        />
+      </marker>
+
+      <marker
+        id="influence-start"
+        viewBox="0 -5 14 14"
+        refX={RADIUS * 2 + 5}
+        refY="10"
+        orient="auto"
+        markerWidth="7"
+        markerHeight="7"
+      >
+        <path
+          d="M 0,-5 L 10,0 L 0,5"
+          fill="none"
+          stroke="#cc0000"
+          stroke-width="2"
+        />
+      </marker>
+      <style>
+        .pointer {
+          cursor: pointer;
+        }
+        .slider {
+          cursor: ew-resize;
+        }
+        #handle {
+          fill: #000000;
+          stroke: #000000;
+          stroke-miterlimit: 10;
+        }
+      </style>
+    </defs>
+
     {#if path}
       <g id="map">
         {#key update_map}
@@ -340,16 +391,31 @@
                 r="2"
                 fill="black"
               />
-              <path
-                d={GetCurve(
-                  [GetX(location), GetY(location)],
-                  [GetX(selected), GetY(selected)]
-                )}
-                stroke="red"
-                fill="none"
-                opacity="0.5"
-                stroke-width={GetYearGap(selected, location)}
-              />
+              {#if InfluencedBy(selected[0], location[0])}
+                <path
+                  marker-start="url(#influence-end)"
+                  d={GetCurve(
+                    [GetX(location), GetY(location)],
+                    [GetX(selected), GetY(selected)]
+                  )}
+                  stroke="red"
+                  fill="none"
+                  opacity="0.5"
+                  stroke-width={GetYearGap(selected, location)}
+                />
+              {:else}
+                <path
+                  marker-end="url(#influence-start)"
+                  d={GetCurve(
+                    [GetX(selected), GetY(selected)],
+                    [GetX(location), GetY(location)]
+                  )}
+                  stroke="red"
+                  fill="none"
+                  opacity="0.5"
+                  stroke-width={GetYearGap(selected, location)}
+                />
+              {/if}
             </g>
           {/each}
           {#each influences as location}
@@ -419,12 +485,12 @@
                 fill="white"
                 stroke="black"
                 rx="15"
-                opacity="0.5"
+                opacity="0"
                 class="pointer-events-none"
               />
               <text
                 id={Helpers.ArtistID(location[0]) + "-text"}
-                opacity="1"
+                opacity="0"
                 x="0"
                 y={TEXT_Y_OFFSET * 2.75}
                 text-anchor="middle">{location[0]}</text
