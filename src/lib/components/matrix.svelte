@@ -247,19 +247,21 @@
       }
     }
 
-    // add a group to add more rectangles for the whle row and column
-    let rect_hover = d3.select("#rect-hover")
-    rect_hover
-      .append("rect")
-      .attr("id", "hover-row")
-      .attr("x", offset_x)
-      .attr("y", y)
-      .attr("width", chart_width)
-      .attr("height", matrixScale.bandwidth())
-      .attr("fill", colourHoverBackground)
-      .transition()
-      .duration(DURATION)
-      .attr("opacity", 1)
+    if (y > 0) {
+      // add a group to add more rectangles for the whle row and column
+      let rect_hover = d3.select("#rect-hover")
+      rect_hover
+        .append("rect")
+        .attr("id", "hover-row")
+        .attr("x", offset_x)
+        .attr("y", y)
+        .attr("width", chart_width)
+        .attr("height", matrixScale.bandwidth())
+        .attr("fill", colourHoverBackground)
+        .transition()
+        .duration(DURATION)
+        .attr("opacity", 1)
+    }
   }
 
   const HighlightInfluencee = (col_name: string) => {
