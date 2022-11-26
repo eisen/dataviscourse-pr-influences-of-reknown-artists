@@ -193,10 +193,10 @@
 <svelte:window bind:innerWidth={width} bind:innerHeight={height} />
 
 <header
-  class="flex fixed top-4 left-4 w-full font-bold text-4xl z-20"
+  class="flex justify-between fixed top-4 left-4 w-full font-bold text-4xl z-20 p-4"
   style="height: {header_height};"
 >
-  Influences, Deaths, and Mediums of Renown Artists
+  <span>Influences, Deaths, and Mediums of Renown Artists</span>
   <div class="ml-4 mt-1 cursor-pointer">
     <div class="block">
       <nav class="isolate flex divide-x divide-gray-200 rounded-lg shadow">
@@ -232,6 +232,13 @@
         </div>
       </nav>
     </div>
+  </div>
+  <div class="pr-4">
+    <img
+      style="height: 40px;"
+      src={Config.server_url + "/SofC_Logo.png"}
+      alt="SofC Logo"
+    />
   </div>
 </header>
 <div class="absolute inset-0 overflow-x-hidden">
