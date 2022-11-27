@@ -17,19 +17,19 @@
     },
     {
         "artist": "Amrita Sher-Gil",
-        "year": "1941",
-        "city": "Lahore",
-        "country": "Pakistan",
-        "lat": 31.558,
-        "lon": 74.35071
-    },
-    {
-        "artist": "Amrita Sher-Gil",
         "year": "1913",
         "city": "Budapest",
         "country": "Hungary",
         "lat": 47.49801,
         "lon": 19.03991
+    },
+    {
+        "artist": "Amrita Sher-Gil",
+        "year": "1941",
+        "city": "Lahore",
+        "country": "Pakistan",
+        "lat": 31.558,
+        "lon": 74.35071
     },
     {
         "artist": "Andy Warhol",
@@ -66,6 +66,14 @@
     {
         "artist": "Arpita Singh",
         "year": "1937",
+        "city": "Baranagar",
+        "country": "India",
+        "lat": 22.643333,
+        "lon": 88.365278
+    },
+    {
+        "artist": "Arpita Singh",
+        "year": "2022",
         "city": "Baranagar",
         "country": "India",
         "lat": 22.643333,
@@ -121,14 +129,6 @@
     },
     {
         "artist": "Constantin Brancusi",
-        "year": "1876",
-        "city": "Hobita",
-        "country": "Romania",
-        "lat": 45.04835897706265,
-        "lon": 23.05712699878115
-    },
-    {
-        "artist": "Constantin Brancusi",
         "year": "1857",
         "city": "Paris",
         "country": "France",
@@ -136,8 +136,24 @@
         "lon": 2.3488
     },
     {
+        "artist": "Constantin Brancusi",
+        "year": "1876",
+        "city": "Hobita",
+        "country": "Romania",
+        "lat": 45.04835897706265,
+        "lon": 23.05712699878115
+    },
+    {
         "artist": "Damien Hirst",
         "year": "1965",
+        "city": "Bristol",
+        "country": "United Kingdom",
+        "lat": 51.45523,
+        "lon": -2.59665
+    },
+    {
+        "artist": "Damien Hirst",
+        "year": "2022",
         "city": "Bristol",
         "country": "United Kingdom",
         "lat": 51.45523,
@@ -472,6 +488,14 @@
         "lon": -81.97484
     },
     {
+        "artist": "Jasper Johns",
+        "year": "2022",
+        "city": "Augusta",
+        "country": "United States",
+        "lat": 33.47097,
+        "lon": -81.97484
+    },
+    {
         "artist": "Jean Dubuffet",
         "year": "1901",
         "city": "Rouen",
@@ -544,6 +568,14 @@
         "lon": 151.77647
     },
     {
+        "artist": "John Olsen",
+        "year": "2022",
+        "city": "Newcastle",
+        "country": "Australia",
+        "lat": -32.92715,
+        "lon": 151.77647
+    },
+    {
         "artist": "John Singleton Copley",
         "year": "1738",
         "city": "Boston",
@@ -578,6 +610,14 @@
     {
         "artist": "Julian Schnabel",
         "year": "1951",
+        "city": "New York",
+        "country": "United States",
+        "lat": 40.71427,
+        "lon": -74.00597
+    },
+    {
+        "artist": "Julian Schnabel",
+        "year": "2022",
         "city": "New York",
         "country": "United States",
         "lat": 40.71427,
