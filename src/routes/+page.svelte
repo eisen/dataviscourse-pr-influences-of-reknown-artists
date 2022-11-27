@@ -185,6 +185,27 @@
     matrix.ResetInfluences()
   }
 
+  const HighlightPair = (ev: any) => {
+    const artist1 = ev.detail.artist1
+    const artist2 = ev.detail.artist2
+    const row = ev.detail.row
+    const col = ev.detail.col
+    network.HighlightArtist(artist1)
+    network.HighlightArtist(artist2)
+    matrix.HighlightPair(artist1, artist2, row, col)
+  }
+
+  const RestorePair = (ev: any) => {
+    const artist1 = ev.detail.artist1
+    const artist2 = ev.detail.artist2
+    const row = ev.detail.row
+    const col = ev.detail.col
+
+    network.RestoreArtist(artist1)
+    network.RestoreArtist(artist2)
+    matrix.RestorePair(artist1, artist2, row, col)
+  }
+
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
     const locs: Types.ArtistLocation[] | undefined = await d3.json(
@@ -314,6 +335,8 @@
         height={matrix_height}
         on:highlight_artist={HighlightArtist}
         on:restore_artist={RestoreArtist}
+        on:highlight_influence_pair={HighlightPair}
+        on:restore_influence_pair={RestorePair}
         on:select_influencer={SelectInfluencer}
         on:select_influencee={SelectInfluencee}
         on:reset_influences={ResetInfluences}

@@ -279,7 +279,7 @@
   export const ResetInfluences = () => {
     projection.center([0, 0])
     projection.scale(original_scale)
-    projection.rotate(0)
+    projection.angle(0)
 
     influences = []
 

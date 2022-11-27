@@ -437,7 +437,27 @@
       .attr("fill", colourRelation)
   }
 
-  const OnMouseOverRect = (target: any, row: number, col: number) => {
+  const OnMouseOverRect = (
+    artist1: string,
+    artist2: string,
+    row: number,
+    col: number
+  ) => {
+    dispatch("highlight_influence_pair", {
+      artist1: artist1,
+      artist2: artist2,
+      row: row,
+      col: col,
+    })
+  }
+
+  export const HighlightPair = (
+    artist1: string,
+    artist2: string,
+    row: number,
+    col: number
+  ) => {
+    const target = `#${ArtistName(artist1)}_"${ArtistName(artist2)}`
     // console.log('in row', target, x, y)
     let x = matrixScale(adjMatrix[row][col].y) + offset_x
     let y = matrixScale(adjMatrix[row][col].x) + offset_y
@@ -487,7 +507,27 @@
     d3.select(col_path_id).attr("fill", "black").classed("hover", true)
   }
 
-  const OnMouseOutRect = (target: any, row: number, col: number) => {
+  const OnMouseOutRect = (
+    artist1: string,
+    artist2: string,
+    row: number,
+    col: number
+  ) => {
+    dispatch("restore_influence_pair", {
+      artist1: artist1,
+      artist2: artist2,
+      row: row,
+      col: col,
+    })
+  }
+
+  export const RestorePair = (
+    artist1: string,
+    artist2: string,
+    row: number,
+    col: number
+  ) => {
+    const target = `#${ArtistName(artist1)}_"${ArtistName(artist2)}`
     // console.log('out')
     //d3.select(target).attr("fill", colourRelation)
     d3.select("#rect-hover").selectAll("rect").attr("opacity", 0)
@@ -606,45 +646,29 @@
           <rect
             on:mouseover={(ev) =>
               OnMouseOverRect(
-                "#" +
-                  ArtistName(
-                    adjMatrix[row][col].influencer +
-                      "_" +
-                      adjMatrix[row][col].influencee
-                  ),
+                adjMatrix[row][col].influencer,
+                adjMatrix[row][col].influencee,
                 row,
                 col
               )}
             on:focus={(ev) =>
               OnMouseOverRect(
-                "#" +
-                  ArtistName(
-                    adjMatrix[row][col].influencer +
-                      "_" +
-                      adjMatrix[row][col].influencee
-                  ),
+                adjMatrix[row][col].influencer,
+                adjMatrix[row][col].influencee,
                 row,
                 col
               )}
             on:mouseout={(ev) =>
               OnMouseOutRect(
-                "#" +
-                  ArtistName(
-                    adjMatrix[row][col].influencer +
-                      "_" +
-                      adjMatrix[row][col].influencee
-                  ),
+                adjMatrix[row][col].influencer,
+                adjMatrix[row][col].influencee,
                 row,
                 col
               )}
             on:blur={(ev) =>
               OnMouseOutRect(
-                "#" +
-                  ArtistName(
-                    adjMatrix[row][col].influencer +
-                      "_" +
-                      adjMatrix[row][col].influencee
-                  ),
+                adjMatrix[row][col].influencer,
+                adjMatrix[row][col].influencee,
                 row,
                 col
               )}
