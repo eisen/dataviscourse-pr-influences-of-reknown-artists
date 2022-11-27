@@ -5,6 +5,7 @@
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
   import { createEventDispatcher, tick } from "svelte"
+  import type { ArtistLocation } from "$lib/utilities/types"
 
   const dispatch = createEventDispatcher()
 
@@ -228,6 +229,12 @@
     return Helpers.GetYfromLatLon(projection, location[1])
   }
 
+  const GetYears = (locations: ArtistLocation[]): string => {
+    return `${locations[0].year} - ${
+      locations[1].year > 2021 ? "" : locations[1].year
+    }`
+  }
+
   const GetYearGap = (
     loc1: Types.LocationGroup,
     loc2: Types.LocationGroup
@@ -244,22 +251,14 @@
   }
 
   const OnMouseOver = (target: any) => {
-    d3.select(target + "-text-map")
-      .transition()
-      .duration(DURATION)
-      .attr("opacity", 1)
-    d3.select(target + "-rect-map")
+    d3.selectAll(target + "-map-detail")
       .transition()
       .duration(DURATION)
       .attr("opacity", 1)
   }
 
   const OnMouseOut = (target: any) => {
-    d3.select(target + "-text-map")
-      .transition()
-      .duration(DURATION)
-      .attr("opacity", 0)
-    d3.select(target + "-rect-map")
+    d3.selectAll(target + "-map-detail")
       .transition()
       .duration(DURATION)
       .attr("opacity", 0)
@@ -487,12 +486,12 @@
               id={Helpers.ArtistID(location[0]) + "-group-map"}
               transform={Translate(GetX(location), GetY(location))}
               on:focus={(ev) =>
-                OnMouseOver("#" + Helpers.ArtistID(location[0]))}
+                OnMouseOver("." + Helpers.ArtistID(location[0]))}
               on:mouseover={(ev) =>
-                OnMouseOver("#" + Helpers.ArtistID(location[0]))}
-              on:blur={(ev) => OnMouseOut("#" + Helpers.ArtistID(location[0]))}
+                OnMouseOver("." + Helpers.ArtistID(location[0]))}
+              on:blur={(ev) => OnMouseOut("." + Helpers.ArtistID(location[0]))}
               on:mouseout={(ev) =>
-                OnMouseOut("#" + Helpers.ArtistID(location[0]))}
+                OnMouseOut("." + Helpers.ArtistID(location[0]))}
               transition:fade
               style="outline: none;"
             >
@@ -538,40 +537,78 @@
             <g transform={Translate(GetX(location), GetY(location))}>
               <rect
                 id={Helpers.ArtistID(location[0]) + "-rect-map"}
+                class={Helpers.ArtistID(location[0]) +
+                  "-map-detail pointer-events-none"}
                 x={-(
                   Helpers.TextWidth(
-                    "#" + Helpers.ArtistID(location[0]) + "-text-map",
+                    "#" + Helpers.ArtistID(location[0]) + "-map-name",
                     location[0]
-                  ) + PADDING
+                  ) +
+                  PADDING * 2
                 ) / 2}
                 width={Helpers.TextWidth(
-                  "#" + Helpers.ArtistID(location[0]) + "-text-map",
-                  location[0]
-                ) + PADDING}
-                y={(TEXT_Y_OFFSET * 2.5 +
-                  Helpers.TextHeight(
-                    "#" + Helpers.ArtistID(location[0]) + "-text-map",
-                    location[0]
-                  )) /
-                  2}
-                height={Helpers.TextHeight(
-                  "#" + Helpers.ArtistID(location[0]) + "-text-map",
+                  "#" + Helpers.ArtistID(location[0]) + "-map-name",
                   location[0]
                 ) +
+                  PADDING * 2}
+                y={GetY(location) < height / 2
+                  ? (TEXT_Y_OFFSET * 2.5 +
+                      Helpers.TextHeight(
+                        "#" + Helpers.ArtistID(location[0]) + "-map-name",
+                        location[0]
+                      )) /
+                    2
+                  : (-2 *
+                      (TEXT_Y_OFFSET * 4.75 +
+                        Helpers.TextHeight(
+                          "#" + Helpers.ArtistID(location[0]) + "-map-name",
+                          location[0]
+                        ))) /
+                    2}
+                height={3 *
+                  Helpers.TextHeight(
+                    "#" + Helpers.ArtistID(location[0]) + "-map-name",
+                    location[0]
+                  ) +
                   PADDING -
                   10}
                 fill="white"
                 stroke="black"
                 rx="15"
                 opacity="0"
-                class="pointer-events-none"
               />
               <text
-                id={Helpers.ArtistID(location[0]) + "-text-map"}
+                id={Helpers.ArtistID(location[0]) + "-map-name"}
+                class={Helpers.ArtistID(location[0]) +
+                  "-map-detail pointer-events-none"}
                 opacity="0"
                 x="0"
-                y={TEXT_Y_OFFSET * 2.75}
+                y={GetY(location) < height / 2
+                  ? TEXT_Y_OFFSET * 2.75
+                  : -TEXT_Y_OFFSET * 4.75}
                 text-anchor="middle">{location[0]}</text
+              >
+              <text
+                id={Helpers.ArtistID(location[0]) + "-map-origin"}
+                class={Helpers.ArtistID(location[0]) +
+                  "-map-detail pointer-events-none"}
+                opacity="0"
+                x="0"
+                y={GetY(location) < height / 2
+                  ? TEXT_Y_OFFSET * 3.75
+                  : -TEXT_Y_OFFSET * 3.75}
+                text-anchor="middle">{location[1][0].country}</text
+              >
+              <text
+                id={Helpers.ArtistID(location[0]) + "-map-year"}
+                class={Helpers.ArtistID(location[0]) +
+                  "-map-detail pointer-events-none"}
+                opacity="0"
+                x="0"
+                y={GetY(location) < height / 2
+                  ? TEXT_Y_OFFSET * 4.75
+                  : -TEXT_Y_OFFSET * 2.75}
+                text-anchor="middle">{GetYears(location[1])}</text
               >
             </g>
           {/each}
