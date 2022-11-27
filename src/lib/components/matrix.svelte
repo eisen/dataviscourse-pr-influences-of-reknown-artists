@@ -438,26 +438,26 @@
   }
 
   const OnMouseOverRect = (
-    artist1: string,
-    artist2: string,
+    influencer: string,
+    influencee: string,
     row: number,
     col: number
   ) => {
     dispatch("highlight_influence_pair", {
-      artist1: artist1,
-      artist2: artist2,
+      influencer: influencer,
+      influencee: influencee,
       row: row,
       col: col,
     })
   }
 
   export const HighlightPair = (
-    artist1: string,
-    artist2: string,
+    influencer: string,
+    influencee: string,
     row: number,
     col: number
   ) => {
-    const target = `#${ArtistName(artist1)}_"${ArtistName(artist2)}`
+    const target = `#${ArtistName(influencer)}_"${ArtistName(influencee)}`
     // console.log('in row', target, x, y)
     let x = matrixScale(adjMatrix[row][col].y) + offset_x
     let y = matrixScale(adjMatrix[row][col].x) + offset_y
@@ -484,63 +484,43 @@
       .attr("fill", colourHoverBackground)
       .attr("opacity", 1)
 
-    // let influencerName = adjMatrix[row][col].influencer
-    // let influenceeName = adjMatrix[row][col].influencee
-    // d3.select("#text-display")
-    //   .append("text")
-    //   .attr("x", offset_x)
-    //   .attr("y", offset_y - 2.5 * tabPadding)
-    //   .text((d) => {
-    //     return influencerName + " influenced " + influenceeName
-    //   })
-    //   .attr("opacity", 1)
-
     let row_path_id =
-      "#" +
-      ArtistName(adjMatrix[row][col].influencer) +
-      "-rows-path-fill:not(.highlight)"
+      "#" + ArtistName(influencer) + "-rows-path-fill:not(.highlight)"
     let col_path_id =
-      "#" +
-      ArtistName(adjMatrix[row][col].influencee) +
-      "-cols-path-fill:not(.highlight)"
+      "#" + ArtistName(influencee) + "-cols-path-fill:not(.highlight)"
     d3.select(row_path_id).attr("fill", "black").classed("hover", true)
     d3.select(col_path_id).attr("fill", "black").classed("hover", true)
   }
 
   const OnMouseOutRect = (
-    artist1: string,
-    artist2: string,
+    influencer: string,
+    influencee: string,
     row: number,
     col: number
   ) => {
     dispatch("restore_influence_pair", {
-      artist1: artist1,
-      artist2: artist2,
+      influencer: influencer,
+      influencee: influencee,
       row: row,
       col: col,
     })
   }
 
   export const RestorePair = (
-    artist1: string,
-    artist2: string,
+    influencer: string,
+    influencee: string,
     row: number,
     col: number
   ) => {
-    const target = `#${ArtistName(artist1)}_"${ArtistName(artist2)}`
     // console.log('out')
     //d3.select(target).attr("fill", colourRelation)
     d3.select("#rect-hover").selectAll("rect").attr("opacity", 0)
     //d3.select("#text-display").selectAll("text").attr("opacity", 0)
 
     let row_path_id =
-      "#" +
-      ArtistName(adjMatrix[row][col].influencer) +
-      "-rows-path-fill:not(.highlight)"
+      "#" + ArtistName(influencer) + "-rows-path-fill:not(.highlight)"
     let col_path_id =
-      "#" +
-      ArtistName(adjMatrix[row][col].influencee) +
-      "-cols-path-fill:not(.highlight)"
+      "#" + ArtistName(influencee) + "-cols-path-fill:not(.highlight)"
     d3.select(row_path_id).attr("fill", "white").classed("hover", true)
     d3.select(col_path_id).attr("fill", "white").classed("hover", true)
   }
@@ -575,7 +555,7 @@
       DisplayInfluencers(all_influencers, col_name)
   }
 
-  const OnMouseClickInfluencer = (row_name: any) => {
+  const OnMouseClickInfluencer = (row_name: string) => {
     dispatch("select_influencer", {
       artist: row_name,
     })

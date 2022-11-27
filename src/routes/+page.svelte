@@ -186,24 +186,24 @@
   }
 
   const HighlightPair = (ev: any) => {
-    const artist1 = ev.detail.artist1
-    const artist2 = ev.detail.artist2
+    const influencer = ev.detail.influencer
+    const influencee = ev.detail.influencee
     const row = ev.detail.row
     const col = ev.detail.col
-    network.HighlightArtist(artist1)
-    network.HighlightArtist(artist2)
-    matrix.HighlightPair(artist1, artist2, row, col)
+    network.HighlightArtist(influencer)
+    network.HighlightArtist(influencee)
+    matrix.HighlightPair(influencer, influencee, row, col)
   }
 
   const RestorePair = (ev: any) => {
-    const artist1 = ev.detail.artist1
-    const artist2 = ev.detail.artist2
+    const influencer = ev.detail.influencer
+    const influencee = ev.detail.influencee
     const row = ev.detail.row
     const col = ev.detail.col
 
-    network.RestoreArtist(artist1)
-    network.RestoreArtist(artist2)
-    matrix.RestorePair(artist1, artist2, row, col)
+    network.RestoreArtist(influencer)
+    network.RestoreArtist(influencee)
+    matrix.RestorePair(influencer, influencee, row, col)
   }
 
   onMount(async () => {
