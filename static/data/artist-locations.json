@@ -762,10 +762,10 @@
     {
         "artist": "Michelangelo",
         "year": "1475",
-        "city": "Arezzo",
+        "city": "Caprese Michelangelo",
         "country": "Italy",
-        "lat": 43.46276,
-        "lon": 11.88068
+        "lat": 43.633333,
+        "lon": 11.983333
     },
     {
         "artist": "Michelangelo",
@@ -1418,10 +1418,10 @@
     {
         "artist": "Masaccio",
         "year": "1401",
-        "city": "Arezzo",
+        "city": "San Giovanni Valdarno",
         "country": "Italy",
-        "lat": 43.46276,
-        "lon": 11.88068
+        "lat": 43.564444,
+        "lon": 11.532778
     },
     {
         "artist": "Masaccio",

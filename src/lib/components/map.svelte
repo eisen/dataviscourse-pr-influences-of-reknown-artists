@@ -164,6 +164,7 @@
     let min_lat = 180
     let max_lon = -180
     let max_lat = -180
+    projection.center([0, 0])
     projection.scale(original_scale)
     projection.angle(0)
     for (const loc of influences) {
@@ -280,6 +281,8 @@
     projection.center([0, 0])
     projection.scale(original_scale)
     projection.angle(0)
+
+    compass_angle = 0
 
     influences = []
 
