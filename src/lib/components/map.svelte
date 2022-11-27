@@ -573,7 +573,7 @@
       </g>
     {/if}
     <svg
-      id="Layer_1"
+      id="compass"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 {width} {height}"
     >
@@ -604,5 +604,84 @@
         />
       </g>
     </svg>
+    <g transform={Translate(PADDING, height - 70 - PADDING)}>
+      <rect
+        x="-3"
+        y="0"
+        width="280"
+        height="80"
+        fill="white"
+        stroke="black"
+        rx="15"
+      />
+      <g transform="translate(0, 20)">
+        <g transform="translate(115, 20)">
+          <g transform="rotate(0)">
+            <g transform="translate({-RADIUS * 2 + 5}, 0)">
+              <path
+                d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                fill="#cc0000"
+                stroke="black"
+                stroke-width="2"
+              />
+            </g>
+          </g>
+        </g>
+        <line
+          x1="20"
+          y1="20"
+          x2="115"
+          y2="20"
+          stroke="#c00"
+          stroke-width="5"
+          opacity="0.5"
+        />
+        <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="#c00" />
+        <text x="15" y="25">A</text>
+        <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="black" />
+        <text x="110" y="25">B</text>
+        <text x="15" y="50">A influenced B</text>
+      </g>
+      <g transform="translate(140, 20)">
+        <g transform="translate(20, 20)">
+          <g transform="rotate(0)">
+            <g transform="translate({RADIUS * 2 - 15}, 0)">
+              <path
+                d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                fill="#cc0000"
+                stroke="black"
+                stroke-width="2"
+              />
+            </g>
+          </g>
+        </g>
+        <line
+          x1="20"
+          y1="20"
+          x2="115"
+          y2="20"
+          stroke="#c00"
+          stroke-width="5"
+          opacity="0.5"
+        />
+        <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="black" />
+        <text x="15" y="25">A</text>
+        <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="#c00" />
+        <text x="110" y="25">B</text>
+        <text x="15" y="50">A influenced B</text>
+      </g>
+      <g transform="translate(0, 18)">
+        <text
+          font-size="smaller"
+          text-anchor="middle"
+          x="140"
+          y="0"
+          stroke="#c00"
+          opacity="0.5"
+        >
+          Line thickness encodes birth year gap
+        </text>
+      </g>
+    </g>
   </svg>
 </div>
