@@ -179,6 +179,22 @@
     matrix.SelectInfluencee(artist)
   }
 
+  const SelectPair = (ev: any) => {
+    const influencer = ev.detail.influencer
+    const influencee = ev.detail.influencee
+    const row = ev.detail.row
+    const col = ev.detail.col
+
+    const influences = GetArtistInfluencees(influencer)
+
+    map.DisplayInfluences(
+      influencer,
+      influences.filter((d) => d[0] === influencee)
+    )
+    network.DisplayInfluence([influencer, influencee])
+    matrix.DisplayPair(influencer, influencee)
+  }
+
   const ResetInfluences = () => {
     network.ResetInfluences()
     map.ResetInfluences()
@@ -340,6 +356,7 @@
         on:select_influencer={SelectInfluencer}
         on:select_influencee={SelectInfluencee}
         on:reset_influences={ResetInfluences}
+        on:select_pair={SelectPair}
       />
       <Map
         bind:this={map}

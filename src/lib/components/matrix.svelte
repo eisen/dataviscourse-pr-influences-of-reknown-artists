@@ -235,6 +235,18 @@
     }
   }
 
+  export const DisplayPair = (influencer: string, influencee: string) => {
+    ClearMatrix()
+    d3.select("#" + Helpers.ArtistID(influencer) + "-rows-path-fill")
+      .attr("fill", colourHoverRelation)
+      .classed("highlight", true)
+    d3.select("#" + Helpers.ArtistID(influencee) + "-cols-path-fill")
+      .attr("fill", colourHoverRelation)
+      .classed("highlight", true)
+    let rect_id = "#" + ArtistName(influencer + "_" + influencee)
+    d3.select(rect_id).attr("fill", colourHoverRelation)
+  }
+
   const OnMouseOverInfluencee = (name: string) => {
     dispatch("highlight_artist", {
       artist: name,
@@ -567,6 +579,13 @@
     })
   }
 
+  const OnMouseClickPair = (influencer: string, influencee: string) => {
+    dispatch("select_pair", {
+      influencer: influencer,
+      influencee: influencee,
+    })
+  }
+
   export const Initialize = (
     artist_data: Types.ArtistData[],
     influence_data: Types.ArtistInfluence[]
@@ -652,6 +671,13 @@
                 row,
                 col
               )}
+            on:click={(ev) =>
+              adjMatrix[row][col].z === 1
+                ? OnMouseClickPair(
+                    adjMatrix[row][col].influencer,
+                    adjMatrix[row][col].influencee
+                  )
+                : null}
             id={ArtistName(
               adjMatrix[row][col].influencer +
                 "_" +
