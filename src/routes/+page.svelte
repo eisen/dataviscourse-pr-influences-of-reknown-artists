@@ -172,7 +172,7 @@
       allLocations = d3.groups(locs, (d) => d.artist)
     }
 
-    area.Initialize()
+    area.Initialize(locs!, medLocs!)
     chord_deaths.Initialize(locs!, medLocs!)
     chord_mediums.Initialize(locs!, medLocs!)
     map.Initialize(

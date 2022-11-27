@@ -17,19 +17,19 @@
     },
     {
         "artist": "Amrita Sher-Gil",
-        "year": "1941",
-        "city": "Lahore",
-        "country": "Pakistan",
-        "lat": 31.558,
-        "lon": 74.35071
-    },
-    {
-        "artist": "Amrita Sher-Gil",
         "year": "1913",
         "city": "Budapest",
         "country": "Hungary",
         "lat": 47.49801,
         "lon": 19.03991
+    },
+    {
+        "artist": "Amrita Sher-Gil",
+        "year": "1941",
+        "city": "Lahore",
+        "country": "Pakistan",
+        "lat": 31.558,
+        "lon": 74.35071
     },
     {
         "artist": "Andy Warhol",
