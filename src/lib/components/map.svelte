@@ -285,7 +285,7 @@
     features: any,
     influencers_data: Types.InfluenceGroup[],
     influencees_data: Types.InfluenceGroup[],
-    locs: Types.ArtistLocation[],
+    locations: Types.ArtistLocation[],
     artist_data: Types.ArtistData[]
   ) => {
     world_data = feature(features, features.objects.countries)
@@ -304,13 +304,36 @@
     allInfluencees = influencees_data
     allInfluencers = influencers_data
 
-    if (locs) {
-      allLocations = d3.groups(locs, (d) => d.artist)
+    if (locations) {
+      allLocations = d3.groups(locations, (d) => d.artist)
+
+      let smallest_gap = 2000
+      let biggest_gap = 0
+      for (const [influencer, influencees] of allInfluencers) {
+        const influencer_data = locations.filter(
+          (d) => d.artist === influencer
+        )[0]
+        for (const influencee of influencees) {
+          const influencee_data = locations.filter(
+            (d) => d.artist === influencee.artist
+          )[0]
+          const birth_gap = Math.abs(
+            influencer_data.year - influencee_data.year
+          )
+          if (birth_gap > biggest_gap) {
+            biggest_gap = birth_gap
+          }
+
+          if (birth_gap < smallest_gap) {
+            smallest_gap = birth_gap
+          }
+        }
+      }
 
       influence_scale = d3
         .scaleLinear()
-        .domain([0, 600])
-        .range([2, RADIUS * 2])
+        .domain([smallest_gap, biggest_gap])
+        .range([2, RADIUS * 4])
     } else {
       console.error("Unable to load Artist Locations!")
     }
