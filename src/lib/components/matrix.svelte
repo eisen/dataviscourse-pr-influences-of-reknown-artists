@@ -766,4 +766,119 @@
       >
     </g>
   </svg>
+  <span
+    class="absolute isolate inline-flex flex-col rounded-md shadow-sm"
+    style={`left:${offset_x - 60}px; top: ${offset_y}px;`}
+  >
+    <button
+      type="button"
+      class="cursor-pointer relative inline-flex items-center rounded-t-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+    >
+      <svg
+        class="h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 576 512"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+        <path
+          d="M360 432h-48c-13.25 0-24 10.75-24 24S298.8 480 312 480h48c13.25 0 23.1-10.75 23.1-24S373.2 432 360 432zM423.1 304H312C298.8 304 288 314.8 288 328S298.8 352 312 352h111.1c13.25 0 24-10.75 24-24S437.2 304 423.1 304zM487.1 176H312C298.8 176 288 186.8 288 200S298.8 224 312 224h175.1c13.25 0 24-10.75 24-24S501.2 176 487.1 176zM551.1 48H312C298.8 48 288 58.75 288 72S298.8 96 312 96h239.1c13.25 0 24-10.75 24-24S565.2 48 551.1 48zM206.4 335.1L152 394.9V56.02C152 42.76 141.3 32 128 32S104 42.76 104 56.02v338.9l-54.37-58.95c-4.719-5.125-11.16-7.719-17.62-7.719c-5.812 0-11.66 2.094-16.28 6.375c-9.75 8.977-10.34 24.18-1.344 33.94l95.1 104.1c9.062 9.82 26.19 9.82 35.25 0l95.1-104.1c9-9.758 8.406-24.96-1.344-33.94C230.5 325.5 215.3 326.2 206.4 335.1z"
+        />
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="cursor-pointer relative -ml-px inline-flex items-center border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+    >
+      <svg
+        class="h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512 512"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+        <path
+          d="M439.1 432H377.1l81.87-105.3c5.625-7.25 6.656-17.06 2.625-25.28C457.5 293.2 449.1 288 439.1 288h-111.1c-13.25 0-23.1 10.75-23.1 24s10.75 24 23.1 24h62.94L309.1 441.3c-5.623 7.25-6.654 17.06-2.625 25.28C310.5 474.8 318.8 480 327.1 480h111.1c13.25 0 23.1-10.75 23.1-24S453.2 432 439.1 432zM477.5 189.3l-71.1-144c-8.123-16.31-34.81-16.31-42.94 0l-71.1 144c-5.938 11.84-1.125 26.25 10.75 32.19c11.9 5.938 26.25 1.156 32.19-10.75L338.8 200h90.34l5.359 10.72C438.7 219.2 447.2 224 456 224c3.594 0 7.25-.8125 10.69-2.531C478.6 215.5 483.4 201.1 477.5 189.3zM362.8 152l21.17-42.34L405.2 152H362.8zM206.4 335.1L152 394.9V56.02c0-13.27-10.75-24.02-24-24.02S104 42.76 104 56.02v338.9l-54.37-58.95c-4.719-5.125-11.16-7.719-17.62-7.719c-5.812 0-11.66 2.094-16.28 6.375c-9.75 8.977-10.34 24.18-1.344 33.94l95.1 104.1c9.062 9.82 26.19 9.82 35.25 0l95.1-104.1c9-9.758 8.406-24.96-1.344-33.94C230.5 325.5 215.3 326.2 206.4 335.1z"
+        />
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="cursor-pointer relative -ml-px inline-flex items-center rounded-b-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+    >
+      <svg
+        class="h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 576 512"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+        <path
+          d="M312 96h48c13.25 0 23.1-10.75 23.1-24S373.2 48 360 48h-48C298.8 48 288 58.75 288 72S298.8 96 312 96zM312 224h111.1c13.25 0 24-10.75 24-24s-10.75-24-24-24H312C298.8 176 288 186.8 288 200S298.8 224 312 224zM551.1 432H312c-13.25 0-24 10.75-24 24S298.8 480 312 480h239.1c13.25 0 24-10.75 24-24S565.2 432 551.1 432zM312 352h175.1c13.25 0 24-10.75 24-24s-10.75-24-24-24H312C298.8 304 288 314.8 288 328S298.8 352 312 352zM206.4 335.1L152 394.9V56.02C152 42.76 141.3 32 128 32S104 42.76 104 56.02v338.9l-54.37-58.95c-4.719-5.125-11.16-7.719-17.62-7.719c-5.812 0-11.66 2.094-16.28 6.375c-9.75 8.977-10.34 24.18-1.344 33.94l95.1 104.1c9.062 9.82 26.19 9.82 35.25 0l95.1-104.1c9-9.758 8.406-24.96-1.344-33.94C230.5 325.5 215.3 326.2 206.4 335.1z"
+        />
+      </svg>
+    </button>
+  </span>
+  <span
+    class="absolute isolate inline-flex rounded-md shadow-sm"
+    style={`left:${offset_x}px; top: ${offset_y - 60}px;`}
+  >
+    <button
+      type="button"
+      class="cursor-pointer relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+    >
+      <svg
+        class="h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 576 512"
+        fill="currentColor"
+        aria-hidden="true"
+        transform="rotate(-90)"
+      >
+        <!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+        <path
+          d="M360 432h-48c-13.25 0-24 10.75-24 24S298.8 480 312 480h48c13.25 0 23.1-10.75 23.1-24S373.2 432 360 432zM423.1 304H312C298.8 304 288 314.8 288 328S298.8 352 312 352h111.1c13.25 0 24-10.75 24-24S437.2 304 423.1 304zM487.1 176H312C298.8 176 288 186.8 288 200S298.8 224 312 224h175.1c13.25 0 24-10.75 24-24S501.2 176 487.1 176zM551.1 48H312C298.8 48 288 58.75 288 72S298.8 96 312 96h239.1c13.25 0 24-10.75 24-24S565.2 48 551.1 48zM206.4 335.1L152 394.9V56.02C152 42.76 141.3 32 128 32S104 42.76 104 56.02v338.9l-54.37-58.95c-4.719-5.125-11.16-7.719-17.62-7.719c-5.812 0-11.66 2.094-16.28 6.375c-9.75 8.977-10.34 24.18-1.344 33.94l95.1 104.1c9.062 9.82 26.19 9.82 35.25 0l95.1-104.1c9-9.758 8.406-24.96-1.344-33.94C230.5 325.5 215.3 326.2 206.4 335.1z"
+        />
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="cursor-pointer relative -ml-px inline-flex items-center border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+    >
+      <svg
+        class="h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512 512"
+        fill="currentColor"
+        transform="rotate(-90)"
+        aria-hidden="true"
+      >
+        <!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+        <path
+          d="M439.1 432H377.1l81.87-105.3c5.625-7.25 6.656-17.06 2.625-25.28C457.5 293.2 449.1 288 439.1 288h-111.1c-13.25 0-23.1 10.75-23.1 24s10.75 24 23.1 24h62.94L309.1 441.3c-5.623 7.25-6.654 17.06-2.625 25.28C310.5 474.8 318.8 480 327.1 480h111.1c13.25 0 23.1-10.75 23.1-24S453.2 432 439.1 432zM477.5 189.3l-71.1-144c-8.123-16.31-34.81-16.31-42.94 0l-71.1 144c-5.938 11.84-1.125 26.25 10.75 32.19c11.9 5.938 26.25 1.156 32.19-10.75L338.8 200h90.34l5.359 10.72C438.7 219.2 447.2 224 456 224c3.594 0 7.25-.8125 10.69-2.531C478.6 215.5 483.4 201.1 477.5 189.3zM362.8 152l21.17-42.34L405.2 152H362.8zM206.4 335.1L152 394.9V56.02c0-13.27-10.75-24.02-24-24.02S104 42.76 104 56.02v338.9l-54.37-58.95c-4.719-5.125-11.16-7.719-17.62-7.719c-5.812 0-11.66 2.094-16.28 6.375c-9.75 8.977-10.34 24.18-1.344 33.94l95.1 104.1c9.062 9.82 26.19 9.82 35.25 0l95.1-104.1c9-9.758 8.406-24.96-1.344-33.94C230.5 325.5 215.3 326.2 206.4 335.1z"
+        />
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="cursor-pointer relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+    >
+      <svg
+        class="h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 576 512"
+        fill="currentColor"
+        transform="rotate(-90)"
+        aria-hidden="true"
+      >
+        <!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+        <path
+          d="M312 96h48c13.25 0 23.1-10.75 23.1-24S373.2 48 360 48h-48C298.8 48 288 58.75 288 72S298.8 96 312 96zM312 224h111.1c13.25 0 24-10.75 24-24s-10.75-24-24-24H312C298.8 176 288 186.8 288 200S298.8 224 312 224zM551.1 432H312c-13.25 0-24 10.75-24 24S298.8 480 312 480h239.1c13.25 0 24-10.75 24-24S565.2 432 551.1 432zM312 352h175.1c13.25 0 24-10.75 24-24s-10.75-24-24-24H312C298.8 304 288 314.8 288 328S298.8 352 312 352zM206.4 335.1L152 394.9V56.02C152 42.76 141.3 32 128 32S104 42.76 104 56.02v338.9l-54.37-58.95c-4.719-5.125-11.16-7.719-17.62-7.719c-5.812 0-11.66 2.094-16.28 6.375c-9.75 8.977-10.34 24.18-1.344 33.94l95.1 104.1c9.062 9.82 26.19 9.82 35.25 0l95.1-104.1c9-9.758 8.406-24.96-1.344-33.94C230.5 325.5 215.3 326.2 206.4 335.1z"
+        />
+      </svg>
+    </button>
+  </span>
 </div>
