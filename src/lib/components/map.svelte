@@ -349,7 +349,11 @@
       <g id="map">
         {#key update_map}
           <g id="fill">
-            <path d={path(graticuleOutline)} fill="#def3f6" stroke="none" />
+            <path
+              d={path(graticuleOutline)}
+              fill={Helpers.SeaColor}
+              stroke="none"
+            />
           </g>
           <g id="graticules">
             {#each graticuleUle as line}

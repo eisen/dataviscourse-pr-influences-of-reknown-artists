@@ -8,9 +8,9 @@
   export let width: number = 0
   export let height: number = 0
 
-  const colourRelation = "#800080"
+  const colourRelation = "#a2ebf5"
   const colourNoRelation = "transparent"
-  const colourHoverRelation = "#F93B3B"
+  const colourHoverRelation = "#c00"
   const colourHoverBackground = "#dddddd"
   const DURATION = 100
 
@@ -139,6 +139,11 @@
     all_influencers: Types.ArtistInfluence[],
     col_name: string
   ) => {
+    console.log("#" + Helpers.ArtistID(col_name) + "-cols-path-fill")
+    d3.select("#" + Helpers.ArtistID(col_name) + "-cols-path-fill")
+      .attr("fill", colourHoverRelation)
+      .classed("highlight", true)
+
     // All text to display
     let string_influencers = ""
     let i = 0
@@ -185,6 +190,11 @@
     all_influencees: Types.ArtistInfluence[],
     row_name: string
   ) => {
+    console.log("#" + Helpers.ArtistID(row_name) + "-rows-path-fill")
+    d3.select("#" + Helpers.ArtistID(row_name) + "-rows-path-fill")
+      .attr("fill", colourHoverRelation)
+      .classed("highlight", true)
+
     // All text to display
     let string_influencees = ""
     let i = 0
@@ -256,10 +266,11 @@
   }
 
   const HighlightInfluencer = (row_name: string) => {
-    d3.select("#" + Helpers.ArtistID(row_name) + "-rows-path-fill").attr(
-      "fill",
-      "black"
+    d3.select(
+      "#" + Helpers.ArtistID(row_name) + "-rows-path-fill:not(.highlight)"
     )
+      .attr("fill", "black")
+      .classed("hover", true)
 
     let all_influencees = influences.filter((d) => d.artist === row_name) // all influences
 
@@ -304,11 +315,11 @@
   }
 
   const HighlightInfluencee = (col_name: string) => {
-    console.log("#" + Helpers.ArtistID(col_name) + "-cols-path-fill")
-    d3.select("#" + Helpers.ArtistID(col_name) + "-cols-path-fill").attr(
-      "fill",
-      "black"
+    d3.select(
+      "#" + Helpers.ArtistID(col_name) + "-cols-path-fill:not(.highlight)"
     )
+      .attr("fill", "black")
+      .classed("hover", true)
 
     let all_influencers = influences.filter((d) => d.influenced === col_name)
 
@@ -353,7 +364,9 @@
   }
 
   export const RestoreInfluencer = (target: string) => {
-    d3.select(target + "-rows-path-fill").attr("fill", "white")
+    d3.select(target + "-rows-path-fill.hover:not(.highlight)")
+      .attr("fill", "white")
+      .classed("hover", false)
     d3.select("#rect-hover")
       .selectAll("rect")
       .transition()
@@ -362,7 +375,9 @@
   }
 
   export const RestoreInfluencee = (target: string) => {
-    d3.select(target + "-cols-path-fill").attr("fill", "white")
+    d3.select(target + "-cols-path-fill.hover:not(.highlight)")
+      .attr("fill", "white")
+      .classed("hover", false)
     d3.select("#rect-hover")
       .selectAll("rect")
       .transition()
@@ -448,46 +463,72 @@
     //   .attr("opacity", 1)
 
     let row_path_id =
-      "#" + ArtistName(adjMatrix[row][col].influencer) + "-rows-path-fill"
+      "#" +
+      ArtistName(adjMatrix[row][col].influencer) +
+      "-rows-path-fill:not(.highlight)"
     let col_path_id =
-      "#" + ArtistName(adjMatrix[row][col].influencee) + "-cols-path-fill"
-    d3.select(row_path_id).attr("fill", "black")
-    d3.select(col_path_id).attr("fill", "black")
+      "#" +
+      ArtistName(adjMatrix[row][col].influencee) +
+      "-cols-path-fill:not(.highlight)"
+    d3.select(row_path_id).attr("fill", "black").classed("hover", true)
+    d3.select(col_path_id).attr("fill", "black").classed("hover", true)
   }
 
   const OnMouseOutRect = (target: any, row: number, col: number) => {
     // console.log('out')
-    d3.select(target).attr("fill", colourRelation)
+    //d3.select(target).attr("fill", colourRelation)
     d3.select("#rect-hover").selectAll("rect").attr("opacity", 0)
     //d3.select("#text-display").selectAll("text").attr("opacity", 0)
 
     let row_path_id =
-      "#" + ArtistName(adjMatrix[row][col].influencer) + "-rows-path-fill"
+      "#" +
+      ArtistName(adjMatrix[row][col].influencer) +
+      "-rows-path-fill:not(.highlight)"
     let col_path_id =
-      "#" + ArtistName(adjMatrix[row][col].influencee) + "-cols-path-fill"
-    d3.select(row_path_id).attr("fill", "white")
-    d3.select(col_path_id).attr("fill", "white")
+      "#" +
+      ArtistName(adjMatrix[row][col].influencee) +
+      "-cols-path-fill:not(.highlight)"
+    d3.select(row_path_id).attr("fill", "white").classed("hover", true)
+    d3.select(col_path_id).attr("fill", "white").classed("hover", true)
+  }
+
+  const ClearMatrix = () => {
+    d3.select("#adjacency_matrix")
+      .selectAll("rect.used")
+      .attr("fill", Helpers.SeaColor)
+    d3.select("#text-display").selectAll("text").attr("opacity", 0)
+    d3.selectAll(".highlight").attr("fill", "white").classed("highlight", false)
+  }
+
+  export const DisplayInfluence = (name: string) => {
+    ClearMatrix()
+    let all_influencees = influences.filter((d) => d.artist === name) //all influences
+    let all_influencers = influences.filter((d) => d.influenced === name)
+    if (all_influencees.length > 0) DisplayInfluencees(all_influencees, name)
+    if (all_influencers.length > 0) DisplayInfluencers(all_influencers, name)
+  }
+
+  export const SelectInfluencer = (row_name: string) => {
+    ClearMatrix()
+    let all_influencees = influences.filter((d) => d.artist === row_name) //all influences
+    if (all_influencees.length > 0)
+      DisplayInfluencees(all_influencees, row_name)
+  }
+
+  export const SelectInfluencee = (col_name: string) => {
+    ClearMatrix()
+    let all_influencers = influences.filter((d) => d.influenced === col_name)
+    if (all_influencers.length > 0)
+      DisplayInfluencers(all_influencers, col_name)
   }
 
   const OnMouseClickInfluencer = (row_name: any) => {
-    d3.select("#adjacency_matrix")
-      .selectAll("rect")
-      .attr("fill", colourRelation)
-    d3.select("#text-display").selectAll("text").attr("opacity", 0)
-    let all_influencees = influences.filter((d) => d.artist === row_name) //all influences
-    DisplayInfluencees(all_influencees, row_name)
     dispatch("select_influencer", {
       artist: row_name,
     })
   }
 
   const OnMouseClickInfluencee = (col_name: string) => {
-    d3.select("#adjacency_matrix")
-      .selectAll("rect")
-      .attr("fill", colourRelation)
-    d3.select("#text-display").selectAll("text").attr("opacity", 0)
-    let all_influencers = influences.filter((d) => d.influenced === col_name)
-    DisplayInfluencers(all_influencers, col_name)
     dispatch("select_influencee", {
       artist: col_name,
     })
@@ -547,65 +588,69 @@
       <g id="rect-hover" />
       {#each influencers as i, row}
         {#each influencees as j, col}
-          {#if adjMatrix[row][col].z === 1}
-            <!-- TODO: check the x and y, I changed them as the boxes were diff -->
-            <rect
-              on:mouseover={(ev) =>
-                OnMouseOverRect(
-                  "#" +
-                    ArtistName(
-                      adjMatrix[row][col].influencer +
-                        "_" +
-                        adjMatrix[row][col].influencee
-                    ),
-                  row,
-                  col
-                )}
-              on:focus={(ev) =>
-                OnMouseOverRect(
-                  "#" +
-                    ArtistName(
-                      adjMatrix[row][col].influencer +
-                        "_" +
-                        adjMatrix[row][col].influencee
-                    ),
-                  row,
-                  col
-                )}
-              on:mouseout={(ev) =>
-                OnMouseOutRect(
-                  "#" +
-                    ArtistName(
-                      adjMatrix[row][col].influencer +
-                        "_" +
-                        adjMatrix[row][col].influencee
-                    ),
-                  row,
-                  col
-                )}
-              on:blur={(ev) =>
-                OnMouseOutRect(
-                  "#" +
-                    ArtistName(
-                      adjMatrix[row][col].influencer +
-                        "_" +
-                        adjMatrix[row][col].influencee
-                    ),
-                  row,
-                  col
-                )}
-              id={ArtistName(
-                adjMatrix[row][col].influencer +
-                  "_" +
-                  adjMatrix[row][col].influencee
+          <!-- {#if adjMatrix[row][col].z === 1} -->
+          <!-- TODO: check the x and y, I changed them as the boxes were diff -->
+          <rect
+            on:mouseover={(ev) =>
+              OnMouseOverRect(
+                "#" +
+                  ArtistName(
+                    adjMatrix[row][col].influencer +
+                      "_" +
+                      adjMatrix[row][col].influencee
+                  ),
+                row,
+                col
               )}
-              x={matrixScale(adjMatrix[row][col].y) + offset_x}
-              y={matrixScale(adjMatrix[row][col].x) + offset_y}
-              width={matrixScale.bandwidth()}
-              height={matrixScale.bandwidth()}
-              fill={colourRelation}
-            />
-          {/if}
+            on:focus={(ev) =>
+              OnMouseOverRect(
+                "#" +
+                  ArtistName(
+                    adjMatrix[row][col].influencer +
+                      "_" +
+                      adjMatrix[row][col].influencee
+                  ),
+                row,
+                col
+              )}
+            on:mouseout={(ev) =>
+              OnMouseOutRect(
+                "#" +
+                  ArtistName(
+                    adjMatrix[row][col].influencer +
+                      "_" +
+                      adjMatrix[row][col].influencee
+                  ),
+                row,
+                col
+              )}
+            on:blur={(ev) =>
+              OnMouseOutRect(
+                "#" +
+                  ArtistName(
+                    adjMatrix[row][col].influencer +
+                      "_" +
+                      adjMatrix[row][col].influencee
+                  ),
+                row,
+                col
+              )}
+            id={ArtistName(
+              adjMatrix[row][col].influencer +
+                "_" +
+                adjMatrix[row][col].influencee
+            )}
+            style="outline: none;"
+            x={matrixScale(adjMatrix[row][col].y) + offset_x}
+            y={matrixScale(adjMatrix[row][col].x) + offset_y}
+            width={matrixScale.bandwidth()}
+            height={matrixScale.bandwidth()}
+            class={adjMatrix[row][col].z === 1 ? "used" : "empty"}
+            fill={adjMatrix[row][col].z === 1
+              ? colourRelation
+              : colourNoRelation}
+          />
+          <!-- {/if} -->
         {/each}
       {/each}
     </g>

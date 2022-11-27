@@ -142,6 +142,7 @@
 
     map.DisplayInfluences(artist, influences)
     network.DisplayInfluence(influences.map((d) => d[0]))
+    matrix.DisplayInfluence(artist)
   }
 
   const HighlightArtist = (ev: any) => {
@@ -165,6 +166,7 @@
 
     map.DisplayInfluences(artist, influences)
     network.DisplayInfluence(influences.map((d) => d[0]))
+    matrix.SelectInfluencer(artist)
   }
 
   const SelectInfluencee = (ev: any) => {
@@ -174,6 +176,7 @@
 
     map.DisplayInfluences(artist, influences)
     network.DisplayInfluence(influences.map((d) => d[0]))
+    matrix.SelectInfluencee(artist)
   }
 
   onMount(async () => {
