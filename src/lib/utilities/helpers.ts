@@ -1,6 +1,8 @@
 import * as d3 from "d3"
 import { Types } from "."
 
+export const SeaColor = "#def3f6"
+
 export const ColorScheme = [
   "rgb(211, 157, 69)",
   "#ff69b4",

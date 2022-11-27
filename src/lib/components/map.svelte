@@ -4,10 +4,14 @@
   import { geoWinkel3 } from "d3-geo-projection"
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
+  import { createEventDispatcher, tick } from "svelte"
+
+  const dispatch = createEventDispatcher()
 
   const RADIUS = 15
   const TEXT_Y_OFFSET = 20
   const PADDING = 20
+  const DURATION = 1000
 
   let simWorker: Worker | undefined = new Worker(
     new URL("workers/sim-nodes.worker.ts?worker", import.meta.url)
@@ -15,6 +19,7 @@
 
   const OnWorkerMessage = (event: any) => {
     influences = event.data.nodes
+    selected = influences.filter((d) => d[0] === selected[0])[0]
   }
 
   simWorker.onmessage = OnWorkerMessage
@@ -64,12 +69,48 @@
 
   let projection: any
   let path: any
+  let original_scale: number
+  $: update_map = 0
 
-  const tickEvery = 20
-  const yearEvery = 100
+  $: compass_angle = 0
+  $: transform_compass =
+    compass_angle === 0
+      ? `translate(${width - 25}, ${
+          height - 60
+        }) rotate(${compass_angle}) scale(2)`
+      : `translate(${width - 65}, ${
+          height - 5
+        }) rotate(${compass_angle}) scale(2)`
+
+  const Magnitude = (x: number, y: number): number => {
+    return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
+  }
+
+  const GetCurve = (source: number[], target: number[]): string => {
+    if (source[0] === target[0] && source[1] === target[1]) return ""
+
+    const path = d3.path()
+    const curve = d3.curveCatmullRom(path)
+
+    const tangent = [target[0] - source[0], target[1] - source[1]]
+    const normal = [
+      -tangent[1] / Magnitude(tangent[0], tangent[1]),
+      tangent[0] / Magnitude(tangent[0], tangent[1]),
+    ]
+
+    curve.lineStart()
+    curve.point(source[0], source[1])
+    // curve.point(
+    //   RADIUS * 2 * normal[0] + (1 * (target[0] + source[0])) / 2,
+    //   RADIUS * 2 * normal[1] + (1 * (target[1] + source[1])) / 2
+    // )
+    curve.point(target[0], target[1])
+    curve.lineEnd()
+
+    return path.toString()
+  }
 
   let tl_x_scale: d3.ScaleLinear<number, number, never>
-  let tl_x_axis = null
 
   let influence_scale: d3.ScaleLinear<number, number, never>
 
@@ -90,6 +131,28 @@
     }
   }
 
+  const InfluencedBy = (influencee_name: string, influencer_name: string) => {
+    const influencer = allInfluencees.find((d) => d[0] === influencer_name)
+    if (influencer) {
+      const influenced = influencer[1].find(
+        (d) => d.influenced === influencee_name
+      )
+      if (influenced) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
+  }
+
+  const GetInfluenceAngle = (source: number[], target: number[]): number => {
+    return (
+      (Math.atan2(target[1] - source[1], target[0] - source[0]) * 180) / Math.PI
+    )
+  }
+
   export const DisplayInfluences = (
     artist: string,
     influences: Types.LocationGroup[]
@@ -97,11 +160,66 @@
     selected = allLocations.filter((d) => d[0] === artist)[0]
     influences.push(selected)
 
-    for (const location of influences) {
-      location.x = Helpers.GetXfromLatLon(projection, location[1])
-      location.y = Helpers.GetYfromLatLon(projection, location[1])
+    let min_lon = 180
+    let min_lat = 180
+    let max_lon = -180
+    let max_lat = -180
+    projection.center([0, 0])
+    projection.scale(original_scale)
+    projection.angle(0)
+    for (const loc of influences) {
+      loc.x = Helpers.GetXfromLatLon(projection, loc[1])
+      loc.y = Helpers.GetYfromLatLon(projection, loc[1])
+      if (loc[1][0].lon > max_lon) max_lon = loc[1][0].lon
+      if (loc[1][0].lat > max_lat) max_lat = loc[1][0].lat
+      if (loc[1][0].lon < min_lon) min_lon = loc[1][0].lon
+      if (loc[1][0].lat < min_lat) min_lat = loc[1][0].lat
     }
 
+    const location = [(max_lon + min_lon) / 2, (max_lat + min_lat) / 2]
+
+    const feature = [
+      [max_lat, min_lon],
+      [min_lat, max_lon],
+    ]
+
+    const top_left = projection(feature[0])
+    const bottom_right = projection(feature[1])
+
+    const scale =
+      0.6 /
+      Math.max(
+        Math.abs(bottom_right[1] - top_left[1]) / width,
+        Math.abs(bottom_right[0] - top_left[0]) / height
+      )
+
+    projection.center(location)
+    projection.translate([width / 2, height / 2])
+    projection.scale(scale * original_scale)
+    if (
+      Math.abs(bottom_right[0] - top_left[0]) >
+      Math.abs(bottom_right[1] - top_left[1])
+    ) {
+      // Taller than wide
+      projection.angle(90)
+      compass_angle = -90
+    } else {
+      compass_angle = 0
+    }
+
+    update_map += 1
+
+    for (const loc of influences) {
+      loc.x = Helpers.GetXfromLatLon(projection, loc[1])
+      loc.y = Helpers.GetYfromLatLon(projection, loc[1])
+    }
+
+    simWorker!.postMessage({
+      nodes: influences,
+      radius: RADIUS,
+    })
+
+    // Run twice so the text elements are created and the TextWidth and TextHeight helper functions can properly work
     simWorker!.postMessage({
       nodes: influences,
       radius: RADIUS,
@@ -137,6 +255,44 @@
     return artist.thumbnail
   }
 
+  const OnMouseOver = (target: any) => {
+    d3.select(target + "-text-map")
+      .transition()
+      .duration(DURATION)
+      .attr("opacity", 1)
+    d3.select(target + "-rect-map")
+      .transition()
+      .duration(DURATION)
+      .attr("opacity", 1)
+  }
+
+  const OnMouseOut = (target: any) => {
+    d3.select(target + "-text-map")
+      .transition()
+      .duration(DURATION)
+      .attr("opacity", 0)
+    d3.select(target + "-rect-map")
+      .transition()
+      .duration(DURATION)
+      .attr("opacity", 0)
+  }
+
+  export const ResetInfluences = () => {
+    projection.center([0, 0])
+    projection.scale(original_scale)
+    projection.angle(0)
+
+    compass_angle = 0
+
+    influences = []
+
+    update_map += 1
+  }
+
+  const OnMouseClickReset = () => {
+    dispatch("reset_influences", {})
+  }
+
   export const Initialize = (
     features: any,
     influencers_data: Types.InfluenceGroup[],
@@ -144,13 +300,12 @@
     locs: Types.ArtistLocation[],
     artist_data: Types.ArtistData[]
   ) => {
-    projection = geoWinkel3()
-      .translate([width / 2, height / 2])
-      .scale(height / 3.5)
-    path = d3.geoPath().projection(projection)
-
     world_data = feature(features, features.objects.countries)
     neighbors_data = neighbors(features.objects.countries.geometries)
+
+    projection = geoWinkel3().fitSize([width, height + 4], world_data)
+    path = d3.geoPath().projection(projection)
+    original_scale = projection.scale()
 
     country_color = new Array(world_data.features.length)
     for (let i = 0; i < country_color.length; ++i) {
@@ -176,12 +331,6 @@
         .scaleLinear()
         .domain([oldestYear!, youngestYear!])
         .range([0, width])
-      tl_x_axis = d3
-        .axisBottom(tl_x_scale)
-        .tickFormat((d) => {
-          return Number(d) % yearEvery === 0 ? String(d) : ""
-        })
-        .ticks((youngestYear! - oldestYear!) / tickEvery)
     } else {
       console.error("Unable to load Artist Locations!")
     }
@@ -199,50 +348,60 @@
     class="inline-block absolute top-0 left-0"
     viewBox="0, 0, {width}, {height}"
     preserveAspectRatio="xMidYMid meet"
+    on:click={OnMouseClickReset}
   >
-    <style>
-      .pointer {
-        cursor: pointer;
-      }
-      .slider {
-        cursor: ew-resize;
-      }
-      #handle {
-        fill: #000000;
-        stroke: #000000;
-        stroke-miterlimit: 10;
-      }
-    </style>
+    <defs>
+      <style>
+        .pointer {
+          cursor: pointer;
+        }
+        .slider {
+          cursor: ew-resize;
+        }
+        #handle {
+          fill: #000000;
+          stroke: #000000;
+          stroke-miterlimit: 10;
+        }
+      </style>
+    </defs>
+
     {#if path}
       <g id="map">
-        <g id="fill">
-          <path d={path(graticuleOutline)} fill="#def3f6" stroke="none" />
-        </g>
-        <g id="graticules">
-          {#each graticuleUle as line}
-            <path d={path(line)} fill="none" stroke="lightgray" />
-          {/each}
-        </g>
-        <g id="countries">
-          {#if world_data}
-            {#each world_data.features as feature, idx}
-              <path
-                id={feature.id}
-                d={path(feature)}
-                stroke="none"
-                fill={d3.schemePastel2[country_color[idx]]}
-              />
+        {#key update_map}
+          <g id="fill">
+            <path
+              d={path(graticuleOutline)}
+              fill={Helpers.SeaColor}
+              stroke="none"
+            />
+          </g>
+          <g id="graticules">
+            {#each graticuleUle as line}
+              <path d={path(line)} fill="none" stroke="lightgray" />
             {/each}
-          {/if}
-        </g>
-        <g id="outline">
-          <path
-            d={path(graticuleOutline)}
-            fill="none"
-            stroke="lightgray"
-            stroke-width="2"
-          />
-        </g>
+          </g>
+          <g id="countries">
+            {#if world_data}
+              {#each world_data.features as feature, idx}
+                <path
+                  id={feature.id}
+                  d={path(feature)}
+                  stroke="none"
+                  fill={d3.schemePastel2[country_color[idx]]}
+                />
+              {/each}
+            {/if}
+          </g>
+          <g id="outline">
+            <path
+              d={path(graticuleOutline)}
+              fill="none"
+              stroke="lightgray"
+              stroke-width="2"
+            />
+          </g>
+        {/key}
         <g id="artists">
           {#each influences as location}
             <g>
@@ -259,72 +418,141 @@
                 r="2"
                 fill="black"
               />
-
-              <line
-                x2={GetX(location)}
-                y2={GetY(location)}
-                x1={GetX(selected)}
-                y1={GetY(selected)}
-                stroke="red"
-                opacity="0.5"
-                stroke-width={GetYearGap(selected, location)}
-              />
+              {#if selected[0] !== location[0]}
+                {#if InfluencedBy(selected[0], location[0])}
+                  <g transform="translate({GetX(location)}, {GetY(location)})"
+                    ><g
+                      transform="rotate({GetInfluenceAngle(
+                        [GetX(location), GetY(location)],
+                        [GetX(selected), GetY(selected)]
+                      )})"
+                    >
+                      <g transform="translate({RADIUS * 2}, 0)">
+                        <path
+                          d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                          fill="#cc0000"
+                          stroke="black"
+                          stroke-width="2"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <path
+                    d={GetCurve(
+                      [GetX(location), GetY(location)],
+                      [GetX(selected), GetY(selected)]
+                    )}
+                    stroke="#c00"
+                    fill="none"
+                    opacity="0.5"
+                    stroke-width={GetYearGap(selected, location)}
+                  />
+                {:else}
+                  <g transform="translate({GetX(location)}, {GetY(location)})">
+                    <g
+                      transform="rotate({GetInfluenceAngle(
+                        [GetX(selected), GetY(selected)],
+                        [GetX(location), GetY(location)]
+                      )})"
+                    >
+                      <g transform="translate({-RADIUS * 2 - 10}, 0)">
+                        <path
+                          d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                          fill="#cc0000"
+                          stroke="black"
+                          stroke-width="2"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <path
+                    d={GetCurve(
+                      [GetX(selected), GetY(selected)],
+                      [GetX(location), GetY(location)]
+                    )}
+                    stroke="#c00"
+                    fill="none"
+                    opacity="0.5"
+                    stroke-width={GetYearGap(selected, location)}
+                  />
+                {/if}
+              {/if}
             </g>
           {/each}
           {#each influences as location}
             <g
-              id={Helpers.ArtistID(location[0]) + "-group"}
+              id={Helpers.ArtistID(location[0]) + "-group-map"}
               transform={Translate(GetX(location), GetY(location))}
+              on:focus={(ev) =>
+                OnMouseOver("#" + Helpers.ArtistID(location[0]))}
+              on:mouseover={(ev) =>
+                OnMouseOver("#" + Helpers.ArtistID(location[0]))}
+              on:blur={(ev) => OnMouseOut("#" + Helpers.ArtistID(location[0]))}
+              on:mouseout={(ev) =>
+                OnMouseOut("#" + Helpers.ArtistID(location[0]))}
               transition:fade
+              style="outline: none;"
             >
               {#if location[0] === selected[0]}
                 <image
-                  id={Helpers.ArtistID(location[0]) + "-image"}
+                  id={Helpers.ArtistID(location[0]) + "-image-map"}
                   href={Config.server_url + GetThumbnail(location[0])}
-                  height={RADIUS * 2}
-                  width={RADIUS * 2}
-                  x={-RADIUS}
-                  y={-RADIUS}
+                  style="outline: none;"
+                  height={RADIUS * 4}
+                  width={RADIUS * 4}
+                  x={-RADIUS * 2}
+                  y={-RADIUS * 2}
                 />
                 <circle
                   cx="0"
                   cy="0"
-                  r={RADIUS}
-                  stroke="white"
+                  r={RADIUS * 2}
+                  stroke="#c00"
                   stroke-width="2"
                   fill="none"
                 />
               {:else}
                 <image
-                  id={Helpers.ArtistID(location[0]) + "-image"}
+                  id={Helpers.ArtistID(location[0]) + "-image-map"}
                   href={Config.server_url + GetThumbnail(location[0])}
-                  height={RADIUS * 2}
-                  width={RADIUS * 2}
-                  x={-RADIUS}
-                  y={-RADIUS}
+                  style="outline: none;"
+                  height={RADIUS * 4}
+                  width={RADIUS * 4}
+                  x={-RADIUS * 2}
+                  y={-RADIUS * 2}
                 />
-                <circle cx="0" cy="0" r={RADIUS} stroke="black" fill="none" />
+                <circle
+                  cx="0"
+                  cy="0"
+                  r={RADIUS * 2}
+                  stroke="black"
+                  fill="none"
+                />
               {/if}
+            </g>
+          {/each}
+          {#each influences as location}
+            <g transform={Translate(GetX(location), GetY(location))}>
               <rect
-                id={Helpers.ArtistID(location[0]) + "-rect"}
+                id={Helpers.ArtistID(location[0]) + "-rect-map"}
                 x={-(
                   Helpers.TextWidth(
-                    "#" + Helpers.ArtistID(location[0]) + "-text",
+                    "#" + Helpers.ArtistID(location[0]) + "-text-map",
                     location[0]
                   ) + PADDING
                 ) / 2}
                 width={Helpers.TextWidth(
-                  "#" + Helpers.ArtistID(location[0]) + "-text",
+                  "#" + Helpers.ArtistID(location[0]) + "-text-map",
                   location[0]
                 ) + PADDING}
-                y={(TEXT_Y_OFFSET +
+                y={(TEXT_Y_OFFSET * 2.5 +
                   Helpers.TextHeight(
-                    "#" + Helpers.ArtistID(location[0]) + "-text",
+                    "#" + Helpers.ArtistID(location[0]) + "-text-map",
                     location[0]
                   )) /
                   2}
                 height={Helpers.TextHeight(
-                  "#" + Helpers.ArtistID(location[0]) + "-text",
+                  "#" + Helpers.ArtistID(location[0]) + "-text-map",
                   location[0]
                 ) +
                   PADDING -
@@ -332,14 +560,14 @@
                 fill="white"
                 stroke="black"
                 rx="15"
-                opacity="0.5"
+                opacity="0"
                 class="pointer-events-none"
               />
               <text
-                id={Helpers.ArtistID(location[0]) + "-text"}
-                opacity="1"
+                id={Helpers.ArtistID(location[0]) + "-text-map"}
+                opacity="0"
                 x="0"
-                y={TEXT_Y_OFFSET * 2}
+                y={TEXT_Y_OFFSET * 2.75}
                 text-anchor="middle">{location[0]}</text
               >
             </g>
@@ -347,5 +575,116 @@
         </g>
       </g>
     {/if}
+    <svg
+      id="compass"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 {width} {height}"
+    >
+      <defs>
+        <style>
+          .cls-1,
+          .cls-2 {
+            fill: #c00;
+          }
+          .cls-2 {
+            stroke: #000;
+            stroke-miterlimit: 10;
+            stroke-width: 0.25px;
+          }
+        </style>
+      </defs>
+      <g transform={transform_compass}>
+        <path
+          d="M4.24,28.34l4.24-11.31L4.24,5.71,0,17.02l4.24,11.31Zm0-2.85l-2.8-7.47H7.04s-2.8,7.47-2.8,7.47Z"
+        />
+        <polygon
+          class="cls-1"
+          points="4.24 8.29 7.04 15.76 1.44 15.76 4.24 8.29"
+        />
+        <path
+          class="cls-2"
+          d="M1.83,.24h1.63l1.28,1.85h.01V.24h1.61V4.58h-1.62l-1.28-1.85h-.01v1.85H1.83V.24Z"
+        />
+      </g>
+    </svg>
+    <g transform={Translate(PADDING, height - 70 - PADDING)}>
+      <rect
+        x="-3"
+        y="0"
+        width="280"
+        height="80"
+        fill="white"
+        stroke="black"
+        rx="15"
+      />
+      <g transform="translate(0, 20)">
+        <g transform="translate(115, 20)">
+          <g transform="rotate(0)">
+            <g transform="translate({-RADIUS * 2 + 5}, 0)">
+              <path
+                d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                fill="#cc0000"
+                stroke="black"
+                stroke-width="2"
+              />
+            </g>
+          </g>
+        </g>
+        <line
+          x1="20"
+          y1="20"
+          x2="115"
+          y2="20"
+          stroke="#c00"
+          stroke-width="5"
+          opacity="0.5"
+        />
+        <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="#c00" />
+        <text x="15" y="25">A</text>
+        <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="black" />
+        <text x="110" y="25">B</text>
+        <text x="15" y="50">A influenced B</text>
+      </g>
+      <g transform="translate(140, 20)">
+        <g transform="translate(20, 20)">
+          <g transform="rotate(0)">
+            <g transform="translate({RADIUS * 2 - 15}, 0)">
+              <path
+                d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                fill="#cc0000"
+                stroke="black"
+                stroke-width="2"
+              />
+            </g>
+          </g>
+        </g>
+        <line
+          x1="20"
+          y1="20"
+          x2="115"
+          y2="20"
+          stroke="#c00"
+          stroke-width="5"
+          opacity="0.5"
+        />
+        <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="black" />
+        <text x="15" y="25">A</text>
+        <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="#c00" />
+        <text x="110" y="25">B</text>
+        <text x="15" y="50">A influenced B</text>
+      </g>
+      <g transform="translate(0, 18)">
+        <text
+          font-size="smaller"
+          text-anchor="middle"
+          x="140"
+          y="0"
+          stroke="#c00"
+          opacity="0.5"
+        >
+          Line thickness encodes birth year gap
+        </text>
+      </g>
+    </g>
   </svg>
 </div>

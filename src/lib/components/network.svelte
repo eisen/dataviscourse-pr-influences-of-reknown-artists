@@ -45,7 +45,21 @@
   const Translate = (x: number | undefined, y: number | undefined) =>
     `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
 
-  const OnMouseOver = (target: any) => {
+  const OnMouseOver = (name: any) => {
+    dispatch("highlight_artist", {
+      artist: name,
+      influence_type: Types.InfluenceType.Both,
+    })
+  }
+  const OnMouseOut = (name: any) => {
+    dispatch("restore_artist", {
+      artist: name,
+      influence_type: Types.InfluenceType.Both,
+    })
+  }
+
+  export const HighlightArtist = (name: string) => {
+    const target = "#" + Helpers.ArtistID(name)
     d3.select(target + "-group").raise()
     d3.select(target + "-text")
       .transition()
@@ -68,7 +82,8 @@
       .attr("r", 50)
   }
 
-  const OnMouseOut = (target: any) => {
+  export const RestoreArtist = (name: any) => {
+    const target = "#" + Helpers.ArtistID(name)
     d3.select(target + "-text")
       .transition()
       .duration(DURATION)
@@ -100,6 +115,12 @@
     current_count += 1
   }
 
+  export const ResetInfluences = () => {
+    positions = []
+    influences = []
+    current_count += 1
+  }
+
   const IsInfluenceLink = (link: any) => {
     return (
       influences.includes(link.source.artist) &&
@@ -111,6 +132,10 @@
     dispatch("display_influence", {
       artist: target,
     })
+  }
+
+  const OnMouseClickReset = () => {
+    dispatch("reset_influences", {})
   }
 
   export const Initialize = (
@@ -179,7 +204,9 @@
         <circle cx="8" cy="0" r="5" fill="black" stroke="none" />
       </marker>
     </defs>
-
+    <g on:click={OnMouseClickReset}>
+      <rect x="0" y="0" {width} {height} fill="white" />
+    </g>
     <g id="splat">
       {#each positions as position}
         <circle
@@ -239,10 +266,10 @@
             x={-RADIUS}
             y={-RADIUS}
             style="outline: none;"
-            on:focus={(ev) => OnMouseOver("#" + Helpers.ArtistName(artist))}
-            on:mouseover={(ev) => OnMouseOver("#" + Helpers.ArtistName(artist))}
-            on:blur={(ev) => OnMouseOut("#" + Helpers.ArtistName(artist))}
-            on:mouseout={(ev) => OnMouseOut("#" + Helpers.ArtistName(artist))}
+            on:focus={(ev) => OnMouseOver(artist.artist)}
+            on:mouseover={(ev) => OnMouseOver(artist.artist)}
+            on:blur={(ev) => OnMouseOut(artist.artist)}
+            on:mouseout={(ev) => OnMouseOut(artist.artist)}
             on:click={(ev) => OnMouseClick(artist.artist)}
           />
           <circle
@@ -296,7 +323,7 @@
         </g>
       {/each}
     </g>
-    <g transform={Translate(width - PADDING * 5, height - PADDING * 4)}>
+    <g transform={Translate(width - PADDING * 6, height - PADDING * 4)}>
       <rect
         x="-3"
         y="0"

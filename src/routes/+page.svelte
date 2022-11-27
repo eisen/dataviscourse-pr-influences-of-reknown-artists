@@ -13,7 +13,7 @@
   $: height = 0
 
   const horizontalPadding = 24
-  const verticalPadding = 30
+  const verticalPadding = 6
   const header_height = 72
   const footer_height = 24
 
@@ -44,10 +44,6 @@
     height - verticalPadding - header_height - footer_height
   )
 
-  let allArtists: Types.ArtistData[]
-  $: allArtists = []
-  let allLinks: Types.ArtistLink[]
-  $: allLinks = []
   let allLocations: Types.LocationGroup[]
   $: allLocations = []
   let allInfluencees: Types.InfluenceGroup[]
@@ -91,35 +87,33 @@
     ScrollCharts(ev.target, -width * 2)
   }
 
-  const DisplayInfluence = (ev: any) => {
-    const artist = ev.detail.artist
-    const influences = []
-    // influencers = []
-    // influencees = []
-
+  const GetArtistInfluencers = (artist: string): Types.LocationGroup[] => {
+    const influencers: Types.LocationGroup[] = []
     const artistInfluencers: Types.InfluenceGroup[] = allInfluencers.filter(
       (d) => d[0] === artist
     )
-    const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
-      (d) => d[0] === artist
-    )
-
     if (artistInfluencers.length > 0) {
-      //console.log("Influencers")
+      // console.log("Influencers")
       for (let influence of artistInfluencers[0][1]) {
         const data = allLocations.find(
           (loc) => loc[1][0].artist === influence.artist
         )
         if (data) {
-          influences.push(data)
-          //influencers.push(data)
+          influencers.push(data)
           // console.log(
           //   allLocations.find((loc) => loc[1][0].artist === influence.artist)
           // )
         }
       }
     }
+    return influencers
+  }
 
+  const GetArtistInfluencees = (artist: string): Types.LocationGroup[] => {
+    const influencees: Types.LocationGroup[] = []
+    const artistInfluencees: Types.InfluenceGroup[] = allInfluencees.filter(
+      (d) => d[0] === artist
+    )
     if (artistInfluencees.length > 0) {
       //console.log("Influencees")
       for (let influence of artistInfluencees[0][1]) {
@@ -127,8 +121,7 @@
           (loc) => loc[1][0].artist === influence.influenced
         )
         if (data) {
-          influences.push(data)
-          //influencees.push(data)
+          influencees.push(data)
           // console.log(
           //   allLocations.find(
           //     (loc) => loc[1][0].artist === influence.influenced
@@ -138,8 +131,95 @@
       }
     }
 
+    return influencees
+  }
+
+  const DisplayInfluence = (ev: any) => {
+    const artist = ev.detail.artist
+
+    let influences: Types.LocationGroup[] = GetArtistInfluencers(artist)
+    influences = influences.concat(GetArtistInfluencees(artist))
+
     map.DisplayInfluences(artist, influences)
     network.DisplayInfluence(influences.map((d) => d[0]))
+    matrix.DisplayInfluence(artist)
+  }
+
+  const HighlightArtist = (ev: any) => {
+    const artist = ev.detail.artist
+    const influence_type = ev.detail.influence_type
+    network.HighlightArtist(artist)
+    matrix.HighlightArtist(artist, influence_type)
+  }
+
+  const RestoreArtist = (ev: any) => {
+    const artist = ev.detail.artist
+    const influence_type = ev.detail.influence_type
+    network.RestoreArtist(artist)
+    matrix.RestoreArtist(artist, influence_type)
+  }
+
+  const SelectInfluencer = (ev: any) => {
+    const artist = ev.detail.artist
+
+    const influences = GetArtistInfluencees(artist)
+
+    map.DisplayInfluences(artist, influences)
+    network.DisplayInfluence(influences.map((d) => d[0]))
+    matrix.SelectInfluencer(artist)
+  }
+
+  const SelectInfluencee = (ev: any) => {
+    const artist = ev.detail.artist
+
+    const influences = GetArtistInfluencers(artist)
+
+    map.DisplayInfluences(artist, influences)
+    network.DisplayInfluence(influences.map((d) => d[0]))
+    matrix.SelectInfluencee(artist)
+  }
+
+  const SelectPair = (ev: any) => {
+    const influencer = ev.detail.influencer
+    const influencee = ev.detail.influencee
+    const row = ev.detail.row
+    const col = ev.detail.col
+
+    const influences = GetArtistInfluencees(influencer)
+
+    map.DisplayInfluences(
+      influencer,
+      influences.filter((d) => d[0] === influencee)
+    )
+    network.DisplayInfluence([influencer, influencee])
+    matrix.DisplayPair(influencer, influencee)
+  }
+
+  const ResetInfluences = () => {
+    network.ResetInfluences()
+    map.ResetInfluences()
+    matrix.ResetInfluences()
+  }
+
+  const HighlightPair = (ev: any) => {
+    const influencer = ev.detail.influencer
+    const influencee = ev.detail.influencee
+    const row = ev.detail.row
+    const col = ev.detail.col
+    network.HighlightArtist(influencer)
+    network.HighlightArtist(influencee)
+    matrix.HighlightPair(influencer, influencee, row, col)
+  }
+
+  const RestorePair = (ev: any) => {
+    const influencer = ev.detail.influencer
+    const influencee = ev.detail.influencee
+    const row = ev.detail.row
+    const col = ev.detail.col
+
+    network.RestoreArtist(influencer)
+    network.RestoreArtist(influencee)
+    matrix.RestorePair(influencer, influencee, row, col)
   }
 
   onMount(async () => {
@@ -193,10 +273,10 @@
 <svelte:window bind:innerWidth={width} bind:innerHeight={height} />
 
 <header
-  class="flex fixed top-4 left-4 w-full font-bold text-4xl z-20"
+  class="flex justify-between fixed top-4 left-4 w-full font-bold text-4xl z-20 p-4"
   style="height: {header_height};"
 >
-  Influences, Deaths, and Mediums of Renown Artists
+  <span>Influences, Deaths, and Mediums of Renown Artists</span>
   <div class="ml-4 mt-1 cursor-pointer">
     <div class="block">
       <nav class="isolate flex divide-x divide-gray-200 rounded-lg shadow">
@@ -233,6 +313,13 @@
       </nav>
     </div>
   </div>
+  <div class="pr-4">
+    <img
+      style="height: 40px;"
+      src={Config.server_url + "/SofC_Logo.png"}
+      alt="SofC Logo"
+    />
+  </div>
 </header>
 <div class="absolute inset-0 overflow-x-hidden">
   <div
@@ -254,9 +341,29 @@
         width={network_width}
         height={network_height}
         on:display_influence={DisplayInfluence}
+        on:highlight_artist={HighlightArtist}
+        on:restore_artist={RestoreArtist}
+        on:reset_influences={ResetInfluences}
       />
-      <Matrix bind:this={matrix} width={matrix_width} height={matrix_height} />
-      <Map bind:this={map} width={map_width} height={map_height} />
+      <Matrix
+        bind:this={matrix}
+        width={matrix_width}
+        height={matrix_height}
+        on:highlight_artist={HighlightArtist}
+        on:restore_artist={RestoreArtist}
+        on:highlight_influence_pair={HighlightPair}
+        on:restore_influence_pair={RestorePair}
+        on:select_influencer={SelectInfluencer}
+        on:select_influencee={SelectInfluencee}
+        on:reset_influences={ResetInfluences}
+        on:select_pair={SelectPair}
+      />
+      <Map
+        bind:this={map}
+        width={map_width}
+        height={map_height}
+        on:reset_influences={ResetInfluences}
+      />
     </div>
     <div
       class="grid-cols-2 inline-block"

@@ -72,3 +72,9 @@ export type PossibleMediums = {
   caligrapher: number
   engraving: number
 }
+
+export enum InfluenceType {
+  Influencer = 0,
+  Influencee,
+  Both,
+}

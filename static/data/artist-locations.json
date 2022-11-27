@@ -762,10 +762,10 @@
     {
         "artist": "Michelangelo",
         "year": "1475",
-        "city": "Arezzo",
+        "city": "Caprese Michelangelo",
         "country": "Italy",
-        "lat": 43.46276,
-        "lon": 11.88068
+        "lat": 43.633333,
+        "lon": 11.983333
     },
     {
         "artist": "Michelangelo",
@@ -792,7 +792,7 @@
         "lon": 2.65024
     },
     {
-        "artist": "Modigliani",
+        "artist": "Amedeo Modigliani",
         "year": "1884",
         "city": "Livorno",
         "country": "Italy",
@@ -800,7 +800,7 @@
         "lon": 10.30983402950838
     },
     {
-        "artist": "Modigliani",
+        "artist": "Amedeo Modigliani",
         "year": "1920",
         "city": "Saint-Étienne",
         "country": "France",
@@ -856,7 +856,7 @@
         "lon": 5.38107
     },
     {
-        "artist": "Paul Cezanne",
+        "artist": "Paul Cézanne",
         "year": "1839",
         "city": "Marseille",
         "country": "France",
@@ -864,7 +864,7 @@
         "lon": 5.38107
     },
     {
-        "artist": "Paul Cezanne",
+        "artist": "Paul Cézanne",
         "year": "1906",
         "city": "Marseille",
         "country": "France",
@@ -968,7 +968,7 @@
         "lon": 4.34878
     },
     {
-        "artist": "Renoir",
+        "artist": "Pierre-Auguste Renoir",
         "year": "1841",
         "city": "Limoges",
         "country": "France",
@@ -976,7 +976,7 @@
         "lon": 1.25781
     },
     {
-        "artist": "Renoir",
+        "artist": "Pierre-Auguste Renoir",
         "year": "1919",
         "city": "Cagnes-sur-Mer",
         "country": "France",
@@ -1096,7 +1096,7 @@
         "lon": 139.69171
     },
     {
-        "artist": "Vermeer",
+        "artist": "Johannes Vermeer",
         "year": "1632",
         "city": "Delft",
         "country": "Netherlands",
@@ -1104,7 +1104,7 @@
         "lon": 4.35556
     },
     {
-        "artist": "Vermeer",
+        "artist": "Johannes Vermeer",
         "year": "1675",
         "city": "Delft",
         "country": "Netherlands",
@@ -1209,418 +1209,354 @@
     },
     {
         "artist": "Barbara Hepworth",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1903",
+        "city": "Wakefield",
+        "country": "United Kingdom",
+        "lat": 53.68331,
+        "lon": -1.49768
     },
     {
         "artist": "Barbara Hepworth",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1975",
+        "city": "St. Ives",
+        "country": "United Kingdom",
+        "lat": 50.20861,
+        "lon": -5.4875
     },
     {
         "artist": "Carlo Carrà",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1881",
+        "city": "Alessandria",
+        "country": "Italy",
+        "lat": 44.90924,
+        "lon": 8.61007
     },
     {
         "artist": "Carlo Carrà",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1966",
+        "city": "Milan",
+        "country": "Italy",
+        "lat": 45.46427,
+        "lon": 9.18951
     },
     {
         "artist": "Georges Braque",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1882",
+        "city": "Paris",
+        "country": "France",
+        "lat": 48.85341,
+        "lon": 2.3488
     },
     {
         "artist": "Georges Braque",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1963",
+        "city": "Paris",
+        "country": "France",
+        "lat": 48.85341,
+        "lon": 2.3488
     },
     {
         "artist": "Henry Moore",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1898",
+        "city": "Castleford",
+        "country": "United Kingdom",
+        "lat": 53.72587,
+        "lon": -1.36256
     },
     {
         "artist": "Henry Moore",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1986",
+        "city": "Sawbridgeworth",
+        "country": "United Kingdom",
+        "lat": 51.81667,
+        "lon": 0.15
     },
     {
         "artist": "Isamu Noguchi",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1904",
+        "city": "Los Angeles",
+        "country": "United States",
+        "lat": 34.05223,
+        "lon": -118.24368
     },
     {
         "artist": "Isamu Noguchi",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "2022",
+        "city": "Los Angeles",
+        "country": "United States",
+        "lat": 34.05223,
+        "lon": -118.24368
     },
     {
         "artist": "Jacob Epstein",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1880",
+        "city": "New York",
+        "country": "United States",
+        "lat": 40.71427,
+        "lon": -74.00597
     },
     {
         "artist": "Jacob Epstein",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1959",
+        "city": "London",
+        "country": "United Kingdom",
+        "lat": 51.50853,
+        "lon": -0.12574
     },
     {
         "artist": "Pieter Cornelis Mondriaan",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1872",
+        "city": "Amersfoot",
+        "country": "Netherlands",
+        "lat": 52.15,
+        "lon": 5.383333
     },
     {
         "artist": "Pieter Cornelis Mondriaan",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1944",
+        "city": "New York",
+        "country": "United States",
+        "lat": 40.71427,
+        "lon": -74.00597
     },
     {
         "artist": "Richard Wentworth",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1947",
+        "city": "Apia",
+        "country": "Samoa",
+        "lat": -13.83333,
+        "lon": -171.76666
     },
     {
         "artist": "Richard Wentworth",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "2022",
+        "city": "Apia",
+        "country": "Samoa",
+        "lat": -13.83333,
+        "lon": -171.76666
     },
     {
         "artist": "Robert Rauschenberg",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1925",
+        "city": "Port Arthur",
+        "country": "United States",
+        "lat": 29.88519,
+        "lon": -93.94233
     },
     {
         "artist": "Robert Rauschenberg",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "2008",
+        "city": "Cape Coral",
+        "country": "United States",
+        "lat": 26.56285,
+        "lon": -81.94953
     },
     {
         "artist": "Umberto Boccioni",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1882",
+        "city": "Reggio Calabria",
+        "country": "Italy",
+        "lat": 38.11047,
+        "lon": 15.66129
     },
     {
         "artist": "Umberto Boccioni",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1916",
+        "city": "Verona",
+        "country": "Italy",
+        "lat": 45.4299,
+        "lon": 10.98444
     },
     {
         "artist": "Domenico Ghirlandaio",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1448",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Domenico Ghirlandaio",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1494",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Daniele da Volterra",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1509",
+        "city": "Volterra",
+        "country": "Italy",
+        "lat": 43.40251,
+        "lon": 10.86152
     },
     {
         "artist": "Daniele da Volterra",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1566",
+        "city": "Rome",
+        "country": "Italy",
+        "lat": 41.89193,
+        "lon": 12.51133
     },
     {
         "artist": "Giotto",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1267",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Giotto",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1337",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Masaccio",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1401",
+        "city": "San Giovanni Valdarno",
+        "country": "Italy",
+        "lat": 43.564444,
+        "lon": 11.532778
     },
     {
         "artist": "Masaccio",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1428",
+        "city": "Rome",
+        "country": "Italy",
+        "lat": 41.89193,
+        "lon": 12.51133
     },
     {
         "artist": "Peter Paul Rubens",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1577",
+        "city": "Siegen",
+        "country": "Germany",
+        "lat": 50.87481,
+        "lon": 8.02431
     },
     {
         "artist": "Peter Paul Rubens",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1640",
+        "city": "Antwerp",
+        "country": "Belgium",
+        "lat": 51.21989,
+        "lon": 4.40346
     },
     {
         "artist": "Gherardo Starnina",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1354",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Gherardo Starnina",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1413",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Masolino",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1383",
+        "city": "Perugia",
+        "country": "Italy",
+        "lat": 43.1122,
+        "lon": 12.38878
     },
     {
         "artist": "Masolino",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1447",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Michelozzo",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1396",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Michelozzo",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1472",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Paolo Uccello",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1397",
+        "city": "Perugia",
+        "country": "Italy",
+        "lat": 43.1122,
+        "lon": 12.38878
     },
     {
         "artist": "Paolo Uccello",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1475",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Antonio del Pollaiuolo",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1429",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     },
     {
         "artist": "Antonio del Pollaiuolo",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1498",
+        "city": "Rome",
+        "country": "Italy",
+        "lat": 41.89193,
+        "lon": 12.51133
     },
     {
         "artist": "Franz von Stuck",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1863",
+        "city": "Passau",
+        "country": "Germany",
+        "lat": 48.5665,
+        "lon": 13.43122
     },
     {
         "artist": "Franz von Stuck",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1928",
+        "city": "Munich",
+        "country": "Germany",
+        "lat": 48.13743,
+        "lon": 11.57549
     },
     {
         "artist": "Lorenzo Ghiberti",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1378",
+        "city": "Pelago",
+        "country": "Italy",
+        "lat": 43.77255,
+        "lon": 11.50148
     },
     {
         "artist": "Lorenzo Ghiberti",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
-    },
-    {
-        "artist": "Paul Cézanne",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
-    },
-    {
-        "artist": "Paul Cézanne",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
-    },
-    {
-        "artist": "Amedeo Modigliani",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
-    },
-    {
-        "artist": "Amedeo Modigliani",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
-    },
-    {
-        "artist": "Pierre-Auguste Renoir",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
-    },
-    {
-        "artist": "Pierre-Auguste Renoir",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
-    },
-    {
-        "artist": "Johannes Vermeer",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
-    },
-    {
-        "artist": "Johannes Vermeer",
-        "year": "1000",
-        "city": "",
-        "country": "",
-        "lat": 0,
-        "lon": 0
+        "year": "1455",
+        "city": "Florence",
+        "country": "Italy",
+        "lat": 43.77925,
+        "lon": 11.24626
     }
 ]

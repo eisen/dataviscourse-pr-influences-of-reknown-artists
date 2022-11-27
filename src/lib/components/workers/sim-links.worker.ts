@@ -9,7 +9,7 @@ onmessage = (event) => {
   const links = event.data.links
   const RADIUS = event.data.radius
   const HEIGHT = event.data.height
-  const FORCE_FACTOR = 2
+  const FORCE_FACTOR = 1.75
 
   let sim = d3
     .forceSimulation(nodes)
