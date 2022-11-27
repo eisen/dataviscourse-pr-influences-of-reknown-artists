@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Helpers, Types } from "$lib/utilities"
   import * as d3 from "d3"
-  import { createEventDispatcher, tick } from "svelte"
+  import { createEventDispatcher } from "svelte"
 
   const dispatch = createEventDispatcher()
 
@@ -139,7 +139,6 @@
     all_influencers: Types.ArtistInfluence[],
     col_name: string
   ) => {
-    console.log("#" + Helpers.ArtistID(col_name) + "-cols-path-fill")
     d3.select("#" + Helpers.ArtistID(col_name) + "-cols-path-fill")
       .attr("fill", colourHoverRelation)
       .classed("highlight", true)
@@ -190,7 +189,6 @@
     all_influencees: Types.ArtistInfluence[],
     row_name: string
   ) => {
-    console.log("#" + Helpers.ArtistID(row_name) + "-rows-path-fill")
     d3.select("#" + Helpers.ArtistID(row_name) + "-rows-path-fill")
       .attr("fill", colourHoverRelation)
       .classed("highlight", true)
@@ -424,6 +422,21 @@
     }
   }
 
+  const OnMouseClickReset = () => {
+    dispatch("reset_influences", {})
+  }
+
+  export const ResetInfluences = () => {
+    d3.selectAll(".highlight")
+      .attr("fill", "white")
+      .classed("hover", false)
+      .classed("highlight", false)
+
+    d3.select("#adjacency_matrix")
+      .selectAll("rect.used")
+      .attr("fill", colourRelation)
+  }
+
   const OnMouseOverRect = (target: any, row: number, col: number) => {
     // console.log('in row', target, x, y)
     let x = matrixScale(adjMatrix[row][col].y) + offset_x
@@ -643,6 +656,8 @@
             style="outline: none;"
             x={matrixScale(adjMatrix[row][col].y) + offset_x}
             y={matrixScale(adjMatrix[row][col].x) + offset_y}
+            on:click={() =>
+              adjMatrix[row][col].z === 1 ? null : OnMouseClickReset()}
             width={matrixScale.bandwidth()}
             height={matrixScale.bandwidth()}
             class={adjMatrix[row][col].z === 1 ? "used" : "empty"}

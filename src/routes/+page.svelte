@@ -179,6 +179,12 @@
     matrix.SelectInfluencee(artist)
   }
 
+  const ResetInfluences = () => {
+    network.ResetInfluences()
+    map.ResetInfluences()
+    matrix.ResetInfluences()
+  }
+
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
     const locs: Types.ArtistLocation[] | undefined = await d3.json(
@@ -300,6 +306,7 @@
         on:display_influence={DisplayInfluence}
         on:highlight_artist={HighlightArtist}
         on:restore_artist={RestoreArtist}
+        on:reset_influences={ResetInfluences}
       />
       <Matrix
         bind:this={matrix}
@@ -309,8 +316,14 @@
         on:restore_artist={RestoreArtist}
         on:select_influencer={SelectInfluencer}
         on:select_influencee={SelectInfluencee}
+        on:reset_influences={ResetInfluences}
       />
-      <Map bind:this={map} width={map_width} height={map_height} />
+      <Map
+        bind:this={map}
+        width={map_width}
+        height={map_height}
+        on:reset_influences={ResetInfluences}
+      />
     </div>
     <div
       class="grid-cols-2 inline-block"

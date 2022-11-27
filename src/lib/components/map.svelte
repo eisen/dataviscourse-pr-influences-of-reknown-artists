@@ -4,6 +4,9 @@
   import { geoWinkel3 } from "d3-geo-projection"
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
+  import { createEventDispatcher, tick } from "svelte"
+
+  const dispatch = createEventDispatcher()
 
   const RADIUS = 15
   const TEXT_Y_OFFSET = 20
@@ -273,6 +276,20 @@
       .attr("opacity", 0)
   }
 
+  export const ResetInfluences = () => {
+    projection.center([0, 0])
+    projection.scale(original_scale)
+    projection.rotate(0)
+
+    influences = []
+
+    update_map += 1
+  }
+
+  const OnMouseClickReset = () => {
+    dispatch("reset_influences", {})
+  }
+
   export const Initialize = (
     features: any,
     influencers_data: Types.InfluenceGroup[],
@@ -328,6 +345,7 @@
     class="inline-block absolute top-0 left-0"
     viewBox="0, 0, {width}, {height}"
     preserveAspectRatio="xMidYMid meet"
+    on:click={OnMouseClickReset}
   >
     <defs>
       <style>

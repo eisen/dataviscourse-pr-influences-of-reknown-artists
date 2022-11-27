@@ -115,6 +115,12 @@
     current_count += 1
   }
 
+  export const ResetInfluences = () => {
+    positions = []
+    influences = []
+    current_count += 1
+  }
+
   const IsInfluenceLink = (link: any) => {
     return (
       influences.includes(link.source.artist) &&
@@ -126,6 +132,10 @@
     dispatch("display_influence", {
       artist: target,
     })
+  }
+
+  const OnMouseClickReset = () => {
+    dispatch("reset_influences", {})
   }
 
   export const Initialize = (
@@ -194,7 +204,9 @@
         <circle cx="8" cy="0" r="5" fill="black" stroke="none" />
       </marker>
     </defs>
-
+    <g on:click={OnMouseClickReset}>
+      <rect x="0" y="0" {width} {height} fill="white" />
+    </g>
     <g id="splat">
       {#each positions as position}
         <circle
