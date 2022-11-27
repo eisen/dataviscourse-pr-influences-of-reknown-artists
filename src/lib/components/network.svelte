@@ -9,6 +9,10 @@
   const OFFSET_X = 40
   const OFFSET_Y = 0
 
+  const LEGEND_WIDTH = 140
+  const LEGEND_HEIGHT = 60
+  const LEGEND_SCALE = 0.8
+
   let simWorker: Worker | undefined = new Worker(
     new URL("workers/sim-links.worker.ts?worker", import.meta.url)
   )
@@ -323,30 +327,57 @@
         </g>
       {/each}
     </g>
-    <g transform={Translate(width - PADDING * 6, height - PADDING * 4)}>
-      <rect
-        x="-3"
-        y="0"
-        width="140"
-        height="60"
-        fill="white"
-        stroke="black"
-        rx="15"
-      />
-      <line
-        marker-end="url(#arrowhead)"
-        marker-start="url(#arrowtail)"
-        x1="20"
-        y1="20"
-        x2="115"
-        y2="20"
-        stroke="black"
-      />
-      <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="black" />
-      <text x="15" y="25">A</text>
-      <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="black" />
-      <text x="110" y="25">B</text>
-      <text x="15" y="50">A influenced B</text>
-    </g>
   </svg>
+  <div
+    class="absolute left-1/2 -translate-x-1/2 bottom-0"
+    style="width: {LEGEND_WIDTH * LEGEND_SCALE}px; height: {LEGEND_HEIGHT *
+      LEGEND_SCALE}px;"
+  >
+    <svg
+      id="legend"
+      class="inline-block absolute top-0 left-0"
+      style="padding-top: 10px;"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 {LEGEND_WIDTH} {LEGEND_HEIGHT}"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <g transform="scale({LEGEND_SCALE})">
+        <rect
+          x="2"
+          y="2"
+          width={LEGEND_WIDTH - 8}
+          height={LEGEND_HEIGHT - 4}
+          fill="white"
+          stroke="black"
+          rx="15"
+        />
+        <line
+          marker-end="url(#arrowhead)"
+          marker-start="url(#arrowtail)"
+          x1="20"
+          y1="20"
+          x2="115"
+          y2="20"
+          stroke="black"
+        />
+        <circle
+          cx="20"
+          cy="20"
+          r={RADIUS * LEGEND_SCALE}
+          fill="white"
+          stroke="black"
+        />
+        <text x="15" y="25">A</text>
+        <circle
+          cx="115"
+          cy="20"
+          r={RADIUS * LEGEND_SCALE}
+          fill="white"
+          stroke="black"
+        />
+        <text x="110" y="25">B</text>
+        <text x="15" y="50">A influenced B</text>
+      </g>
+    </svg>
+  </div>
 </div>
