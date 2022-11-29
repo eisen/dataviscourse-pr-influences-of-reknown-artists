@@ -179,50 +179,49 @@
         )
       }
 
-    console.log(groupedData);
       allGroupings = d3.groups(groupLocs, (d) => d.artist)
-      console.log("behold!")
-      console.log(allGroupings)
-
 
       allLocations = d3.groups(locs, (d) => d.artist)
-      console.log("the location of the 4 silver fang blades!")
-      console.log(allLocations)
 
-      let currGroup = [];
-      // let groupAccessor = (grouping == 'Medium') ? 'medium' : 'death_type'
+      let currGroup = []
+      let foundMatch = false
       for (let i = 0; i < allLocations.length; i++) {
+        foundMatch = false
         for(let j = 0; j < allGroupings.length; j++)
         {
           if(allGroupings[j][0] == allLocations[i][0])
           {
             currGroup = allGroupings[j][1]
+            foundMatch = true
             break
           }
         }
-        for(let j = 0; j < currGroup.length; j++)
+        if(foundMatch)
         {
-          for(let k = 0; k < groupedData.length; k++)
+          for(let j = 0; j < currGroup.length; j++)
           {
-            if(grouping == 'Medium')
+            for(let k = 0; k < groupedData.length; k++)
             {
-              if(groupedData[k].slice == currGroup[j].medium)
+              if(grouping == 'Medium')
               {
-                groupedData[k].groups[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] += 1
+                if(groupedData[k].slice == currGroup[j].medium)
+                {
+                  groupedData[k].groups[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] += 1
+                  break
+                }
               }
-            }
-            else
-            {
-              if(groupedData[k].slice == currGroup[j].death_type)
+              else
               {
-                groupedData[k].groups[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] += 1
+                if(groupedData[k].slice == currGroup[j].death_type)
+                {
+                  groupedData[k].groups[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] += 1
+                  break
+                }
               }
             }
           }
         }
       }
-      console.log("OOOOOOOOOOOOOOHHHHHHHHHHHHHHHH")
-      console.log(chordCentScale('1900'))
       console.log(groupedData)
 
       let totalEntries = 0
@@ -424,7 +423,7 @@
         .style("font-size", attrFontSize)
         .text((d) => d.charAt(0).toUpperCase() + d.slice(1))
 
-      let srT = chartRad * 0.9125
+      let srT = chartRad
       groupChord
         .append("text")
         .data((chords) => chords)
@@ -437,14 +436,10 @@
                 Math.cos(
                   (((d.startAngle * 180) / Math.PI - 90) * Math.PI) / 180
                 )
-          if (d.half == 0) {
-            retX += 65 * (width / 930)
-          } else {
-            retX -= 65 * (width / 930)
-          }
-          // if(d.addLabel)
-          // {
-          //     console.log('Angle: ', (d.startAngle * 180) / Math.PI - 90)
+          // if (d.half == 0) {
+          //   retX += 65 * (width / 930)
+          // } else {
+          //   retX -= 65 * (width / 930)
           // }
           return retX
         })
@@ -457,16 +452,16 @@
                 Math.sin(
                   (((d.startAngle * 180) / Math.PI - 90) * Math.PI) / 180
                 )
-          if (
-            Math.abs(
-              (d.startAngle * 180) / Math.PI -
-                90 -
-                ((d.endAngle * 180) / Math.PI - 90)
-            ) <
-            1.5 * ((2 * angleD) / totalEntries)
-          ) {
-            retY -= 15
-          }
+          // if (
+          //   Math.abs(
+          //     (d.startAngle * 180) / Math.PI -
+          //       90 -
+          //       ((d.endAngle * 180) / Math.PI - 90)
+          //   ) <
+          //   1.5 * ((2 * angleD) / totalEntries)
+          // ) {
+          //   retY -= 15
+          // }
           return retY
         })
         .attr("fill", "black")

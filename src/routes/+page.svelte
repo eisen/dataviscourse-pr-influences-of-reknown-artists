@@ -44,6 +44,9 @@
     height - verticalPadding - header_height - footer_height
   )
 
+  $: color_legend_width = width
+  $: color_legend_height = height / 9
+
   let allLocations: Types.LocationGroup[]
   $: allLocations = []
   let allInfluencees: Types.InfluenceGroup[]
@@ -374,6 +377,11 @@
         width +
         "px;"}
     >
+      <Scatter
+        bind:this={scatter}
+        width={color_legend_width}
+        height={color_legend_height}
+      />
       <Chord
         bind:this={chord_deaths}
         width={chord_width}
@@ -395,6 +403,11 @@
         width +
         "px;"}
     >
+      <Scatter
+        bind:this={scatter}
+        width={color_legend_width}
+        height={color_legend_height}
+      />
       <Chord
         bind:this={chord_mediums}
         width={chord_width}
