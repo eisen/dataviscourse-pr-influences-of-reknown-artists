@@ -44,6 +44,9 @@
     height - verticalPadding - header_height - footer_height
   )
 
+  $: color_legend_width = width
+  $: color_legend_height = height / 9
+
   let allLocations: Types.LocationGroup[]
   $: allLocations = []
   let allInfluencees: Types.InfluenceGroup[]
@@ -222,6 +225,51 @@
     matrix.RestorePair(influencer, influencee, row, col)
   }
 
+  // Chord functions
+  const HighlightGrouping_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.HighlightGrouping(selectedGrouping)
+  }
+
+  const RestoreGrouping_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.RestoreGrouping(selectedGrouping)
+
+  }
+
+  const HighlightRibbon_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    const selectedRibbon = ev.detail.chordIdx
+    chord_deaths.HighlightRibbon(selectedGrouping, selectedRibbon)
+  }
+
+  const RestoreRibbon_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.RestoreRibbon(selectedGrouping)
+
+  }
+
+  const HighlightGrouping_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.HighlightGrouping(selectedGrouping)
+  }
+
+  const RestoreGrouping_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.RestoreGrouping(selectedGrouping)
+  }
+
+  const HighlightRibbon_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    const selectedRibbon = ev.detail.chordIdx
+    chord_deaths.HighlightRibbon(selectedGrouping, selectedRibbon)
+  }
+
+  const RestoreRibbon_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.RestoreRibbon(selectedGrouping)
+  }
+
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
     const locs: Types.ArtistLocation[] | undefined = await d3.json(
@@ -374,10 +422,20 @@
         width +
         "px;"}
     >
+      <Scatter
+        bind:this={scatter}
+        width={color_legend_width}
+        height={color_legend_height}
+      />
       <Chord
         bind:this={chord_deaths}
         width={chord_width}
         height={chord_height}
+        grouping="Death"
+        on:highlight_chord_group={HighlightGrouping_Deaths}
+        on:restore_chord_group={RestoreGrouping_Deaths}
+        on:highlight_chord_ribbon={HighlightRibbon_Deaths}
+        on:restore_chord_ribbon={RestoreRibbon_Deaths}
       />
       <Scatter
         bind:this={scatter}
@@ -394,10 +452,20 @@
         width +
         "px;"}
     >
+      <Scatter
+        bind:this={scatter}
+        width={color_legend_width}
+        height={color_legend_height}
+      />
       <Chord
         bind:this={chord_mediums}
         width={chord_width}
         height={chord_height}
+        grouping="Medium"
+        on:highlight_chord_group={HighlightGrouping_Mediums}
+        on:restore_chord_group={RestoreGrouping_Mediums}
+        on:highlight_chord_ribbon={HighlightRibbon_Mediums}
+        on:restore_chord_ribbon={RestoreRibbon_Mediums}
       />
       <Area bind:this={area} width={area_width} height={area_height} />
     </div>

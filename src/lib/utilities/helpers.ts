@@ -16,6 +16,9 @@ export const ColorScheme = [
   "rgb(195, 72, 54)",
   "rgb(52, 25, 58)",
   "rgb(252, 179, 75)",
+  "#00008B",
+  "#3C1900",
+  "#84011B"
 ]
 
 export const ArtistName = (datum: Types.ArtistData) => {

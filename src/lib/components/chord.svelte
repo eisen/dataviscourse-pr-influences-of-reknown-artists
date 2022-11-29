@@ -2,12 +2,13 @@
   import * as d3 from "d3"
   import { Helpers, Types } from "$lib/utilities"
   import { attr, once } from "svelte/internal"
+  import { createEventDispatcher } from "svelte"
 
-  let grouping = "Century"
-  let attribute = "Artistic Mediums"
+  const dispatch = createEventDispatcher()
 
   export let width: number
   export let height: number
+  export let grouping: string
 
   // Sizing dependent on window
   $: chordCHeight = height * 0.45 > 275 ? 275 : height * 0.45
@@ -26,8 +27,8 @@
   let allLocations: [string, Types.ArtistLocation[]][]
   $: allLocations = []
 
-  let allMediums: [string, Types.ArtistMedium[]][]
-  $: allMediums = []
+  let allGroupings: [string, Types.ArtistMedium[]][]
+  $: allGroupings = []
 
   let gtMediums = [
     "sculptor",
@@ -46,86 +47,42 @@
     "calligrapher",
     "engraving",
   ]
-  let medN = gtMediums.length
 
-  let chordMediumScale = d3
-    .scaleOrdinal()
-    .domain(gtMediums)
-    .range(d3.range(medN))
-
-  let centuryGroupedData = [
-    {
-      cent: 1000,
-      people: [],
-      nums: [1],
-      death: [0],
-      meds: new Array(medN).fill(0),
-    },
-    {
-      cent: 1100,
-      people: [],
-      nums: [1],
-      death: [1],
-      meds: new Array(medN).fill(0),
-    },
-    {
-      cent: 1200,
-      people: [],
-      nums: [1],
-      death: [2],
-      meds: new Array(medN).fill(0),
-    },
-    {
-      cent: 1300,
-      people: [],
-      nums: [1],
-      death: [3],
-      meds: new Array(medN).fill(0),
-    },
-    {
-      cent: 1400,
-      people: [],
-      nums: [1],
-      death: [4],
-      meds: new Array(medN).fill(0),
-    },
-    {
-      cent: 1500,
-      people: [],
-      nums: [1],
-      death: [0],
-      meds: new Array(medN).fill(0),
-    },
-    {
-      cent: 1600,
-      people: [],
-      nums: [1],
-      death: [1],
-      meds: new Array(medN).fill(0),
-    },
-    {
-      cent: 1700,
-      people: [],
-      nums: [1],
-      death: [2],
-      meds: new Array(medN).fill(0),
-    },
-    {
-      cent: 1800,
-      people: [],
-      nums: [1],
-      death: [3],
-      meds: new Array(medN).fill(0),
-    },
-    {
-      cent: 1900,
-      people: [],
-      nums: [1],
-      death: [4],
-      meds: new Array(medN).fill(0),
-    },
-    // {cent: 2000, people: [], nums: [1], death: [0], meds: new Array(medN).fill(0)}, // We probably will have 0 entries for this
+  let gtDeaths = [
+    'illness', 
+    'alive',
+    'suicide',
+    'no-mention',
+    'heartattack',
+    'heartattack-overdose-probably',
+    'natural',
+    'accident',
+    'murder',
   ]
+
+  let gtCents = [
+    '1000',
+    '1100',
+    '1200',
+    '1300',
+    '1400',
+    '1500',
+    '1600',
+    '1700',
+    '1800',
+    '1900'
+  ]
+
+  let centStatus = new Array(gtCents.length).fill(false)
+
+  let medN = gtMediums.length
+  
+  let chordCentScale = d3
+    .scaleOrdinal()
+    .domain(gtCents)
+    .range(d3.range(gtCents.length))
+  
+  let selectedG = []
 
   let chordColorScale = d3
     .scaleOrdinal()
@@ -147,7 +104,6 @@
       sr * Math.sin((sa0 * Math.PI) / 180)
     ) // Good
     context.arc(0, 0, sr, (sa0 * Math.PI) / 180, (sa1 * Math.PI) / 180)
-    var hr = 10
 
     // first control point
     let missAngle
@@ -173,16 +129,16 @@
     let vertTCoord = vertT / 2 + Math.abs(sa1 - sa0) * 0.1 * 5
     let adjustH = -1
     if (sa1 > -90 && sa1 < 90) {
-      adjustH = Math.abs(sa1 - sa0) * 0.1 * 10
+      adjustH = Math.abs(sa1 - sa0) * 0.05 * 10
     } else {
-      adjustH = -1 * (Math.abs(sa1 - sa0) * 0.1 * 10)
+      adjustH = -1 * (Math.abs(sa1 - sa0) * 0.2 * 10)
     }
     let horTCoord = horT / 2 + adjustH
 
     let argg = []
-    for (let m = 0; m < gtMediums.length; m++) {
+    for (let m = 0; m < gtCents.length; m++) {
       argg.push(
-        m * ((chordCHeight * 2 + 0.05 * chordCHeight) / gtMediums.length) -
+        m * ((chordCHeight * 2 + 0.06 * chordCHeight) / gtCents.length) -
           chordCHeight * 0.9125
       )
     }
@@ -191,7 +147,7 @@
       horCoord,
       vertCoord,
       d.half == 0 ? rectWidth / 2 : -rectWidth / 2,
-      argg[d.death]
+      argg[d.vertIdx]
     ) // to
 
     context.quadraticCurveTo(
@@ -204,42 +160,176 @@
     if (buffer) return (context = null), buffer + "" || null
   }
 
+  const OnMouseOverRibbons = (group: string, idx: number) => {
+    console.log(idx)
+    dispatch("highlight_chord_ribbon", {
+      chordGroup: group,
+      chordIdx: idx
+    })
+  }
+
+  const fastTransitionDur = 250
+  const slowTransitionDur = 450
+
+  const OnMouseLeaveRibbons = (group: string) => {
+    dispatch("restore_chord_ribbon", {
+      chordGroup: group
+    })
+  }
+
+  const OnMouseOverArcs = (group: string) => {
+    dispatch("highlight_chord_group", {
+      chordGroup: group
+    })
+  }
+
+  const OnMouseLeaveArcs = (group: string) => {
+    dispatch("restore_chord_group", {
+      chordGroup: group
+    })
+  }
+
+  export const HighlightGrouping = (
+    chordGroup: string,
+  ) => {
+    // Chaning Ribbon Opacity
+    d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style('opacity', 0.1)
+    d3.selectAll('.ribbonPaths_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 0.95)
+    // Changing Arc Opacity
+    d3.selectAll('.arcPaths').transition().duration(fastTransitionDur).style('opacity', 0.4)
+    d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).attr("outerRadius", chartRad * 1.05 )
+    // d3.arc()
+    //     .innerRadius(chartRad * 0.925)
+    //     .outerRadius(chartRad * 1.05)
+    //     .cornerRadius(3)
+    // )
+  }
+
+  export const RestoreGrouping = (
+    chordGroup: string,
+  ) => {
+    console.log(chordGroup)
+    // Restoring Ribbon Styling
+    d3.selectAll('.ribbonPaths').transition().duration(slowTransitionDur).style('opacity', 0.5)
+    // Restoring Arc Styliing
+    // Changing Arc Opacity
+    d3.selectAll('.arcPaths').transition().duration(slowTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).attr("d", 
+    // d3.arc()
+    //     .innerRadius(chartRad * 0.925)
+    //     .outerRadius(chartRad)
+    //     .cornerRadius(3)
+    // )
+
+    // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#r_'+ chordGroup).style('opacity', 0.95)
+  }
+
+  export const HighlightRibbon = (
+    chordGroup: string,
+    chordIdx: number
+  ) => {
+    console.log("number: ", chordIdx)
+    // console.log(chordGroup)
+    // Chaning Ribbon Opacity
+    d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style('opacity', 0.1)
+    d3.selectAll('.ribbonPaths_' + chordGroup).transition().duration(fastTransitionDur).style('opacity', 0.5)
+    d3.selectAll('#r_'+ chordGroup + '_' + chordIdx).transition().duration(fastTransitionDur).style('opacity', 0.95) //0.7
+    // d3.selectAll('#r_'+ chordGroup + '_' + chordIdx).transition().duration(fastTransitionDur).style("stroke-width", 3)
+    // Changing Arc Opacity
+    d3.selectAll('.arcPaths').transition().duration(fastTransitionDur).style('opacity', 0.4)
+    d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
+  }
+
+  export const RestoreRibbon = (
+    chordGroup: string,
+  ) => {
+    // Restoring Ribbon Styling
+    d3.selectAll('.ribbonPaths').transition().duration(slowTransitionDur).style('opacity', 0.5)
+    // d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style("stroke-width", 1)
+    // Restoring Arc Styliing
+    // Changing Arc Opacity
+    d3.selectAll('.arcPaths').transition().duration(slowTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#r_'+ chordGroup).style('opacity', 0.95)
+  }
+
   export const Initialize = (
     locs: Types.ArtistLocation[],
-    medLocs: Types.ArtistMedium[]
+    groupLocs: Types.ArtistMedium[]
   ) => {
-    if (locs && medLocs) {
-      allMediums = d3.groups(medLocs, (d) => d.artist)
+    if (locs && groupLocs) {
+      if(grouping == 'Medium')
+      {
+        selectedG = gtMediums
+      }
+      else{
+        selectedG = gtDeaths
+      }
+    
+      let groupedData = [];
+      for(let i = 0; i < selectedG.length; i++)
+      {
+        groupedData.push(
+          {
+            slice: selectedG[i],
+            groups: new Array(gtCents.length).fill(0),
+          }
+        )
+      }
+
+      allGroupings = d3.groups(groupLocs, (d) => d.artist)
 
       allLocations = d3.groups(locs, (d) => d.artist)
 
+      let currGroup = []
+      let foundMatch = false
       for (let i = 0; i < allLocations.length; i++) {
-        centuryGroupedData[
-          Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
-        ].nums[0]++
-        centuryGroupedData[
-          Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
-        ].people.push(allLocations[i][0])
-      }
-      for (let i = 0; i < centuryGroupedData.length; i++) {
-        for (let j = 0; j < centuryGroupedData[i].people.length; j++) {
-          for (let k = 0; k < allMediums.length; k++) {
-            if (centuryGroupedData[i].people[j] == allMediums[k][0]) {
-              for (let l = 0; l < allMediums[k][1].length; l++) {
-                centuryGroupedData[i].meds[
-                  chordMediumScale(allMediums[k][1][l].medium)
-                ] += 1
+        foundMatch = false
+        for(let j = 0; j < allGroupings.length; j++)
+        {
+          if(allGroupings[j][0] == allLocations[i][0])
+          {
+            currGroup = allGroupings[j][1]
+            foundMatch = true
+            break
+          }
+        }
+        if(foundMatch)
+        {
+          for(let j = 0; j < currGroup.length; j++)
+          {
+            for(let k = 0; k < groupedData.length; k++)
+            {
+              if(grouping == 'Medium')
+              {
+                if(groupedData[k].slice == currGroup[j].medium)
+                {
+                  groupedData[k].groups[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] += 1
+                  centStatus[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] = true
+                  break
+                }
               }
-              break
+              else
+              {
+                if(groupedData[k].slice == currGroup[j].death_type)
+                {
+                  groupedData[k].groups[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] += 1
+                  centStatus[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] = true
+                  break
+                }
+              }
             }
           }
         }
       }
+      console.log(centStatus)
 
-      let mediumsTotalEntries = 0
-      for (let i = 0; i < centuryGroupedData.length; i++) {
-        for (let j = 0; j < centuryGroupedData[i].meds.length; j++) {
-          mediumsTotalEntries += centuryGroupedData[i].meds[j]
+      let totalEntries = 0
+      for (let i = 0; i < groupedData.length; i++) {
+        for (let j = 0; j < groupedData[i].groups.length; j++) {
+          totalEntries += groupedData[i].groups[j]
         }
       }
 
@@ -250,14 +340,14 @@
         .cornerRadius(3)
 
       d3.select(chordViz).datum(function (d, i) {
-        let sortedArr = centuryGroupedData.sort(function (a, b) {
+        let sortedGroupedArr = groupedData.sort(function (a, b) {
           let totA = 0
           let totB = 0
-          for (let i = 0; i < a.nums.length; i++) {
-            totA += a.nums[i]
+          for (let i = 0; i < a.groups.length; i++) {
+            totA += a.groups[i]
           }
-          for (let i = 0; i < b.nums.length; i++) {
-            totB += b.nums[i]
+          for (let i = 0; i < b.groups.length; i++) {
+            totB += b.groups[i]
           }
           if (totA > totB) {
             return 1
@@ -266,12 +356,13 @@
           }
           return 0
         })
+
         let retArr = []
-        let n = centuryGroupedData.length
+        let n = groupedData.length
         let angleR = (angleD * Math.PI) / 180
         let totalAngle = 2 * angleD
         let totalAngleR = (totalAngle * Math.PI) / 180
-        let unitAngleR = totalAngleR / mediumsTotalEntries
+        let unitAngleR = totalAngleR / totalEntries
         // let unitAngleR = angleR / mediumsTotalEntries; // Old way just in case
         let padR = (chordCHeight / 270) * 0.02
         let colorIndex = -1
@@ -279,37 +370,31 @@
         let forwardAngleD = (Math.PI - angleR) / 2
         let runningRTally = 0.0
         let otherSide = false
-
-        // placeholder for data gaps
-        sortedArr[0].meds[0] = 1
-        sortedArr[1].meds[11] = 1
-
-        // console.log(centuryGroupedData)
+        let rTallyInt = 0
 
         let padCheck = false
         for (let i = 0; i < n; i++) {
           colorIndex++
           padCheck = true
-          for (let j = 0; j < sortedArr[i].meds.length; j++) {
-            if (sortedArr[i].meds[j] > 0) {
-              let currSegment = sortedArr[i].meds[j]
+          for (let j = 0; j < groupedData[i].groups.length; j++) {
+            if (groupedData[i].groups[j] > 0) {
+              let currSegment = groupedData[i].groups[j]
               runningRTally += unitAngleR * currSegment
               if (runningRTally < (angleD * Math.PI) / 180) {
                 retArr.push({
-                  index: colorIndex,
                   startAngle:
                     padCheck && i > 0 ? padR + forwardAngle : forwardAngle,
                   endAngle:
                     padCheck && i > 0
                       ? padR + unitAngleR * currSegment + forwardAngle
                       : unitAngleR * currSegment + forwardAngle,
-                  value: 29630,
-                  nums: sortedArr[i].meds[j],
-                  death: j,
+                  vertIdx: j,
                   colorIndex: colorIndex,
                   half: 0,
-                  cent: sortedArr[i].cent,
+                  cent: j,
                   addLabel: padCheck ? true : false,
+                  slice: groupedData[i].slice,
+                  defIndex: rTallyInt
                 })
                 forwardAngle +=
                   padCheck && i > 0
@@ -318,7 +403,6 @@
               } else {
                 let baseTerm = 2 * Math.PI
                 retArr.push({
-                  index: colorIndex,
                   startAngle:
                     padCheck && i > 0
                       ? baseTerm -
@@ -330,13 +414,13 @@
                     padCheck && i > 0
                       ? baseTerm - padR - forwardAngleD
                       : baseTerm - forwardAngleD,
-                  value: 29630,
-                  nums: sortedArr[i].meds[j],
-                  death: j,
+                  vertIdx: j,
                   colorIndex: colorIndex,
                   half: 1,
-                  cent: sortedArr[i].cent,
+                  cent: j,
                   addLabel: padCheck || !otherSide ? true : false,
+                  slice: groupedData[i].slice,
+                  defIndex: rTallyInt
                 })
                 if (!otherSide) {
                   otherSide = true
@@ -349,6 +433,7 @@
               if (padCheck) {
                 padCheck = false
               }
+              rTallyInt++
             }
           }
         }
@@ -368,7 +453,6 @@
         "Sculptures",
         "Acrylic",
       ]
-
       // Ribbons
       let ribbons = d3
         .select(chordViz)
@@ -377,7 +461,7 @@
         .selectAll("path")
         .data((chords) => chords)
         .enter()
-        .append("path")
+        .append("path")//Appending paths to group
         .attr("d", ribbonBasket)
         .style("fill", function (d) {
           return chordColorScale(d.colorIndex)
@@ -385,7 +469,17 @@
         .style("stroke", (d, i) =>
           d3.rgb(chordColorScale(d.colorIndex)).darker()
         )
+        .style("stroke-width", 1)
+        .attr("id", (d, i) => 'r_' + d.slice + '_' + i)
+        .attr('class', function(d, i){ return 'ribbonPaths_' + d.slice })
+        .classed('ribbonPaths', true)
+        // .classed(function(d, i){ return 'ribbonPaths_' + d.slice }, true)
         .style("opacity", 0.5)
+        .on('mouseover', function(e, d){
+          OnMouseOverRibbons(d.slice, d.defIndex)
+          // d3.select(this).style('opacity', 0.95) 
+        })
+        .on('mouseout', (e, d) => OnMouseLeaveRibbons(d.slice))
 
       // Group for everything but the ribbons
       let groupChord = d3
@@ -399,26 +493,26 @@
       groupChord
         .append("path")
         .style("fill", function (d, i) {
-          return chordColorScale(d.index)
+          return chordColorScale(d.colorIndex)
         })
         .style("stroke", "white")
         .attr("d", arcGen)
-      groupChord
-        .append("g")
-        .attr("class", "groups")
-        .selectAll("g")
-        .data((chords) => chords)
-        .enter()
-        .append("g")
+        .attr("id", (d, i) => 'arc_' + d.slice)
+        .classed('arcPaths', true)
+        .on('mouseover', (e, d) => OnMouseOverArcs(d.slice))
+        .on('mouseout', (e, d) => OnMouseLeaveArcs(d.slice))
+      
+      // Century butttons:
       groupChord
         .append("rect")
-        .data(gtMediums)
+        .data(gtCents)
+        .classed('cursor-pointer', (d, i) => (centStatus[i]))
         .attr("x", (-1 * rectWidth) / 2)
         .attr(
           "y",
           (d, i) =>
             i *
-              ((chordCHeight * 2 + +(0.05 * chordCHeight)) / gtMediums.length) -
+              ((chordCHeight * 2 + +(0.05 * chordCHeight)) / gtCents.length) -
             chordCHeight * 0.9 -
             0.05 * chordCHeight
         )
@@ -430,13 +524,14 @@
         .attr("opacity", 1.0)
       groupChord
         .append("text")
-        .data(gtMediums)
+        .data(gtCents)
+        .classed('cursor-pointer', (d, i) => (centStatus[i]))
         .attr("x", 0)
         .attr(
           "y",
           (d, i) =>
             i *
-              ((chordCHeight * 2 + +(0.05 * chordCHeight)) / gtMediums.length) -
+              ((chordCHeight * 2 + +(0.05 * chordCHeight)) / gtCents.length) -
             chordCHeight * 0.875
         )
         .attr("fill", "white")
@@ -444,59 +539,6 @@
         .style("font-size", attrFontSize)
         .text((d) => d.charAt(0).toUpperCase() + d.slice(1))
 
-      let srT = chartRad * 0.9125
-      groupChord
-        .append("text")
-        .data((chords) => chords)
-        .attr("x", function (d, i) {
-          let retX =
-            d.half == 0
-              ? srT *
-                Math.cos((((d.endAngle * 180) / Math.PI - 90) * Math.PI) / 180)
-              : srT *
-                Math.cos(
-                  (((d.startAngle * 180) / Math.PI - 90) * Math.PI) / 180
-                )
-          if (d.half == 0) {
-            retX += 65 * (width / 930)
-          } else {
-            retX -= 65 * (width / 930)
-          }
-          // if(d.addLabel)
-          // {
-          //     console.log('Angle: ', (d.startAngle * 180) / Math.PI - 90)
-          // }
-          return retX
-        })
-        .attr("y", function (d, i) {
-          let retY =
-            d.half == 0
-              ? srT *
-                Math.sin((((d.endAngle * 180) / Math.PI - 90) * Math.PI) / 180)
-              : srT *
-                Math.sin(
-                  (((d.startAngle * 180) / Math.PI - 90) * Math.PI) / 180
-                )
-          if (
-            Math.abs(
-              (d.startAngle * 180) / Math.PI -
-                90 -
-                ((d.endAngle * 180) / Math.PI - 90)
-            ) <
-            1.5 * ((2 * angleD) / mediumsTotalEntries)
-          ) {
-            retY -= 15
-          }
-          return retY
-        })
-        .attr("fill", "black")
-        //   .attr('transform', function(d, i){
-        //     return 'rotate(' + (1) + ')'
-        // })
-        .style("text-anchor", "middle")
-        .style("font-size", attrFontSize)
-        .text((d) => (d.addLabel ? d.cent : ""))
-      //   Placeholders / title
       let onceGroupChord = d3
         .select(chordViz)
         .append("g")
@@ -507,35 +549,7 @@
         .attr("y", (chordCHeight / 270) * -270)
         .style("text-anchor", "middle")
         .style("font-size", titleFontSize > 20 ? 20 : titleFontSize)
-        .text("Distribution of Artists by " + grouping + " Over " + attribute)
-      onceGroupChord
-        .append("rect")
-        .attr("x", chartRad * 0.17 + 125)
-        .attr("y", (chordCHeight / 270) * 300 - 15)
-        .attr("width", rectWidth * 0.5)
-        .attr("height", 0.05 * chordCHeight)
-        .attr("fill", "white")
-        .attr("stroke", "black")
-      onceGroupChord
-        .append("rect")
-        .attr("x", -chartRad * 0.7 + 120)
-        .attr("y", (chordCHeight / 270) * 300 - 15)
-        .attr("width", rectWidth * 0.5)
-        .attr("height", 0.05 * chordCHeight)
-        .attr("fill", "white")
-        .attr("stroke", "black")
-      onceGroupChord
-        .append("text")
-        .attr("x", chartRad * 0.17)
-        .attr("y", (chordCHeight / 270) * 300 - 5)
-        .style("font-size", titleFontSize - 6 > 14 ? 14 : titleFontSize - 6)
-        .text("Select an Attribute:")
-      onceGroupChord
-        .append("text")
-        .attr("x", -chartRad * 0.7)
-        .attr("y", (chordCHeight / 270) * 300 - 5)
-        .style("font-size", titleFontSize - 6 > 14 ? 14 : titleFontSize - 6)
-        .text("Select a Grouping:")
+        .text("Distribution of Artists by " + grouping + " Over Centuries")
     } else {
       console.error("Unable to load Artist Locations!")
     }

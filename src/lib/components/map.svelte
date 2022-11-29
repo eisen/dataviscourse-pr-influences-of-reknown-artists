@@ -5,6 +5,7 @@
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
   import { createEventDispatcher, tick } from "svelte"
+  import type { ArtistLocation } from "$lib/utilities/types"
 
   const dispatch = createEventDispatcher()
 
@@ -12,6 +13,10 @@
   const TEXT_Y_OFFSET = 20
   const PADDING = 20
   const DURATION = 1000
+
+  const LEGEND_WIDTH = 280
+  const LEGEND_HEIGHT = 80
+  const LEGEND_SCALE = 0.8
 
   let simWorker: Worker | undefined = new Worker(
     new URL("workers/sim-nodes.worker.ts?worker", import.meta.url)
@@ -31,10 +36,10 @@
 
   let world_data: any
   $: world_data = null
-  let neighbors_data: any
-  $: neighbors_data = null
+  let neighbors_data: number[][]
+  $: neighbors_data = []
 
-  let country_color: any
+  let country_color: number[]
   $: country_color = []
 
   let allArtists: Types.ArtistData[]
@@ -110,26 +115,10 @@
     return path.toString()
   }
 
-  let tl_x_scale: d3.ScaleLinear<number, number, never>
-
   let influence_scale: d3.ScaleLinear<number, number, never>
 
   const Translate = (x: number | undefined, y: number | undefined) =>
     `translate(${x!}, ${y!})`
-
-  const filterLocations = (year: number) => {
-    locations = allLocations.filter(([, locations]) => {
-      if (locations.length > 1) {
-        return locations[0].year <= year && locations[1].year > year
-      } else {
-        return locations[0].year <= year
-      }
-    })
-    for (const location of locations) {
-      location.x = Helpers.GetXfromLatLon(projection, location[1])
-      location.y = Helpers.GetYfromLatLon(projection, location[1])
-    }
-  }
 
   const InfluencedBy = (influencee_name: string, influencer_name: string) => {
     const influencer = allInfluencees.find((d) => d[0] === influencer_name)
@@ -240,12 +229,18 @@
     return Helpers.GetYfromLatLon(projection, location[1])
   }
 
+  const GetYears = (locations: ArtistLocation[]): string => {
+    return `${locations[0].year} - ${
+      locations[1].year > 2021 ? "" : locations[1].year
+    }`
+  }
+
   const GetYearGap = (
     loc1: Types.LocationGroup,
     loc2: Types.LocationGroup
   ): number => {
-    const middle1 = loc1[1][0].year // Death Year - Born Year
-    const middle2 = loc2[1][0].year // Death Year - Born Year
+    const middle1 = loc1[1][0].year // Born Year
+    const middle2 = loc2[1][0].year // Born Year
 
     return influence_scale(Math.abs(middle2 - middle1))
   }
@@ -256,22 +251,14 @@
   }
 
   const OnMouseOver = (target: any) => {
-    d3.select(target + "-text-map")
-      .transition()
-      .duration(DURATION)
-      .attr("opacity", 1)
-    d3.select(target + "-rect-map")
+    d3.selectAll(target + "-map-detail")
       .transition()
       .duration(DURATION)
       .attr("opacity", 1)
   }
 
   const OnMouseOut = (target: any) => {
-    d3.select(target + "-text-map")
-      .transition()
-      .duration(DURATION)
-      .attr("opacity", 0)
-    d3.select(target + "-rect-map")
+    d3.selectAll(target + "-map-detail")
       .transition()
       .duration(DURATION)
       .attr("opacity", 0)
@@ -297,7 +284,7 @@
     features: any,
     influencers_data: Types.InfluenceGroup[],
     influencees_data: Types.InfluenceGroup[],
-    locs: Types.ArtistLocation[],
+    locations: Types.ArtistLocation[],
     artist_data: Types.ArtistData[]
   ) => {
     world_data = feature(features, features.objects.countries)
@@ -310,27 +297,42 @@
     country_color = new Array(world_data.features.length)
     for (let i = 0; i < country_color.length; ++i) {
       country_color[i] =
-        (d3.max(neighbors_data[i], (j) => country_color[j]) + 1) | 0
+        (d3.max(neighbors_data[i]!, (j) => country_color[j]!)! + 1) | 0
     }
 
     allInfluencees = influencees_data
     allInfluencers = influencers_data
 
-    if (locs) {
-      oldestYear = d3.min(locs, (d) => d.year)
-      year = oldestYear!
-      youngestYear = d3.max(locs, (d) => d.year)
-      allLocations = d3.groups(locs, (d) => d.artist)
-      filterLocations(oldestYear!)
+    if (locations) {
+      allLocations = d3.groups(locations, (d) => d.artist)
+
+      let smallest_gap = 2000
+      let biggest_gap = 0
+      for (const [influencer, influencees] of allInfluencers) {
+        const influencer_data = locations.filter(
+          (d) => d.artist === influencer
+        )[0]
+        for (const influencee of influencees) {
+          const influencee_data = locations.filter(
+            (d) => d.artist === influencee.artist
+          )[0]
+          const birth_gap = Math.abs(
+            influencer_data.year - influencee_data.year
+          )
+          if (birth_gap > biggest_gap) {
+            biggest_gap = birth_gap
+          }
+
+          if (birth_gap < smallest_gap) {
+            smallest_gap = birth_gap
+          }
+        }
+      }
 
       influence_scale = d3
         .scaleLinear()
-        .domain([0, youngestYear! - oldestYear!])
-        .range([2, RADIUS])
-      tl_x_scale = d3
-        .scaleLinear()
-        .domain([oldestYear!, youngestYear!])
-        .range([0, width])
+        .domain([smallest_gap, biggest_gap])
+        .range([2, RADIUS * 4])
     } else {
       console.error("Unable to load Artist Locations!")
     }
@@ -484,12 +486,12 @@
               id={Helpers.ArtistID(location[0]) + "-group-map"}
               transform={Translate(GetX(location), GetY(location))}
               on:focus={(ev) =>
-                OnMouseOver("#" + Helpers.ArtistID(location[0]))}
+                OnMouseOver("." + Helpers.ArtistID(location[0]))}
               on:mouseover={(ev) =>
-                OnMouseOver("#" + Helpers.ArtistID(location[0]))}
-              on:blur={(ev) => OnMouseOut("#" + Helpers.ArtistID(location[0]))}
+                OnMouseOver("." + Helpers.ArtistID(location[0]))}
+              on:blur={(ev) => OnMouseOut("." + Helpers.ArtistID(location[0]))}
               on:mouseout={(ev) =>
-                OnMouseOut("#" + Helpers.ArtistID(location[0]))}
+                OnMouseOut("." + Helpers.ArtistID(location[0]))}
               transition:fade
               style="outline: none;"
             >
@@ -535,40 +537,78 @@
             <g transform={Translate(GetX(location), GetY(location))}>
               <rect
                 id={Helpers.ArtistID(location[0]) + "-rect-map"}
+                class={Helpers.ArtistID(location[0]) +
+                  "-map-detail pointer-events-none"}
                 x={-(
                   Helpers.TextWidth(
-                    "#" + Helpers.ArtistID(location[0]) + "-text-map",
+                    "#" + Helpers.ArtistID(location[0]) + "-map-name",
                     location[0]
-                  ) + PADDING
+                  ) +
+                  PADDING * 2
                 ) / 2}
                 width={Helpers.TextWidth(
-                  "#" + Helpers.ArtistID(location[0]) + "-text-map",
-                  location[0]
-                ) + PADDING}
-                y={(TEXT_Y_OFFSET * 2.5 +
-                  Helpers.TextHeight(
-                    "#" + Helpers.ArtistID(location[0]) + "-text-map",
-                    location[0]
-                  )) /
-                  2}
-                height={Helpers.TextHeight(
-                  "#" + Helpers.ArtistID(location[0]) + "-text-map",
+                  "#" + Helpers.ArtistID(location[0]) + "-map-name",
                   location[0]
                 ) +
+                  PADDING * 2}
+                y={GetY(location) < height / 2
+                  ? (TEXT_Y_OFFSET * 2.5 +
+                      Helpers.TextHeight(
+                        "#" + Helpers.ArtistID(location[0]) + "-map-name",
+                        location[0]
+                      )) /
+                    2
+                  : (-2 *
+                      (TEXT_Y_OFFSET * 4.75 +
+                        Helpers.TextHeight(
+                          "#" + Helpers.ArtistID(location[0]) + "-map-name",
+                          location[0]
+                        ))) /
+                    2}
+                height={3 *
+                  Helpers.TextHeight(
+                    "#" + Helpers.ArtistID(location[0]) + "-map-name",
+                    location[0]
+                  ) +
                   PADDING -
                   10}
                 fill="white"
                 stroke="black"
                 rx="15"
                 opacity="0"
-                class="pointer-events-none"
               />
               <text
-                id={Helpers.ArtistID(location[0]) + "-text-map"}
+                id={Helpers.ArtistID(location[0]) + "-map-name"}
+                class={Helpers.ArtistID(location[0]) +
+                  "-map-detail pointer-events-none"}
                 opacity="0"
                 x="0"
-                y={TEXT_Y_OFFSET * 2.75}
+                y={GetY(location) < height / 2
+                  ? TEXT_Y_OFFSET * 2.75
+                  : -TEXT_Y_OFFSET * 4.75}
                 text-anchor="middle">{location[0]}</text
+              >
+              <text
+                id={Helpers.ArtistID(location[0]) + "-map-origin"}
+                class={Helpers.ArtistID(location[0]) +
+                  "-map-detail pointer-events-none"}
+                opacity="0"
+                x="0"
+                y={GetY(location) < height / 2
+                  ? TEXT_Y_OFFSET * 3.75
+                  : -TEXT_Y_OFFSET * 3.75}
+                text-anchor="middle">{location[1][0].country}</text
+              >
+              <text
+                id={Helpers.ArtistID(location[0]) + "-map-year"}
+                class={Helpers.ArtistID(location[0]) +
+                  "-map-detail pointer-events-none"}
+                opacity="0"
+                x="0"
+                y={GetY(location) < height / 2
+                  ? TEXT_Y_OFFSET * 4.75
+                  : -TEXT_Y_OFFSET * 2.75}
+                text-anchor="middle">{GetYears(location[1])}</text
               >
             </g>
           {/each}
@@ -607,84 +647,99 @@
         />
       </g>
     </svg>
-    <g transform={Translate(PADDING, height - 70 - PADDING)}>
-      <rect
-        x="-3"
-        y="0"
-        width="280"
-        height="80"
-        fill="white"
-        stroke="black"
-        rx="15"
-      />
-      <g transform="translate(0, 20)">
-        <g transform="translate(115, 20)">
-          <g transform="rotate(0)">
-            <g transform="translate({-RADIUS * 2 + 5}, 0)">
-              <path
-                d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
-                fill="#cc0000"
-                stroke="black"
-                stroke-width="2"
-              />
-            </g>
-          </g>
-        </g>
-        <line
-          x1="20"
-          y1="20"
-          x2="115"
-          y2="20"
-          stroke="#c00"
-          stroke-width="5"
-          opacity="0.5"
-        />
-        <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="#c00" />
-        <text x="15" y="25">A</text>
-        <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="black" />
-        <text x="110" y="25">B</text>
-        <text x="15" y="50">A influenced B</text>
-      </g>
-      <g transform="translate(140, 20)">
-        <g transform="translate(20, 20)">
-          <g transform="rotate(0)">
-            <g transform="translate({RADIUS * 2 - 15}, 0)">
-              <path
-                d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
-                fill="#cc0000"
-                stroke="black"
-                stroke-width="2"
-              />
-            </g>
-          </g>
-        </g>
-        <line
-          x1="20"
-          y1="20"
-          x2="115"
-          y2="20"
-          stroke="#c00"
-          stroke-width="5"
-          opacity="0.5"
-        />
-        <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="black" />
-        <text x="15" y="25">A</text>
-        <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="#c00" />
-        <text x="110" y="25">B</text>
-        <text x="15" y="50">A influenced B</text>
-      </g>
-      <g transform="translate(0, 18)">
-        <text
-          font-size="smaller"
-          text-anchor="middle"
-          x="140"
-          y="0"
-          stroke="#c00"
-          opacity="0.5"
-        >
-          Line thickness encodes birth year gap
-        </text>
-      </g>
-    </g>
   </svg>
+  <div
+    class="absolute left-0 bottom-0"
+    style="width: {LEGEND_WIDTH * LEGEND_SCALE}px; height: {LEGEND_HEIGHT *
+      LEGEND_SCALE}px;"
+  >
+    <svg
+      id="legend"
+      class="inline-block absolute top-0 left-0"
+      style="padding-top: 12px;"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 {LEGEND_WIDTH} {LEGEND_HEIGHT}"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <g transform="scale({LEGEND_SCALE})">
+        <rect
+          x="2"
+          y="2"
+          width={LEGEND_WIDTH - 4}
+          height={LEGEND_HEIGHT - 4}
+          fill="white"
+          stroke="black"
+          rx="15"
+        />
+        <g transform="translate(0, 20)">
+          <g transform="translate(115, 20)">
+            <g transform="rotate(0)">
+              <g transform="translate({-RADIUS * 2 + 5}, 0)">
+                <path
+                  d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                  fill="#cc0000"
+                  stroke="black"
+                  stroke-width="2"
+                />
+              </g>
+            </g>
+          </g>
+          <line
+            x1="20"
+            y1="20"
+            x2="115"
+            y2="20"
+            stroke="#c00"
+            stroke-width="5"
+            opacity="0.5"
+          />
+          <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="#c00" />
+          <text x="15" y="25">A</text>
+          <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="black" />
+          <text x="110" y="25">B</text>
+          <text x="15" y="50">A influenced B</text>
+        </g>
+        <g transform="translate(140, 20)">
+          <g transform="translate(20, 20)">
+            <g transform="rotate(0)">
+              <g transform="translate({RADIUS * 2 - 15}, 0)">
+                <path
+                  d="M 0,-5 L 10,0 L 0,5 L 0,-5 Z"
+                  fill="#cc0000"
+                  stroke="black"
+                  stroke-width="2"
+                />
+              </g>
+            </g>
+          </g>
+          <line
+            x1="20"
+            y1="20"
+            x2="115"
+            y2="20"
+            stroke="#c00"
+            stroke-width="5"
+            opacity="0.5"
+          />
+          <circle cx="20" cy="20" r={RADIUS} fill="white" stroke="black" />
+          <text x="15" y="25">A</text>
+          <circle cx="115" cy="20" r={RADIUS} fill="white" stroke="#c00" />
+          <text x="110" y="25">B</text>
+          <text x="15" y="50">A influenced B</text>
+        </g>
+        <g transform="translate(0, 18)">
+          <text
+            font-size="smaller"
+            text-anchor="middle"
+            x="140"
+            y="0"
+            stroke="#c00"
+            opacity="0.5"
+          >
+            Line thickness encodes birth year gap
+          </text>
+        </g>
+      </g>
+    </svg>
+  </div>
 </div>
