@@ -2,6 +2,9 @@
   import * as d3 from "d3"
   import { Helpers, Types } from "$lib/utilities"
   import { attr, once } from "svelte/internal"
+  import { createEventDispatcher } from "svelte"
+
+  const dispatch = createEventDispatcher()
 
   export let width: number
   export let height: number
@@ -70,6 +73,8 @@
     '1900'
   ]
 
+  let centStatus = new Array(gtCents.length).fill(false)
+
   let medN = gtMediums.length
   
   let chordCentScale = d3
@@ -124,7 +129,7 @@
     let vertTCoord = vertT / 2 + Math.abs(sa1 - sa0) * 0.1 * 5
     let adjustH = -1
     if (sa1 > -90 && sa1 < 90) {
-      adjustH = Math.abs(sa1 - sa0) * 0.2 * 10
+      adjustH = Math.abs(sa1 - sa0) * 0.05 * 10
     } else {
       adjustH = -1 * (Math.abs(sa1 - sa0) * 0.2 * 10)
     }
@@ -153,6 +158,101 @@
     ) //back
 
     if (buffer) return (context = null), buffer + "" || null
+  }
+
+  const OnMouseOverRibbons = (group: string, idx: number) => {
+    console.log(idx)
+    dispatch("highlight_chord_ribbon", {
+      chordGroup: group,
+      chordIdx: idx
+    })
+  }
+
+  const fastTransitionDur = 250
+  const slowTransitionDur = 450
+
+  const OnMouseLeaveRibbons = (group: string) => {
+    dispatch("restore_chord_ribbon", {
+      chordGroup: group
+    })
+  }
+
+  const OnMouseOverArcs = (group: string) => {
+    dispatch("highlight_chord_group", {
+      chordGroup: group
+    })
+  }
+
+  const OnMouseLeaveArcs = (group: string) => {
+    dispatch("restore_chord_group", {
+      chordGroup: group
+    })
+  }
+
+  export const HighlightGrouping = (
+    chordGroup: string,
+  ) => {
+    // Chaning Ribbon Opacity
+    d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style('opacity', 0.1)
+    d3.selectAll('.ribbonPaths_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 0.95)
+    // Changing Arc Opacity
+    d3.selectAll('.arcPaths').transition().duration(fastTransitionDur).style('opacity', 0.4)
+    d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).attr("outerRadius", chartRad * 1.05 )
+    // d3.arc()
+    //     .innerRadius(chartRad * 0.925)
+    //     .outerRadius(chartRad * 1.05)
+    //     .cornerRadius(3)
+    // )
+  }
+
+  export const RestoreGrouping = (
+    chordGroup: string,
+  ) => {
+    console.log(chordGroup)
+    // Restoring Ribbon Styling
+    d3.selectAll('.ribbonPaths').transition().duration(slowTransitionDur).style('opacity', 0.5)
+    // Restoring Arc Styliing
+    // Changing Arc Opacity
+    d3.selectAll('.arcPaths').transition().duration(slowTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).attr("d", 
+    // d3.arc()
+    //     .innerRadius(chartRad * 0.925)
+    //     .outerRadius(chartRad)
+    //     .cornerRadius(3)
+    // )
+
+    // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#r_'+ chordGroup).style('opacity', 0.95)
+  }
+
+  export const HighlightRibbon = (
+    chordGroup: string,
+    chordIdx: number
+  ) => {
+    console.log("number: ", chordIdx)
+    // console.log(chordGroup)
+    // Chaning Ribbon Opacity
+    d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style('opacity', 0.1)
+    d3.selectAll('.ribbonPaths_' + chordGroup).transition().duration(fastTransitionDur).style('opacity', 0.5)
+    d3.selectAll('#r_'+ chordGroup + '_' + chordIdx).transition().duration(fastTransitionDur).style('opacity', 0.95) //0.7
+    // d3.selectAll('#r_'+ chordGroup + '_' + chordIdx).transition().duration(fastTransitionDur).style("stroke-width", 3)
+    // Changing Arc Opacity
+    d3.selectAll('.arcPaths').transition().duration(fastTransitionDur).style('opacity', 0.4)
+    d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
+  }
+
+  export const RestoreRibbon = (
+    chordGroup: string,
+  ) => {
+    // Restoring Ribbon Styling
+    d3.selectAll('.ribbonPaths').transition().duration(slowTransitionDur).style('opacity', 0.5)
+    // d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style("stroke-width", 1)
+    // Restoring Arc Styliing
+    // Changing Arc Opacity
+    d3.selectAll('.arcPaths').transition().duration(slowTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
+    // d3.selectAll('#r_'+ chordGroup).style('opacity', 0.95)
   }
 
   export const Initialize = (
@@ -207,6 +307,7 @@
                 if(groupedData[k].slice == currGroup[j].medium)
                 {
                   groupedData[k].groups[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] += 1
+                  centStatus[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] = true
                   break
                 }
               }
@@ -215,6 +316,7 @@
                 if(groupedData[k].slice == currGroup[j].death_type)
                 {
                   groupedData[k].groups[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] += 1
+                  centStatus[ Math.floor(Number(allLocations[i][1][0].year) / 100) - 10 ] = true
                   break
                 }
               }
@@ -222,7 +324,7 @@
           }
         }
       }
-      console.log(groupedData)
+      console.log(centStatus)
 
       let totalEntries = 0
       for (let i = 0; i < groupedData.length; i++) {
@@ -268,6 +370,7 @@
         let forwardAngleD = (Math.PI - angleR) / 2
         let runningRTally = 0.0
         let otherSide = false
+        let rTallyInt = 0
 
         let padCheck = false
         for (let i = 0; i < n; i++) {
@@ -290,7 +393,8 @@
                   half: 0,
                   cent: j,
                   addLabel: padCheck ? true : false,
-                  slice: groupedData[i].slice
+                  slice: groupedData[i].slice,
+                  defIndex: rTallyInt
                 })
                 forwardAngle +=
                   padCheck && i > 0
@@ -315,7 +419,8 @@
                   half: 1,
                   cent: j,
                   addLabel: padCheck || !otherSide ? true : false,
-                  slice: groupedData[i].slice
+                  slice: groupedData[i].slice,
+                  defIndex: rTallyInt
                 })
                 if (!otherSide) {
                   otherSide = true
@@ -328,6 +433,7 @@
               if (padCheck) {
                 padCheck = false
               }
+              rTallyInt++
             }
           }
         }
@@ -347,7 +453,6 @@
         "Sculptures",
         "Acrylic",
       ]
-
       // Ribbons
       let ribbons = d3
         .select(chordViz)
@@ -356,7 +461,7 @@
         .selectAll("path")
         .data((chords) => chords)
         .enter()
-        .append("path")
+        .append("path")//Appending paths to group
         .attr("d", ribbonBasket)
         .style("fill", function (d) {
           return chordColorScale(d.colorIndex)
@@ -364,7 +469,17 @@
         .style("stroke", (d, i) =>
           d3.rgb(chordColorScale(d.colorIndex)).darker()
         )
+        .style("stroke-width", 1)
+        .attr("id", (d, i) => 'r_' + d.slice + '_' + i)
+        .attr('class', function(d, i){ return 'ribbonPaths_' + d.slice })
+        .classed('ribbonPaths', true)
+        // .classed(function(d, i){ return 'ribbonPaths_' + d.slice }, true)
         .style("opacity", 0.5)
+        .on('mouseover', function(e, d){
+          OnMouseOverRibbons(d.slice, d.defIndex)
+          // d3.select(this).style('opacity', 0.95) 
+        })
+        .on('mouseout', (e, d) => OnMouseLeaveRibbons(d.slice))
 
       // Group for everything but the ribbons
       let groupChord = d3
@@ -382,16 +497,16 @@
         })
         .style("stroke", "white")
         .attr("d", arcGen)
-      groupChord
-        .append("g")
-        .attr("class", "groups")
-        .selectAll("g")
-        .data((chords) => chords)
-        .enter()
-        .append("g")
+        .attr("id", (d, i) => 'arc_' + d.slice)
+        .classed('arcPaths', true)
+        .on('mouseover', (e, d) => OnMouseOverArcs(d.slice))
+        .on('mouseout', (e, d) => OnMouseLeaveArcs(d.slice))
+      
+      // Century butttons:
       groupChord
         .append("rect")
         .data(gtCents)
+        .classed('cursor-pointer', (d, i) => (centStatus[i]))
         .attr("x", (-1 * rectWidth) / 2)
         .attr(
           "y",
@@ -410,6 +525,7 @@
       groupChord
         .append("text")
         .data(gtCents)
+        .classed('cursor-pointer', (d, i) => (centStatus[i]))
         .attr("x", 0)
         .attr(
           "y",
@@ -423,55 +539,6 @@
         .style("font-size", attrFontSize)
         .text((d) => d.charAt(0).toUpperCase() + d.slice(1))
 
-      let srT = chartRad
-      groupChord
-        .append("text")
-        .data((chords) => chords)
-        .attr("x", function (d, i) {
-          let retX =
-            d.half == 0
-              ? srT *
-                Math.cos((((d.endAngle * 180) / Math.PI - 90) * Math.PI) / 180)
-              : srT *
-                Math.cos(
-                  (((d.startAngle * 180) / Math.PI - 90) * Math.PI) / 180
-                )
-          // if (d.half == 0) {
-          //   retX += 65 * (width / 930)
-          // } else {
-          //   retX -= 65 * (width / 930)
-          // }
-          return retX
-        })
-        .attr("y", function (d, i) {
-          let retY =
-            d.half == 0
-              ? srT *
-                Math.sin((((d.endAngle * 180) / Math.PI - 90) * Math.PI) / 180)
-              : srT *
-                Math.sin(
-                  (((d.startAngle * 180) / Math.PI - 90) * Math.PI) / 180
-                )
-          // if (
-          //   Math.abs(
-          //     (d.startAngle * 180) / Math.PI -
-          //       90 -
-          //       ((d.endAngle * 180) / Math.PI - 90)
-          //   ) <
-          //   1.5 * ((2 * angleD) / totalEntries)
-          // ) {
-          //   retY -= 15
-          // }
-          return retY
-        })
-        .attr("fill", "black")
-          .attr('transform', function(d, i){
-            return 'rotate(' + (1) + ')'
-        })
-        .style("text-anchor", "middle")
-        .style("font-size", attrFontSize)
-        .text((d) => (d.addLabel ? d.slice[0].toUpperCase() + d.slice.substring(1) : ""))
-      //   Placeholders / title
       let onceGroupChord = d3
         .select(chordViz)
         .append("g")

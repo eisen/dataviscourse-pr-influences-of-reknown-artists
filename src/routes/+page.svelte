@@ -225,6 +225,51 @@
     matrix.RestorePair(influencer, influencee, row, col)
   }
 
+  // Chord functions
+  const HighlightGrouping_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.HighlightGrouping(selectedGrouping)
+  }
+
+  const RestoreGrouping_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.RestoreGrouping(selectedGrouping)
+
+  }
+
+  const HighlightRibbon_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    const selectedRibbon = ev.detail.chordIdx
+    chord_deaths.HighlightRibbon(selectedGrouping, selectedRibbon)
+  }
+
+  const RestoreRibbon_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.RestoreRibbon(selectedGrouping)
+
+  }
+
+  const HighlightGrouping_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.HighlightGrouping(selectedGrouping)
+  }
+
+  const RestoreGrouping_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.RestoreGrouping(selectedGrouping)
+  }
+
+  const HighlightRibbon_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    const selectedRibbon = ev.detail.chordIdx
+    chord_deaths.HighlightRibbon(selectedGrouping, selectedRibbon)
+  }
+
+  const RestoreRibbon_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.RestoreRibbon(selectedGrouping)
+  }
+
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
     const locs: Types.ArtistLocation[] | undefined = await d3.json(
@@ -387,6 +432,10 @@
         width={chord_width}
         height={chord_height}
         grouping="Death"
+        on:highlight_chord_group={HighlightGrouping_Deaths}
+        on:restore_chord_group={RestoreGrouping_Deaths}
+        on:highlight_chord_ribbon={HighlightRibbon_Deaths}
+        on:restore_chord_ribbon={RestoreRibbon_Deaths}
       />
       <Scatter
         bind:this={scatter}
@@ -413,6 +462,10 @@
         width={chord_width}
         height={chord_height}
         grouping="Medium"
+        on:highlight_chord_group={HighlightGrouping_Mediums}
+        on:restore_chord_group={RestoreGrouping_Mediums}
+        on:highlight_chord_ribbon={HighlightRibbon_Mediums}
+        on:restore_chord_ribbon={RestoreRibbon_Mediums}
       />
       <Area bind:this={area} width={area_width} height={area_height} />
     </div>
