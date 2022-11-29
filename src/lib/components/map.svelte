@@ -4,8 +4,7 @@
   import { geoWinkel3 } from "d3-geo-projection"
   import { Config, Helpers, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
-  import { createEventDispatcher, tick } from "svelte"
-  import type { ArtistLocation } from "$lib/utilities/types"
+  import { createEventDispatcher } from "svelte"
 
   const dispatch = createEventDispatcher()
 
@@ -105,10 +104,6 @@
 
     curve.lineStart()
     curve.point(source[0], source[1])
-    // curve.point(
-    //   RADIUS * 2 * normal[0] + (1 * (target[0] + source[0])) / 2,
-    //   RADIUS * 2 * normal[1] + (1 * (target[1] + source[1])) / 2
-    // )
     curve.point(target[0], target[1])
     curve.lineEnd()
 
@@ -229,7 +224,7 @@
     return Helpers.GetYfromLatLon(projection, location[1])
   }
 
-  const GetYears = (locations: ArtistLocation[]): string => {
+  const GetYears = (locations: Types.ArtistLocation[]): string => {
     return `${locations[0].year} - ${
       locations[1].year > 2021 ? "" : locations[1].year
     }`
