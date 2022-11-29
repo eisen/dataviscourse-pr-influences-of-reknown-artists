@@ -257,7 +257,7 @@
 
   export const Initialize = (
     locs: Types.ArtistLocation[],
-    groupLocs: Types.ArtistMedium[]
+    groupLocs: Types.ArtistMedium[] | Types.ArtistData
   ) => {
     if (locs && groupLocs) {
       if(grouping == 'Medium')
@@ -267,6 +267,13 @@
       else{
         selectedG = gtDeaths
       }
+      if(grouping == 'Death')
+      {
+        console.log("did we even get it?")
+        console.log(groupLocs)
+        console.log("?")
+      }
+
     
       let groupedData = [];
       for(let i = 0; i < selectedG.length; i++)
@@ -359,6 +366,9 @@
 
         let retArr = []
         let n = groupedData.length
+        console.log("alright then let's take a look!")
+        console.log(n)
+
         let angleR = (angleD * Math.PI) / 180
         let totalAngle = 2 * angleD
         let totalAngleR = (totalAngle * Math.PI) / 180
@@ -371,6 +381,8 @@
         let runningRTally = 0.0
         let otherSide = false
         let rTallyInt = 0
+        console.log('alright lets')
+        console.log(groupedData)
 
         let padCheck = false
         for (let i = 0; i < n; i++) {
@@ -437,6 +449,8 @@
             }
           }
         }
+        console.log('WOah here we are!')
+        console.log(retArr)
         return retArr
       })
       let deathArr = [

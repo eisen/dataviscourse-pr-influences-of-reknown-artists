@@ -301,7 +301,7 @@
     }
 
     area.Initialize(locs!, medLocs!)
-    chord_deaths.Initialize(locs!, medLocs!)
+    chord_deaths.Initialize(locs!, artist_data!)
     chord_mediums.Initialize(locs!, medLocs!)
     map.Initialize(
       features,
