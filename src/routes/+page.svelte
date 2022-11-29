@@ -253,7 +253,7 @@
     }
 
     area.Initialize()
-    chord_deaths.Initialize(locs!, medLocs!)
+    chord_deaths.Initialize(locs!, artist_data!)
     chord_mediums.Initialize(locs!, medLocs!)
     map.Initialize(
       features,
@@ -378,6 +378,7 @@
         bind:this={chord_deaths}
         width={chord_width}
         height={chord_height}
+        grouping="Death"
       />
       <Scatter
         bind:this={scatter}
@@ -398,6 +399,7 @@
         bind:this={chord_mediums}
         width={chord_width}
         height={chord_height}
+        grouping="Medium"
       />
       <Area bind:this={area} width={area_width} height={area_height} />
     </div>
