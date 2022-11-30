@@ -535,17 +535,23 @@
                 class={Helpers.ArtistID(location[0]) +
                   "-map-detail pointer-events-none"}
                 x={-(
-                  Helpers.TextWidth(
-                    "#" + Helpers.ArtistID(location[0]) + "-map-name",
-                    location[0]
-                  ) +
-                  PADDING * 2
+                  Helpers.MaxTextWidth(
+                    [
+                      "#" + Helpers.ArtistID(location[0]) + "-map-name",
+                      "#" + Helpers.ArtistID(location[0]) + "-map-origin",
+                      "#" + Helpers.ArtistID(location[0]) + "-map-year",
+                    ],
+                    [location[0], location[1][0].country, GetYears(location[1])]
+                  ) + PADDING
                 ) / 2}
-                width={Helpers.TextWidth(
-                  "#" + Helpers.ArtistID(location[0]) + "-map-name",
-                  location[0]
-                ) +
-                  PADDING * 2}
+                width={Helpers.MaxTextWidth(
+                  [
+                    "#" + Helpers.ArtistID(location[0]) + "-map-name",
+                    "#" + Helpers.ArtistID(location[0]) + "-map-origin",
+                    "#" + Helpers.ArtistID(location[0]) + "-map-year",
+                  ],
+                  [location[0], location[1][0].country, GetYears(location[1])]
+                ) + PADDING}
                 y={GetY(location) < height / 2
                   ? (TEXT_Y_OFFSET * 2.5 +
                       Helpers.TextHeight(

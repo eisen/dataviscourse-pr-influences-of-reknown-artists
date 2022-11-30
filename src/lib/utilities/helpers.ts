@@ -18,7 +18,7 @@ export const ColorScheme = [
   "rgb(252, 179, 75)",
   "#00008B",
   "#3C1900",
-  "#84011B"
+  "#84011B",
 ]
 
 export const ArtistName = (datum: Types.ArtistData) => {
@@ -39,6 +39,18 @@ export const TextWidth = (id: string, text: string): number => {
   }
 }
 
+export const MaxTextWidth = (ids: string[], text: string[]): number => {
+  let max_width = 0
+  for (let idx in ids) {
+    const width = TextWidth(ids[idx], text[idx])
+    if (width > max_width) {
+      max_width = width
+    }
+  }
+
+  return max_width
+}
+
 export const TextHeight = (id: string, text: string): number => {
   const node = d3.select(id).node()! as Element
   if (node) {
@@ -47,6 +59,18 @@ export const TextHeight = (id: string, text: string): number => {
   } else {
     return 0
   }
+}
+
+export const MaxTextHeight = (ids: string[], text: string[]): number => {
+  let max_height = 0
+  for (let idx in ids) {
+    const height = TextHeight(ids[idx], text[idx])
+    if (height > max_height) {
+      max_height = height
+    }
+  }
+
+  return max_height
 }
 
 export const GetXfromLatLon = (
