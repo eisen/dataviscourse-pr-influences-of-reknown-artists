@@ -396,8 +396,8 @@
         let runningRTally = 0.0
         let otherSide = false
         let rTallyInt = 0
-        console.log('alright lets')
-        console.log(groupedData)
+        // console.log("alright lets")
+        // console.log(groupedData)
 
         let padCheck = false
         for (let i = 0; i < n; i++) {
@@ -464,8 +464,8 @@
             }
           }
         }
-        console.log('WOah here we are!')
-        console.log(retArr)
+        // console.log("WOah here we are!")
+        // console.log(retArr)
         return retArr
       })
       let deathArr = [
@@ -533,7 +533,7 @@
         .on("mouseover", (e, d) => OnMouseOverArcs(d.slice))
         .on("mouseout", (e, d) => OnMouseLeaveArcs(d.slice))
 
-      // Century butttons:
+      // Century buttons:
       groupChord
         .append("rect")
         .data(gtCents)
@@ -542,8 +542,7 @@
         .attr(
           "y",
           (d, i) =>
-            i *
-              ((chordCHeight * 2 + (0.05 * chordCHeight)) / gtCents.length) -
+            i * ((chordCHeight * 2 + 0.05 * chordCHeight) / gtCents.length) -
             chordCHeight * 0.9 -
             0.05 * chordCHeight
         )
@@ -553,27 +552,29 @@
         .attr("height", 0.1 * chordCHeight)
         .attr("fill", "#00005C")
         .attr("opacity", 1.0)
-      let thText = 'th'
-      groupChord
+      const text = groupChord
         .append("text")
         .data(gtCents)
-        .classed('cursor-pointer', (d, i) => (centStatus[i]))
-        .classed('cursor-not-allowed', (d, i) => (!centStatus[i]))
+        .classed("cursor-pointer", (d, i) => centStatus[i])
+        .classed("cursor-not-allowed", (d, i) => !centStatus[i])
         .attr("x", 0)
         .attr(
           "y",
           (d, i) =>
-            i *
-              ((chordCHeight * 2 + (0.05 * chordCHeight)) / gtCents.length) -
+            i * ((chordCHeight * 2 + 0.05 * chordCHeight) / gtCents.length) -
             chordCHeight * 0.88
         )
         .attr("fill", "white")
         .style("text-anchor", "middle")
         .style("font-size", attrFontSize)
-        .text(function(d){ 
-          // return String((Number(d) / 100) + 1) + thText.sup()
-          return String((Number(d) / 100) + 1) + thText
+        .text(function (d) {
+          return String(Number(d) / 100 + 1)
         })
+      text
+        .append("tspan")
+        .attr("baseline-shift", "super")
+        .attr("font-size", attrFontSize * 0.6)
+        .text("TH")
 
       let onceGroupChord = d3
         .select(chordViz)
