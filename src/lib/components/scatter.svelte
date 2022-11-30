@@ -22,7 +22,7 @@
   $: scatterHeight = height
   $: attrFontSize =
     height <= width ? (scatterHeight / 270) * 15 : (scatterWidth / 370) * 15
-  $: rectWidth = (scatterWidth / 370) * 50
+  $: rectWidth = (scatterWidth / 370) * 50 + 20
 
   const fastTransitionDur = 250
   
@@ -142,7 +142,7 @@
         .append('g')
         .classed('axis', true)
         .attr("transform", `translate(${horizontalAdjust},${scatterHeight * 0.85})`)
-        .call(scatterXAxis.ticks(13).tickFormat(d3.format("d")));
+        .call(scatterXAxis.ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")));
       d3.select(scattterViz)
         .append('g')
         .classed('axis', true)
@@ -160,6 +160,10 @@
       // // Defining tooltip/appending it
       // pointGroup.append("")
       // Adding actual points:
+      if(attrFontSize > 30)
+      {
+        attrFontSize = 30
+      }
       pointGroup.append("circle")
         .attr("transform", function(d, i)
         { 
@@ -178,25 +182,27 @@
               style('opacity', 1.0).attr('stroke', '#3C1900').attr('stroke-width', 2)
               // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.02))
           // Adding tooltip text/rect:
+          console.log('lesgoooo!')
+          console.log(attrFontSize)
           d3.selectAll('.tempTextT').remove()
           d3.select(scattterViz).append('rect')
             .classed('tempTextT', true)
             .attr("rx", 6).attr("ry", 6)
             .attr("width", rectWidth + (5 * (d.name.length - 5))).attr("height", 0.1 * scatterHeight)
             .attr("fill", '#3C1900').attr("opacity", 0.0)
-            .attr("x", (d.finalYear >= 1880) ? e.offsetX - 40 - (rectWidth + (5 * (d.name.length - 5)))/2 : e.offsetX - (rectWidth + (5 * (d.name.length - 5)))/2)
+            .attr("x", (d.finalYear >= 1880) ? e.offsetX - scatterWidth * 0.1 - (rectWidth + (5 * (d.name.length - 5)))/2 : e.offsetX - (rectWidth + (5 * (d.name.length - 5)))/2)
             .attr("y", e.offsetY - 0.125 * scatterHeight)
           d3.select(scattterViz).append("text")
-            .attr("x", (d.finalYear >= 1880) ? e.offsetX - 40 : e.offsetX)
+            .attr("x", (d.finalYear >= 1880) ? e.offsetX - scatterWidth * 0.1 : e.offsetX)
             .attr("y", e.offsetY - 0.125 * scatterHeight + 20)
             .attr("fill", "#cf8217")
             .style('text-anchor', 'middle')
             .classed('tempTextT', true)
-            .style('font-size', (d.name.length >= 15 && d.finalYear >= 1880)? attrFontSize * 0.47 : attrFontSize * 0.6)
+            .style('font-size', (d.name.length >= 15 && d.finalYear >= 1880)? attrFontSize * 0.52 : attrFontSize * 0.6)
             .text(`${d.name}`)
             .style("opacity", 0)
           d3.select(scattterViz).append("text")
-            .attr("x", (d.finalYear >= 1880) ? e.offsetX - 40 : e.offsetX)
+            .attr("x", (d.finalYear >= 1880) ? e.offsetX - scatterWidth * 0.1 : e.offsetX)
             .attr("y", e.offsetY - 0.125 * scatterHeight + 40)
             .attr("fill", "#cf8217")
             .style('text-anchor', 'middle')
@@ -205,7 +211,7 @@
             .text(`Aged ${d.age}`)
             .style("opacity", 0)
           d3.select(scattterViz).append("text")
-            .attr("x", (d.finalYear >= 1880) ? e.offsetX - 40 : e.offsetX)
+            .attr("x", (d.finalYear >= 1880) ? e.offsetX - scatterWidth * 0.1 : e.offsetX)
             .attr("y", e.offsetY - 0.125 * scatterHeight + 60)
             .attr("fill", "#cf8217")
             .style('text-anchor', 'middle')
