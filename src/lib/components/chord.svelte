@@ -2,7 +2,7 @@
   import * as d3 from "d3"
   import { Helpers, Types } from "$lib/utilities"
   import { createEventDispatcher } from "svelte"
-  import { group } from "d3";
+  import { group } from "d3"
 
   const dispatch = createEventDispatcher()
 
@@ -82,7 +82,6 @@
     .domain(d3.range(gtCents.length))
     .range(gtCents)
 
-  
   let selectedG = []
 
   let chordColorScale = d3
@@ -216,9 +215,7 @@
     // )
   }
 
-  export const RestoreGrouping = (
-    chordGroup: string,
-  ) => {
+  export const RestoreGrouping = (chordGroup: string) => {
     // Restoring Ribbon Styling
     d3.selectAll(".ribbonPaths")
       .transition()
@@ -241,10 +238,7 @@
     // d3.selectAll('#r_'+ chordGroup).style('opacity', 0.95)
   }
 
-  export const HighlightRibbon = (
-    chordGroup: string,
-    chordIdx: number
-  ) => {
+  export const HighlightRibbon = (chordGroup: string, chordIdx: number) => {
     // Chaning Ribbon Opacity
     d3.selectAll(".ribbonPaths")
       .transition()
@@ -298,16 +292,12 @@
         selectedG = gtDeaths
       }
 
-    
-      let groupedData = [];
-      for(let i = 0; i < selectedG.length; i++)
-      {
-        groupedData.push(
-          {
-            slice: selectedG[i],
-            groups: new Array(gtCents.length).fill(0),
-          }
-        )
+      let groupedData = []
+      for (let i = 0; i < selectedG.length; i++) {
+        groupedData.push({
+          slice: selectedG[i],
+          groups: new Array(gtCents.length).fill(0),
+        })
       }
 
       allGroupings = d3.groups(groupLocs, (d) => d.artist)
@@ -501,10 +491,18 @@
           d3.rgb(chordColorScale(d.colorIndex)).darker()
         )
         .style("stroke-width", 1)
-        .attr("id", (d, i) => 'r_' + d.slice + '_' + i)
-        .attr('class', function(d, i){ return 'ribbonPaths_' + d.slice + ' ' + 'ribbonPaths_' + chordCentScale(d.cent)})
+        .attr("id", (d, i) => "r_" + d.slice + "_" + i)
+        .attr("class", function (d, i) {
+          return (
+            "ribbonPaths_" +
+            d.slice +
+            " " +
+            "ribbonPaths_" +
+            chordCentScale(d.cent)
+          )
+        })
         // .classed(`ribbonPaths_${(d, i) => chordCentScale(d.cent)}`, true)
-        .classed('ribbonPaths', true)
+        .classed("ribbonPaths", true)
         // .classed(function(d, i){ return 'ribbonPaths_' + d.slice }, true)
         .style("opacity", 0.5)
         .on("mouseover", function (e, d) {
@@ -529,19 +527,19 @@
         })
         .style("stroke", "white")
         .attr("d", arcGen)
-        .attr("id", (d, i) => 'arc_' + d.slice)
-        .attr('class', (d, i) => 'arcPaths_'+chordCentScale(d.cent))
-        .classed('arcPaths', true)
-        .on('mouseover', (e, d) => OnMouseOverArcs(d.slice))
-        .on('mouseout', (e, d) => OnMouseLeaveArcs(d.slice))
-      
+        .attr("id", (d, i) => "arc_" + d.slice)
+        .attr("class", (d, i) => "arcPaths_" + chordCentScale(d.cent))
+        .classed("arcPaths", true)
+        .on("mouseover", (e, d) => OnMouseOverArcs(d.slice))
+        .on("mouseout", (e, d) => OnMouseLeaveArcs(d.slice))
+
       // Century butttons:
       let buttonDurr = 250
       groupChord
         .append("rect")
         .data(gtCents)
-        .classed('cursor-pointer', (d, i) => (centStatus[i]))
-        .classed('cursor-not-allowed', (d, i) => (!centStatus[i]))
+        .classed("cursor-pointer", (d, i) => centStatus[i])
+        .classed("cursor-not-allowed", (d, i) => !centStatus[i])
         .attr("x", (-1 * rectWidth) / 2)
         .attr(
           "y",
@@ -556,42 +554,61 @@
         .attr("height", 0.1 * chordCHeight)
         .attr("fill", "#00005C")
         .attr("opacity", 1.0)
-        .on('mouseover', function(e, d){
+        .on("mouseover", function (e, d) {
           let checkStat = centStatus[gtCents.indexOf(d)]
           console.log(gtCents.indexOf(d))
-          d3.select(this).transition().duration(buttonDurr).attr('fill', (checkStat ? '#cf8217' : '#00005C'))
+          d3.select(this)
+            .transition()
+            .duration(buttonDurr)
+            .attr("fill", checkStat ? "#cf8217" : "#00005C")
           // Highlighting connecting ribbons
-          d3.selectAll('.ribbonPaths').transition().duration(buttonDurr).style('opacity', 0.1)
-          d3.selectAll('.ribbonPaths_' + d).transition().duration(buttonDurr).style('opacity', 0.95)
+          d3.selectAll(".ribbonPaths")
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 0.1)
+          d3.selectAll(".ribbonPaths_" + d)
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 0.95)
           // Focusing for Arcs
-          d3.selectAll('.arcPaths').transition().duration(buttonDurr).style('opacity', 0.4)
+          d3.selectAll(".arcPaths")
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 0.4)
           // Selecting groups of arcs, not just individual one
-          let groupsSelected=[]
+          let groupsSelected = []
           let centSelected = Number(d) / 100 - 10
-          for(let k = 0; k < groupedData.length; k++)
-          {
-              if(groupedData[k].groups[centSelected] > 0)
-              {
-                groupsSelected.push(groupedData[k].slice)
-              }
+          for (let k = 0; k < groupedData.length; k++) {
+            if (groupedData[k].groups[centSelected] > 0) {
+              groupsSelected.push(groupedData[k].slice)
+            }
           }
-          for(let k = 0; k < groupsSelected.length; k++)
-          {
-            d3.selectAll('#arc_' + groupsSelected[k]).transition().duration(buttonDurr).style('opacity', 1.0)
+          for (let k = 0; k < groupsSelected.length; k++) {
+            d3.selectAll("#arc_" + groupsSelected[k])
+              .transition()
+              .duration(buttonDurr)
+              .style("opacity", 1.0)
           }
         })
-        .on('mouseout', function(d, i){
-          d3.select(this).transition().duration(buttonDurr).attr('fill', '#00005C')
+        .on("mouseout", function (d, i) {
+          d3.select(this)
+            .transition()
+            .duration(buttonDurr)
+            .attr("fill", "#00005C")
           // Highlighting connecting ribbons
-          d3.selectAll('.ribbonPaths').transition().duration(buttonDurr).style('opacity', 0.5)
+          d3.selectAll(".ribbonPaths")
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 0.5)
           // Focusing for Arcs
-          d3.selectAll('.arcPaths').transition().duration(buttonDurr).style('opacity', 1.0)
+          d3.selectAll(".arcPaths")
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 1.0)
         })
-        .classed('centRect', true)
-        .attr('id', (d, i) => 'centRect_' + d + '_' + grouping)
+        .classed("centRect", true)
+        .attr("id", (d, i) => "centRect_" + d + "_" + grouping)
       const text = groupChord
-      let thText = 'th'
-      groupChord
         .append("text")
         .data(gtCents)
         .classed("cursor-pointer", (d, i) => centStatus[i])
@@ -609,40 +626,61 @@
         .text(function (d) {
           return String(Number(d) / 100 + 1)
         })
-        .classed('centText', true)
-        .attr('id', (d, i) => 'centText_' + d)
-        .on('mouseover', function(e, d){
+        .classed("centText", true)
+        .attr("id", (d, i) => "centText_" + d)
+        .on("mouseover", function (e, d) {
           let checkStat = centStatus[gtCents.indexOf(d)]
           console.log(gtCents.indexOf(d))
           console.log(checkStat)
-          console.log(d3.select('#centRect_' + d))
-          d3.select('#centRect_' + d + '_' + grouping).transition().duration(buttonDurr).attr('fill', (checkStat ? '#cf8217' : '#00005C'))
+          console.log(d3.select("#centRect_" + d))
+          d3.select("#centRect_" + d + "_" + grouping)
+            .transition()
+            .duration(buttonDurr)
+            .attr("fill", checkStat ? "#cf8217" : "#00005C")
           // Highlighting connecting ribbons
-          d3.selectAll('.ribbonPaths').transition().duration(buttonDurr).style('opacity', 0.1)
-          d3.selectAll('.ribbonPaths_' + d).transition().duration(buttonDurr).style('opacity', 0.95)
+          d3.selectAll(".ribbonPaths")
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 0.1)
+          d3.selectAll(".ribbonPaths_" + d)
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 0.95)
           // Focusing for Arcs
-          d3.selectAll('.arcPaths').transition().duration(buttonDurr).style('opacity', 0.4)
+          d3.selectAll(".arcPaths")
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 0.4)
           // Selecting groups of arcs, not just individual one
-          let groupsSelected=[]
+          let groupsSelected = []
           let centSelected = Number(d) / 100 - 10
-          for(let k = 0; k < groupedData.length; k++)
-          {
-              if(groupedData[k].groups[centSelected] > 0)
-              {
-                groupsSelected.push(groupedData[k].slice)
-              }
+          for (let k = 0; k < groupedData.length; k++) {
+            if (groupedData[k].groups[centSelected] > 0) {
+              groupsSelected.push(groupedData[k].slice)
+            }
           }
-          for(let k = 0; k < groupsSelected.length; k++)
-          {
-            d3.selectAll('#arc_' + groupsSelected[k]).transition().duration(buttonDurr).style('opacity', 1.0)
+          for (let k = 0; k < groupsSelected.length; k++) {
+            d3.selectAll("#arc_" + groupsSelected[k])
+              .transition()
+              .duration(buttonDurr)
+              .style("opacity", 1.0)
           }
         })
-        .on('mouseout', function(d, i){
-          d3.selectAll('.centRect').transition().duration(buttonDurr).attr('fill', '#00005C')
+        .on("mouseout", function (d, i) {
+          d3.selectAll(".centRect")
+            .transition()
+            .duration(buttonDurr)
+            .attr("fill", "#00005C")
           // Highlighting connecting ribbons
-          d3.selectAll('.ribbonPaths').transition().duration(buttonDurr).style('opacity', 0.5)
+          d3.selectAll(".ribbonPaths")
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 0.5)
           // Focusing for Arcs
-          d3.selectAll('.arcPaths').transition().duration(buttonDurr).style('opacity', 1.0)
+          d3.selectAll(".arcPaths")
+            .transition()
+            .duration(buttonDurr)
+            .style("opacity", 1.0)
         })
       text
         .append("tspan")
