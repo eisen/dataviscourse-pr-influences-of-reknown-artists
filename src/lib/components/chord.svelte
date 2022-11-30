@@ -313,6 +313,7 @@
       allGroupings = d3.groups(groupLocs, (d) => d.artist)
 
       allLocations = d3.groups(locs, (d) => d.artist)
+      console.log(allLocations)
 
       let currGroup = []
       let foundMatch = false
