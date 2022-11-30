@@ -160,15 +160,17 @@
     if (buffer) return (context = null), buffer + "" || null
   }
 
+  const fastTransitionDur = 250
+  const slowTransitionDur = 450
+
+  // Hover Dispatches
+
   const OnMouseOverRibbons = (group: string, idx: number) => {
     dispatch("highlight_chord_ribbon", {
       chordGroup: group,
       chordIdx: idx,
     })
   }
-
-  const fastTransitionDur = 250
-  const slowTransitionDur = 450
 
   const OnMouseLeaveRibbons = (group: string) => {
     dispatch("restore_chord_ribbon", {
@@ -188,6 +190,59 @@
     })
   }
 
+  const OnMouseOverButtons = (time: string, groups: any) => {
+    dispatch("highlight_chord_button", {
+      chordTime: time,
+      chordGroups: groups,
+    })
+  }
+
+  const OnMouseLeaveButtons = (time: string) => {
+    dispatch("restore_chord_button", {
+      chordTime: time,
+    })
+  }
+  
+  // Click Dispatches
+
+  const OnClickArcs = (group: string) => {
+    dispatch("click_chord_by_arc", {
+      chordGroup: group,
+    })
+  }
+
+  const OnClickRibbons = (group: string, time: string) => {
+    dispatch("click_chord_by_ribbon", {
+      chordGroup: group,
+      chordTime: time
+    })
+  }
+
+  const OnClickButtons = (time: string, groups: any) => {
+    dispatch("click_chord_by_century", {
+      chordTime: time,
+      chordGroups: groups
+    })
+  }
+
+  // Response Functions
+
+  export const ClickGrouping = (chordGroup: string) => {
+    // ...
+    console.log('Group click for: ' + chordGroup)
+  }
+
+  export const ClickRibbon = (chordGroup: string, chordTime: string) => {
+    // ...
+    console.log('Ribbon click for: ' + chordGroup + ', ' + chordTime)
+  }
+
+  export const ClickButton = (chordTime: string, chordGroups: any) => {
+    // ...
+    console.log('Button click for: ' + chordTime + ', ')
+    console.log(chordGroups)
+  }
+
   export const HighlightGrouping = (chordGroup: string) => {
     // Chaning Ribbon Opacity
     d3.selectAll(".ribbonPaths")
@@ -203,10 +258,15 @@
       .transition()
       .duration(fastTransitionDur)
       .style("opacity", 0.4)
+      .style("stroke", "white")
+      .style("stroke-width", 1)
     d3.selectAll("#arc_" + chordGroup)
       .transition()
       .duration(fastTransitionDur)
       .style("opacity", 1.0)
+      .style("stroke", "#cf8217")
+      // .style("stroke-width", 3)
+
     // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).attr("outerRadius", chartRad * 1.05 )
     // d3.arc()
     //     .innerRadius(chartRad * 0.925)
@@ -227,6 +287,9 @@
       .transition()
       .duration(slowTransitionDur)
       .style("opacity", 1.0)
+      .style("stroke", "white")
+      .style("stroke-width", 1)
+
     // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).attr("d",
     // d3.arc()
     //     .innerRadius(chartRad * 0.925)
@@ -258,10 +321,14 @@
       .transition()
       .duration(fastTransitionDur)
       .style("opacity", 0.4)
+      .style("stroke", "white")
+      .style("stroke-width", 1)
     d3.selectAll("#arc_" + chordGroup)
       .transition()
       .duration(fastTransitionDur)
       .style("opacity", 1.0)
+      .style("stroke", "white")
+      .style("stroke-width", 1)
   }
 
   export const RestoreRibbon = (chordGroup: string) => {
@@ -277,8 +344,21 @@
       .transition()
       .duration(slowTransitionDur)
       .style("opacity", 1.0)
+      .style("stroke", "white")
+      .style("stroke-width", 1)
     // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
     // d3.selectAll('#r_'+ chordGroup).style('opacity', 0.95)
+  }
+
+  export const HighlightButton = (chordTime: string, chordGroups: any) => {
+      // ...
+      console.log('Button hover for: ' + chordTime + ', ')
+      console.log(chordGroups)
+  }
+
+  export const RestoreButton = (chordTime: string) => {
+      // ...
+      console.log('Button hover-leave for: ' + chordTime)
   }
 
   export const Initialize = (
@@ -511,6 +591,7 @@
           // d3.select(this).style('opacity', 0.95)
         })
         .on("mouseout", (e, d) => OnMouseLeaveRibbons(d.slice))
+        .on('click', (e, d) => OnClickRibbons(d.slice, chordCentScale(d.cent)))
 
       // Group for everything but the ribbons
       let groupChord = d3
@@ -531,8 +612,10 @@
         .attr("id", (d, i) => "arc_" + d.slice)
         .attr("class", (d, i) => "arcPaths_" + chordCentScale(d.cent))
         .classed("arcPaths", true)
+        .classed("cursor-pointer", true)
         .on("mouseover", (e, d) => OnMouseOverArcs(d.slice))
         .on("mouseout", (e, d) => OnMouseLeaveArcs(d.slice))
+        .on("click", (e, d) => OnClickArcs(d.slice))
 
       // Century butttons:
       let buttonDurr = 250
@@ -590,8 +673,9 @@
               .duration(buttonDurr)
               .style("opacity", 1.0)
           }
+          OnMouseOverButtons(d, groupsSelected)
         })
-        .on("mouseout", function (d, i) {
+        .on("mouseout", function (e, d) {
           d3.select(this)
             .transition()
             .duration(buttonDurr)
@@ -606,6 +690,17 @@
             .transition()
             .duration(buttonDurr)
             .style("opacity", 1.0)
+          OnMouseLeaveButtons(d)
+        })
+        .on('click', function(e, d) {
+          let groupsSelected = []
+          let centSelected = Number(d) / 100 - 10
+          for (let k = 0; k < groupedData.length; k++) {
+            if (groupedData[k].groups[centSelected] > 0) {
+              groupsSelected.push(groupedData[k].slice)
+            }
+          }
+          OnClickButtons(d, groupsSelected)
         })
         .classed("centRect", true)
         .attr("id", (d, i) => "centRect_" + d + "_" + grouping)
@@ -666,8 +761,9 @@
               .duration(buttonDurr)
               .style("opacity", 1.0)
           }
+          OnMouseOverButtons(d, groupsSelected)
         })
-        .on("mouseout", function (d, i) {
+        .on("mouseout", function (e, d) {
           d3.selectAll(".centRect")
             .transition()
             .duration(buttonDurr)
@@ -682,12 +778,25 @@
             .transition()
             .duration(buttonDurr)
             .style("opacity", 1.0)
+          OnMouseLeaveButtons(d)
+        })
+       .on('click', function(e, d) {
+          let groupsSelected = []
+          let centSelected = Number(d) / 100 - 10
+          for (let k = 0; k < groupedData.length; k++) {
+            if (groupedData[k].groups[centSelected] > 0) {
+              groupsSelected.push(groupedData[k].slice)
+            }
+          }
+          OnClickButtons(d, groupsSelected)
         })
       text
         .append("tspan")
         .attr("baseline-shift", "super")
         .attr("font-size", attrFontSize * 0.6)
         .text("TH")
+      
+      // Group for title text that only gets written once
       let onceGroupChord = d3
         .select(chordViz)
         .append("g")

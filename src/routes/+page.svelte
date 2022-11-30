@@ -257,23 +257,79 @@
 
   const HighlightGrouping_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.HighlightGrouping(selectedGrouping)
+    chord_mediums.HighlightGrouping(selectedGrouping)
   }
 
   const RestoreGrouping_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.RestoreGrouping(selectedGrouping)
+    chord_mediums.RestoreGrouping(selectedGrouping)
   }
 
   const HighlightRibbon_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedRibbon = ev.detail.chordIdx
-    chord_deaths.HighlightRibbon(selectedGrouping, selectedRibbon)
+    chord_mediums.HighlightRibbon(selectedGrouping, selectedRibbon)
   }
 
   const RestoreRibbon_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.RestoreRibbon(selectedGrouping)
+    chord_mediums.RestoreRibbon(selectedGrouping)
+  }
+
+  const ArcClick_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_mediums.ClickGrouping(selectedGrouping)
+  }
+
+  const ArcClick_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.ClickGrouping(selectedGrouping)
+  }
+
+  const RibbonClick_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    const selectedTime = ev.detail.chordTime
+    chord_mediums.ClickRibbon(selectedGrouping, selectedTime)
+  }
+
+  const RibbonClick_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    const selectedTime = ev.detail.chordTime
+    chord_deaths.ClickRibbon(selectedGrouping, selectedTime)
+  }
+
+  const CenturyClick_Mediums = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroups = ev.detail.chordGroups
+    chord_mediums.ClickButton(selectedTime, selectedGroups)
+  }
+
+  const CenturyClick_Deaths = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroups = ev.detail.chordGroups
+    chord_deaths.ClickButton(selectedTime, selectedGroups)
+  }
+
+  const HighlightButton_Deaths = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroupings = ev.detail.chordGroups
+    chord_deaths.HighlightButton(selectedTime, selectedGroupings)
+  }
+
+  const RestoreButton_Deaths = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    chord_deaths.RestoreButton(selectedTime)
+  }
+
+  const HighlightButton_Mediums = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroupings = ev.detail.chordGroups
+    chord_mediums.HighlightButton(selectedTime, selectedGroupings)
+  }
+
+  const RestoreButton_Mediums = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    chord_mediums.RestoreButton(selectedTime)
   }
 
   onMount(async () => {
@@ -447,6 +503,11 @@
           on:restore_chord_group={RestoreGrouping_Deaths}
           on:highlight_chord_ribbon={HighlightRibbon_Deaths}
           on:restore_chord_ribbon={RestoreRibbon_Deaths}
+          on:click_chord_by_arc={ArcClick_Deaths}
+          on:click_chord_by_ribbon={RibbonClick_Deaths}
+          on:click_chord_by_century={CenturyClick_Deaths}
+          on:highlight_chord_button={HighlightButton_Deaths}
+          on:restore_chord_button={RestoreButton_Deaths}
         />
         <Scatter
           bind:this={scatter}
@@ -479,6 +540,11 @@
           on:restore_chord_group={RestoreGrouping_Mediums}
           on:highlight_chord_ribbon={HighlightRibbon_Mediums}
           on:restore_chord_ribbon={RestoreRibbon_Mediums}
+          on:click_chord_by_arc={ArcClick_Mediums}
+          on:click_chord_by_ribbon={RibbonClick_Mediums}
+          on:click_chord_by_century={CenturyClick_Mediums}
+          on:highlight_chord_button={HighlightButton_Mediums}
+          on:restore_chord_button={RestoreButton_Mediums}
         />
         <Area bind:this={area} width={area_width} height={area_height} />
       </div>
