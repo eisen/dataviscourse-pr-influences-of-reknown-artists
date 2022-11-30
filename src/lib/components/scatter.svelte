@@ -39,6 +39,30 @@
     ""
   ] //Change to programmatic way here
 
+  // Handler functions
+  export const chordGroupingFocus = (chordGroup: string) => {
+    console.log(chordGroup)
+    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
+    d3.selectAll('.allPoints_'+chordGroup).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+  }
+  export const chordGroupingReFocus = () => {
+    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
+  }
+  // Takes in chord group and century that the ribbon maps to
+  export const chordRibbonFocus = (
+    chordGroup: string, chordTime: string) => {
+
+  }
+  export const chordRibbonReFocus = (
+    chordGroup: string, chordTime: string) => {
+
+  }
+
+  // Handles button interactivity
+  export const chordButttonFocus = (chordTime: string) => {
+
+  }
+
   export const Initialize = (
     locs: Types.ArtistLocation[],
     deathLocs: Types.ArtistData[]
@@ -144,7 +168,8 @@
         .attr('r', function(d, i) { return (d3.min([scatterWidth, scatterHeight]) * 0.015)})
         .attr('fill', (d, i) => scatterColorScale(d.typeOfDeath) )
         // .style("stroke", "black")
-        .attr('class', 'allPoints')
+        .attr('class', function(d, i){return 'allPoints_' + d.typeOfDeath})
+        .classed('allPoints', true)
         .on('mouseover', function(e, d) {
           d3.selectAll('.allPoints').transition().duration(fastTransitionDur).
               style('opacity', 0.15).attr('stroke','none')
@@ -156,12 +181,9 @@
           d3.selectAll('.tempTextT').remove()
           d3.select(scattterViz).append('rect')
             .classed('tempTextT', true)
-            .attr("rx", 6)
-            .attr("ry", 6)
-            .attr("width", rectWidth + (5 * (d.name.length - 5)))
-            .attr("height", 0.1 * scatterHeight)
-            .attr("fill", '#3C1900')
-            .attr("opacity", 0.0)
+            .attr("rx", 6).attr("ry", 6)
+            .attr("width", rectWidth + (5 * (d.name.length - 5))).attr("height", 0.1 * scatterHeight)
+            .attr("fill", '#3C1900').attr("opacity", 0.0)
             .attr("x", (d.finalYear >= 1880) ? e.offsetX - 40 - (rectWidth + (5 * (d.name.length - 5)))/2 : e.offsetX - (rectWidth + (5 * (d.name.length - 5)))/2)
             .attr("y", e.offsetY - 0.125 * scatterHeight)
           d3.select(scattterViz).append("text")

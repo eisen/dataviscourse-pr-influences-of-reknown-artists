@@ -237,11 +237,13 @@
   const HighlightGrouping_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     chord_deaths.HighlightGrouping(selectedGrouping)
+    scatter.chordGroupingFocus(selectedGrouping)
   }
 
   const RestoreGrouping_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     chord_deaths.RestoreGrouping(selectedGrouping)
+    scatter.chordGroupingReFocus()
   }
 
   const HighlightRibbon_Deaths = (ev: any) => {
