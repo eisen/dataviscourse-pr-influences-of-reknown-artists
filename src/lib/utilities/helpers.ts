@@ -18,7 +18,7 @@ export const ColorScheme = [
   "rgb(252, 179, 75)",
   "#00008B",
   "#3C1900",
-  "#84011B"
+  "#84011B",
 ]
 
 export const ArtistName = (datum: Types.ArtistData) => {
@@ -39,6 +39,18 @@ export const TextWidth = (id: string, text: string): number => {
   }
 }
 
+export const MaxTextWidth = (ids: string[], text: string[]): number => {
+  let max_width = 0
+  for (let idx in ids) {
+    const width = TextWidth(ids[idx], text[idx])
+    if (width > max_width) {
+      max_width = width
+    }
+  }
+
+  return max_width
+}
+
 export const TextHeight = (id: string, text: string): number => {
   const node = d3.select(id).node()! as Element
   if (node) {
@@ -47,6 +59,18 @@ export const TextHeight = (id: string, text: string): number => {
   } else {
     return 0
   }
+}
+
+export const MaxTextHeight = (ids: string[], text: string[]): number => {
+  let max_height = 0
+  for (let idx in ids) {
+    const height = TextHeight(ids[idx], text[idx])
+    if (height > max_height) {
+      max_height = height
+    }
+  }
+
+  return max_height
 }
 
 export const GetXfromLatLon = (
@@ -69,4 +93,18 @@ export const GetYfromLatLon = (
 ) => {
   const pos = projection([loc[0].lon, loc[0].lat])!
   return pos[1]
+}
+
+export const Distance = (
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
+): number => {
+  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
+}
+
+export const GetTransformValues = (transform: string): number[] => {
+  const match = transform.slice(10, -1).split(",")
+  return [parseFloat(match![0]), parseFloat(match![1])]
 }

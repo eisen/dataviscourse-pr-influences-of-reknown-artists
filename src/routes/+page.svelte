@@ -1,6 +1,14 @@
 <script lang="ts">
   import * as d3 from "d3"
-  import { Area, Chord, Map, Matrix, Network, Scatter } from "$lib/components"
+  import {
+    Area,
+    Chord,
+    Legend,
+    Map,
+    Matrix,
+    Network,
+    Scatter,
+  } from "$lib/components"
   import { Config, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
   import { Jellyfish } from "svelte-loading-spinners"
@@ -44,8 +52,8 @@
     height - verticalPadding - header_height - footer_height
   )
 
-  $: color_legend_width = width
-  $: color_legend_height = height / 9
+  $: legend_width = width
+  $: legend_height = height / 9
 
   let allLocations: Types.LocationGroup[]
   $: allLocations = []
@@ -58,6 +66,8 @@
   let network: Network
   let chord_deaths: Chord
   let chord_mediums: Chord
+  let legend_deaths: Legend
+  let legend_mediums: Legend
   let map: Map
   let matrix: Matrix
   let scatter: Scatter
@@ -209,8 +219,7 @@
     const influencee = ev.detail.influencee
     const row = ev.detail.row
     const col = ev.detail.col
-    network.HighlightArtist(influencer)
-    network.HighlightArtist(influencee)
+    network.HighlightPair(influencer, influencee)
     matrix.HighlightPair(influencer, influencee, row, col)
   }
 
@@ -220,8 +229,7 @@
     const row = ev.detail.row
     const col = ev.detail.col
 
-    network.RestoreArtist(influencer)
-    network.RestoreArtist(influencee)
+    network.RestorePair(influencer, influencee)
     matrix.RestorePair(influencer, influencee, row, col)
   }
 
@@ -234,7 +242,6 @@
   const RestoreGrouping_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     chord_deaths.RestoreGrouping(selectedGrouping)
-
   }
 
   const HighlightRibbon_Deaths = (ev: any) => {
@@ -246,7 +253,6 @@
   const RestoreRibbon_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     chord_deaths.RestoreRibbon(selectedGrouping)
-
   }
 
   const HighlightGrouping_Mediums = (ev: any) => {
@@ -303,6 +309,8 @@
     area.Initialize(locs!, medLocs!)
     chord_deaths.Initialize(locs!, artist_data!)
     chord_mediums.Initialize(locs!, medLocs!)
+    legend_deaths.Initialize()
+    legend_mediums.Initialize()
     map.Initialize(
       features,
       allInfluencers!,
@@ -376,7 +384,7 @@
     style="height: {height}px; width: {width * 3}px; transition: 0.5s ease all;"
   >
     <div
-      class="grid-cols-2 inline-block"
+      class="flex flex-col"
       style={(data_loaded ? "opacity: 1;" : "opacity:0;") +
         "margin-top: " +
         header_height +
@@ -393,28 +401,30 @@
         on:restore_artist={RestoreArtist}
         on:reset_influences={ResetInfluences}
       />
-      <Matrix
-        bind:this={matrix}
-        width={matrix_width}
-        height={matrix_height}
-        on:highlight_artist={HighlightArtist}
-        on:restore_artist={RestoreArtist}
-        on:highlight_influence_pair={HighlightPair}
-        on:restore_influence_pair={RestorePair}
-        on:select_influencer={SelectInfluencer}
-        on:select_influencee={SelectInfluencee}
-        on:reset_influences={ResetInfluences}
-        on:select_pair={SelectPair}
-      />
-      <Map
-        bind:this={map}
-        width={map_width}
-        height={map_height}
-        on:reset_influences={ResetInfluences}
-      />
+      <div class="grid-cols-2 inline-block">
+        <Matrix
+          bind:this={matrix}
+          width={matrix_width}
+          height={matrix_height}
+          on:highlight_artist={HighlightArtist}
+          on:restore_artist={RestoreArtist}
+          on:highlight_influence_pair={HighlightPair}
+          on:restore_influence_pair={RestorePair}
+          on:select_influencer={SelectInfluencer}
+          on:select_influencee={SelectInfluencee}
+          on:reset_influences={ResetInfluences}
+          on:select_pair={SelectPair}
+        />
+        <Map
+          bind:this={map}
+          width={map_width}
+          height={map_height}
+          on:reset_influences={ResetInfluences}
+        />
+      </div>
     </div>
     <div
-      class="grid-cols-2 inline-block"
+      class="flex flex-col"
       style={(data_loaded ? "opacity: 1;" : "opacity:0;") +
         "margin-top: " +
         header_height +
@@ -422,29 +432,31 @@
         width +
         "px;"}
     >
-      <Scatter
-        bind:this={scatter}
-        width={color_legend_width}
-        height={color_legend_height}
+      <Legend
+        bind:this={legend_deaths}
+        width={legend_width}
+        height={legend_height}
       />
-      <Chord
-        bind:this={chord_deaths}
-        width={chord_width}
-        height={chord_height}
-        grouping="Death"
-        on:highlight_chord_group={HighlightGrouping_Deaths}
-        on:restore_chord_group={RestoreGrouping_Deaths}
-        on:highlight_chord_ribbon={HighlightRibbon_Deaths}
-        on:restore_chord_ribbon={RestoreRibbon_Deaths}
-      />
-      <Scatter
-        bind:this={scatter}
-        width={scatter_width}
-        height={scatter_height}
-      />
+      <div class="grid-cols-2 inline-block">
+        <Chord
+          bind:this={chord_deaths}
+          width={chord_width}
+          height={chord_height}
+          grouping="Death"
+          on:highlight_chord_group={HighlightGrouping_Deaths}
+          on:restore_chord_group={RestoreGrouping_Deaths}
+          on:highlight_chord_ribbon={HighlightRibbon_Deaths}
+          on:restore_chord_ribbon={RestoreRibbon_Deaths}
+        />
+        <Scatter
+          bind:this={scatter}
+          width={scatter_width}
+          height={scatter_height}
+        />
+      </div>
     </div>
     <div
-      class="grid-cols-2 inline-block"
+      class="flex flex-col"
       style={(data_loaded ? "opacity: 1;" : "opacity:0;") +
         "margin-top: " +
         header_height +
@@ -452,22 +464,24 @@
         width +
         "px;"}
     >
-      <Scatter
-        bind:this={scatter}
-        width={color_legend_width}
-        height={color_legend_height}
+      <Legend
+        bind:this={legend_mediums}
+        width={legend_width}
+        height={legend_height}
       />
-      <Chord
-        bind:this={chord_mediums}
-        width={chord_width}
-        height={chord_height}
-        grouping="Medium"
-        on:highlight_chord_group={HighlightGrouping_Mediums}
-        on:restore_chord_group={RestoreGrouping_Mediums}
-        on:highlight_chord_ribbon={HighlightRibbon_Mediums}
-        on:restore_chord_ribbon={RestoreRibbon_Mediums}
-      />
-      <Area bind:this={area} width={area_width} height={area_height} />
+      <div class="grid-cols-2 inline-block">
+        <Chord
+          bind:this={chord_mediums}
+          width={chord_width}
+          height={chord_height}
+          grouping="Medium"
+          on:highlight_chord_group={HighlightGrouping_Mediums}
+          on:restore_chord_group={RestoreGrouping_Mediums}
+          on:highlight_chord_ribbon={HighlightRibbon_Mediums}
+          on:restore_chord_ribbon={RestoreRibbon_Mediums}
+        />
+        <Area bind:this={area} width={area_width} height={area_height} />
+      </div>
     </div>
   </div>
 </div>
