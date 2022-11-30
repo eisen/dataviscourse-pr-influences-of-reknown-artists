@@ -2,6 +2,7 @@
   import * as d3 from "d3"
   import { Helpers, Types } from "$lib/utilities"
   import { createEventDispatcher } from "svelte"
+  import { group } from "d3";
 
   const dispatch = createEventDispatcher()
 
@@ -643,7 +644,7 @@
           // Focusing for Arcs
           d3.selectAll('.arcPaths').transition().duration(buttonDurr).style('opacity', 1.0)
         })
-      text
+      groupChord
         .append("tspan")
         .attr("baseline-shift", "super")
         .attr("font-size", attrFontSize * 0.6)
