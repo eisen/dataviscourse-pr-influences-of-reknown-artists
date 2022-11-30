@@ -383,7 +383,7 @@
       allGroupings = d3.groups(groupLocs, (d) => d.artist)
 
       allLocations = d3.groups(locs, (d) => d.artist)
-      console.log(allLocations)
+      // console.log(allLocations)
 
       let currGroup = []
       let foundMatch = false
@@ -424,7 +424,7 @@
           }
         }
       }
-      console.log(centStatus)
+      // console.log(centStatus)
 
       let totalEntries = 0
       for (let i = 0; i < groupedData.length; i++) {
@@ -472,7 +472,7 @@
         let runningRTally = 0.0
         let otherSide = false
         let rTallyInt = 0
-        console.log(groupedData)
+        // console.log(groupedData)
 
         let padCheck = false
         for (let i = 0; i < n; i++) {
@@ -640,7 +640,7 @@
         .attr("opacity", 1.0)
         .on("mouseover", function (e, d) {
           let checkStat = centStatus[gtCents.indexOf(d)]
-          console.log(gtCents.indexOf(d))
+          // console.log(gtCents.indexOf(d))
           d3.select(this)
             .transition()
             .duration(buttonDurr)
@@ -726,9 +726,9 @@
         .attr("id", (d, i) => "centText_" + d)
         .on("mouseover", function (e, d) {
           let checkStat = centStatus[gtCents.indexOf(d)]
-          console.log(gtCents.indexOf(d))
-          console.log(checkStat)
-          console.log(d3.select("#centRect_" + d))
+          // console.log(gtCents.indexOf(d))
+          // console.log(checkStat)
+          // console.log(d3.select("#centRect_" + d))
           d3.select("#centRect_" + d + "_" + grouping)
             .transition()
             .duration(buttonDurr)

@@ -376,7 +376,7 @@
     )
     matrix.Initialize(artist_data!, influence_data!)
     network.Initialize(artist_data!, influence_data!)
-    scatter.Initialize()
+    scatter.Initialize(locs!, artist_data!)
 
     data_loaded = true
   })
