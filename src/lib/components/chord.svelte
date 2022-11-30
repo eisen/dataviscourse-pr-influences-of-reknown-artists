@@ -644,7 +644,7 @@
           // Focusing for Arcs
           d3.selectAll('.arcPaths').transition().duration(buttonDurr).style('opacity', 1.0)
         })
-      groupChord
+      text
         .append("tspan")
         .attr("baseline-shift", "super")
         .attr("font-size", attrFontSize * 0.6)
