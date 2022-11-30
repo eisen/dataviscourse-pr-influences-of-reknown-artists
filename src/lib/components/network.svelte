@@ -8,6 +8,7 @@
   const PADDING = 20
   const OFFSET_X = 40
   const OFFSET_Y = 0
+  const HIGHLIGHT_RADIUS = 50
 
   const LEGEND_WIDTH = 140
   const LEGEND_HEIGHT = 60
@@ -62,40 +63,86 @@
     })
   }
 
-  export const HighlightArtist = (name: string) => {
+  export const HighlightPair = (influencer: string, influencee: string) => {
+    HighlightArtist(influencer, influencee)
+    HighlightArtist(influencee, influencer)
+  }
+
+  export const HighlightArtist = (name: string, other?: string) => {
     const target = "#" + Helpers.ArtistID(name)
     d3.select(target + "-group").raise()
     d3.select(target + "-text")
       .transition()
       .duration(DURATION)
       .attr("opacity", 1)
+
     d3.select(target + "-rect")
       .transition()
       .duration(DURATION)
       .attr("opacity", 1)
+
     d3.select(target + "-image")
       .transition()
       .duration(DURATION)
       .attr("width", 100)
       .attr("height", 100)
-      .attr("x", -50)
-      .attr("y", -50)
+      .attr("x", -HIGHLIGHT_RADIUS)
+      .attr("y", -HIGHLIGHT_RADIUS)
+
     d3.select(target + "-circle")
       .transition()
       .duration(DURATION)
-      .attr("r", 50)
+      .attr("r", HIGHLIGHT_RADIUS)
+
+    if (other) {
+      let sign = 1
+      const this_artist = artists.find((d) => d.artist === name)
+      const other_artist = artists.find((d) => d.artist === other)
+      let distance = Helpers.Distance(
+        this_artist!.x!,
+        this_artist!.y!,
+        other_artist!.x!,
+        other_artist!.y!
+      )
+      if (this_artist!.x! < other_artist!.x!) {
+        sign = -1
+      }
+      if (distance < HIGHLIGHT_RADIUS * 3) {
+        const group_target = "#" + Helpers.ArtistID(name) + "-group"
+        const group = d3.select(group_target)
+        const transform = group.attr("transform")
+        const translate = Helpers.GetTransformValues(transform)
+        const node = group!.node()! as Element
+        const width = node!.getBoundingClientRect()!.width
+
+        group
+          .transition()
+          .duration(DURATION)
+          .attr(
+            "transform",
+            `translate(${translate[0] + (sign * width) / 2},${translate[1]})`
+          )
+      }
+    }
   }
 
-  export const RestoreArtist = (name: any) => {
+  export const RestorePair = (influencer: string, influencee: string) => {
+    RestoreArtist(influencer, influencee)
+    RestoreArtist(influencee, influencer)
+  }
+
+  export const RestoreArtist = (name: any, other?: string) => {
     const target = "#" + Helpers.ArtistID(name)
     d3.select(target + "-text")
       .transition()
       .duration(DURATION)
       .attr("opacity", 0)
+
     d3.select(target + "-rect")
       .transition()
       .duration(DURATION)
       .attr("opacity", 0)
+
     d3.select(target + "-image")
       .transition()
       .duration(DURATION)
@@ -103,10 +150,25 @@
       .attr("height", RADIUS * 2)
       .attr("x", -RADIUS)
       .attr("y", -RADIUS)
+
     d3.select(target + "-circle")
       .transition()
       .duration(DURATION)
       .attr("r", RADIUS)
+
+    if (other) {
+      const this_artist = artists.find((d) => d.artist === name)
+      const group_target = "#" + Helpers.ArtistID(name) + "-group"
+      const group = d3.select(group_target)
+
+      group
+        .transition()
+        .duration(DURATION)
+        .attr(
+          "transform",
+          Translate(this_artist!.x! + width / 2, this_artist!.y!)
+        )
+    }
   }
 
   export const DisplayInfluence = (in_influences: string[]) => {
@@ -179,6 +241,58 @@
   class="inline-block relative align-top overflow-hidden"
   style="width: {width}px; height: {height}px;"
 >
+  <div
+    class="absolute left-1/2 -translate-x-1/2 bottom-0"
+    style="width: {LEGEND_WIDTH * LEGEND_SCALE}px; height: {LEGEND_HEIGHT *
+      LEGEND_SCALE}px;"
+  >
+    <svg
+      id="legend"
+      class="inline-block absolute top-0 left-0"
+      style="padding-top: 10px;"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 {LEGEND_WIDTH} {LEGEND_HEIGHT}"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <g transform="scale({LEGEND_SCALE})">
+        <rect
+          x="2"
+          y="2"
+          width={LEGEND_WIDTH - 8}
+          height={LEGEND_HEIGHT - 4}
+          fill="white"
+          stroke="black"
+          rx="15"
+        />
+        <line
+          marker-end="url(#arrowhead)"
+          marker-start="url(#arrowtail)"
+          x1="20"
+          y1="20"
+          x2="115"
+          y2="20"
+          stroke="black"
+        />
+        <circle
+          cx="20"
+          cy="20"
+          r={RADIUS * LEGEND_SCALE}
+          fill="white"
+          stroke="black"
+        />
+        <text x="15" y="25">A</text>
+        <circle
+          cx="115"
+          cy="20"
+          r={RADIUS * LEGEND_SCALE}
+          fill="white"
+          stroke="black"
+        />
+        <text x="110" y="25">B</text>
+        <text x="15" y="50">A influenced B</text>
+      </g>
+    </svg>
+  </div>
   <svg
     class="inline-block absolute top-0 left-0"
     viewBox="0, 0, {width}, {height}"
@@ -209,7 +323,7 @@
       </marker>
     </defs>
     <g on:click={OnMouseClickReset}>
-      <rect x="0" y="0" {width} {height} fill="white" />
+      <rect x="0" y="0" {width} {height} fill="transparent" />
     </g>
     <g id="splat">
       {#each positions as position}
@@ -328,56 +442,4 @@
       {/each}
     </g>
   </svg>
-  <div
-    class="absolute left-1/2 -translate-x-1/2 bottom-0"
-    style="width: {LEGEND_WIDTH * LEGEND_SCALE}px; height: {LEGEND_HEIGHT *
-      LEGEND_SCALE}px;"
-  >
-    <svg
-      id="legend"
-      class="inline-block absolute top-0 left-0"
-      style="padding-top: 10px;"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 {LEGEND_WIDTH} {LEGEND_HEIGHT}"
-      preserveAspectRatio="xMidYMid meet"
-    >
-      <g transform="scale({LEGEND_SCALE})">
-        <rect
-          x="2"
-          y="2"
-          width={LEGEND_WIDTH - 8}
-          height={LEGEND_HEIGHT - 4}
-          fill="white"
-          stroke="black"
-          rx="15"
-        />
-        <line
-          marker-end="url(#arrowhead)"
-          marker-start="url(#arrowtail)"
-          x1="20"
-          y1="20"
-          x2="115"
-          y2="20"
-          stroke="black"
-        />
-        <circle
-          cx="20"
-          cy="20"
-          r={RADIUS * LEGEND_SCALE}
-          fill="white"
-          stroke="black"
-        />
-        <text x="15" y="25">A</text>
-        <circle
-          cx="115"
-          cy="20"
-          r={RADIUS * LEGEND_SCALE}
-          fill="white"
-          stroke="black"
-        />
-        <text x="110" y="25">B</text>
-        <text x="15" y="50">A influenced B</text>
-      </g>
-    </svg>
-  </div>
 </div>

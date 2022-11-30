@@ -219,8 +219,7 @@
     const influencee = ev.detail.influencee
     const row = ev.detail.row
     const col = ev.detail.col
-    network.HighlightArtist(influencer)
-    network.HighlightArtist(influencee)
+    network.HighlightPair(influencer, influencee)
     matrix.HighlightPair(influencer, influencee, row, col)
   }
 
@@ -230,8 +229,7 @@
     const row = ev.detail.row
     const col = ev.detail.col
 
-    network.RestoreArtist(influencer)
-    network.RestoreArtist(influencee)
+    network.RestorePair(influencer, influencee)
     matrix.RestorePair(influencer, influencee, row, col)
   }
 

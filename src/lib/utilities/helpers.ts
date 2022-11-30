@@ -94,3 +94,17 @@ export const GetYfromLatLon = (
   const pos = projection([loc[0].lon, loc[0].lat])!
   return pos[1]
 }
+
+export const Distance = (
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
+): number => {
+  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
+}
+
+export const GetTransformValues = (transform: string): number[] => {
+  const match = transform.slice(10, -1).split(",")
+  return [parseFloat(match![0]), parseFloat(match![1])]
+}
