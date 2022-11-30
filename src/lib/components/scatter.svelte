@@ -17,6 +17,22 @@
   let allDeaths: [string, Types.ArtistData[]][]
   $: allDeaths = []
 
+  $: scatterWidth = width
+  $: scatterHeight = height
+
+  let gtDeaths = [
+    "illness",
+    "alive",
+    "suicide",
+    "no-mention",
+    "heartattack",
+    "heartattack-overdose-probably",
+    "natural",
+    "accident",
+    "murder",
+    ""
+  ] //Change to programmatic way here
+
   export const Initialize = (
     locs: Types.ArtistLocation[],
     deathLocs: Types.ArtistData[]
@@ -70,6 +86,66 @@
       }
       console.log("here it is!")
       console.log(scatterData)
+      let maxYear = d3.max(scatterData, function(d) {return d.finalYear})
+      let minYear = d3.min(scatterData, function(d) {return d.finalYear})
+      console.log("Min and Max: " + minYear + ', ' + maxYear)
+      let maxAge = d3.max(scatterData, function(d) {return d.age})
+      let minAge = d3.min(scatterData, function(d) {return d.age})
+      console.log("Min and Max for age: " + minAge + ', ' + maxAge)
+
+      let horizontalAdjust = 20
+      // Creating our scales
+      // Horizontal scale: death year
+      let horizYearScale = d3.scaleLinear()
+        .domain([minYear, maxYear])
+        .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
+      console.log(d3.range(minYear, maxYear + 1))
+      console.log(scatterWidth)
+      console.log(horizYearScale(2022))
+      // Vertical scale: deatt age
+      let verticalAgeScale = d3.scaleLinear()
+        .domain([maxAge, 0])
+        .range([0, scatterHeight * 0.65])
+      // Color scale for death type
+      let scatterColorScale = d3.scaleOrdinal()
+        .domain(gtDeaths)
+        .range(Helpers.ColorSchemeDeaths)
+
+      // Creating our axes:
+      let scatterXAxis = d3.axisBottom(horizYearScale)
+      let scatterYAxis = d3.axisLeft(verticalAgeScale)
+
+      // Appending axes
+      d3.select(scattterViz)
+        .append('g')
+        .classed('axis', true)
+        .attr("transform", `translate(${horizontalAdjust},${scatterHeight * 0.85})`)
+        .call(scatterXAxis.ticks(12).tickFormat(d3.format("d")));
+      d3.select(scattterViz)
+        .append('g')
+        .classed('axis', true)
+        .attr("transform", `translate(${horizontalAdjust * 1.5},${scatterHeight * 0.2})`)
+        .call(scatterYAxis.ticks(15).tickFormat(d3.format("d")));
+      
+      let pointGroup = d3.select(scattterViz)
+        .append('g')
+        .attr('class', 'pointGroup')
+        .selectAll('g')
+        .data(scatterData)
+        .enter()
+        .append('g')
+      pointGroup.append("circle")
+        .attr("transform", function(d, i)
+        { 
+          console.log(d.finalYear)
+          console.log(horizYearScale(d.finalYear))
+          console.log(d.age)
+          console.log(verticalAgeScale(d.age))
+          return "translate(" + (horizYearScale(d.finalYear) + horizontalAdjust) + ", " + (verticalAgeScale(d.age) + scatterHeight * 0.2) + ")"
+        })
+        .attr('r', function(d, i) { return (d3.min([scatterWidth, scatterHeight]) * 0.015)})
+        .attr('fill', (d, i) => scatterColorScale(d.typeOfDeath) )
+        .style("stroke", "black")
     }
     else {
       console.error("Unable to load Artist Locations!")
@@ -92,7 +168,7 @@
     <g
     id='scatterViz'
     bind:this={scattterViz}
-    transform="translate({width / 2}, {height / 2})"
+    transform="translate(0, 0)"
     />
   </svg>
 </div>

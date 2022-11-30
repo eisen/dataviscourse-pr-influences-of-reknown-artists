@@ -58,6 +58,7 @@
     "natural",
     "accident",
     "murder",
+    ""
   ]
 
   let gtCents = [
@@ -84,10 +85,10 @@
 
   let selectedG = []
 
-  let chordColorScale = d3
-    .scaleOrdinal()
-    .domain(d3.range(12))
-    .range(Helpers.ColorScheme)
+  // let chordColorScale = d3
+  //   .scaleOrdinal()
+  //   .domain(d3.range(12))
+  //   .range(Helpers.ColorScheme)
 
   function ribbonBasket(d) {
     var buffer,
@@ -371,6 +372,18 @@
       } else {
         selectedG = gtDeaths
       }
+      let selectedColorScheme
+      if(grouping == "Medium")
+      {
+        selectedColorScheme = Helpers.ColorSchemeMediums
+      }
+      else{
+        selectedColorScheme = Helpers.ColorSchemeDeaths
+      }
+      let chordColorScale = d3
+        .scaleOrdinal()
+        .domain(selectedG)
+        .range(selectedColorScheme)
 
       let groupedData = []
       for (let i = 0; i < selectedG.length; i++) {
@@ -566,10 +579,10 @@
         .append("path") //Appending paths to group
         .attr("d", ribbonBasket)
         .style("fill", function (d) {
-          return chordColorScale(d.colorIndex)
+          return chordColorScale(d.slice)
         })
         .style("stroke", (d, i) =>
-          d3.rgb(chordColorScale(d.colorIndex)).darker()
+          d3.rgb(chordColorScale(d.slice)).darker()
         )
         .style("stroke-width", 1)
         .attr("id", (d, i) => "r_" + d.slice + "_" + i)
@@ -605,7 +618,7 @@
       groupChord
         .append("path")
         .style("fill", function (d, i) {
-          return chordColorScale(d.colorIndex)
+          return chordColorScale(d.slice)
         })
         .style("stroke", "white")
         .attr("d", arcGen)
