@@ -2,6 +2,7 @@
   import * as d3 from "d3"
   import { Helpers, Types } from "$lib/utilities"
   import { createEventDispatcher } from "svelte"
+  import { attr } from "svelte/internal";
 
   const dispatch = createEventDispatcher()
 
@@ -19,7 +20,12 @@
 
   $: scatterWidth = width
   $: scatterHeight = height
+  $: attrFontSize =
+    height <= width ? (scatterHeight / 270) * 15 : (scatterWidth / 370) * 15
+  $: rectWidth = (scatterWidth / 370) * 50
 
+  const fastTransitionDur = 250
+  
   let gtDeaths = [
     "illness",
     "alive",
@@ -39,8 +45,6 @@
   ) => {
     if(locs && deathLocs)
     {
-      console.log(locs)
-      console.log(deathLocs)
 
       allLocations = d3.groups(locs, (d) => d.artist)
       allDeaths = d3.groups(deathLocs, (d) => d.artist)
@@ -53,7 +57,6 @@
       {
         deathFound = false
         // Date-related derivations
-        // console.log(allLocations[i][1])
         if(allLocations[i][1].length > 1)
         {
           ageCalc = Number(allLocations[i][1][1].year) - Number(allLocations[i][1][0].year) 
@@ -84,14 +87,12 @@
           } )
         }
       }
-      console.log("here it is!")
-      console.log(scatterData)
+
       let maxYear = d3.max(scatterData, function(d) {return d.finalYear})
       let minYear = d3.min(scatterData, function(d) {return d.finalYear})
-      console.log("Min and Max: " + minYear + ', ' + maxYear)
+      
       let maxAge = d3.max(scatterData, function(d) {return d.age})
       let minAge = d3.min(scatterData, function(d) {return d.age})
-      console.log("Min and Max for age: " + minAge + ', ' + maxAge)
 
       let horizontalAdjust = 20
       // Creating our scales
@@ -99,9 +100,6 @@
       let horizYearScale = d3.scaleLinear()
         .domain([minYear, maxYear])
         .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
-      console.log(d3.range(minYear, maxYear + 1))
-      console.log(scatterWidth)
-      console.log(horizYearScale(2022))
       // Vertical scale: deatt age
       let verticalAgeScale = d3.scaleLinear()
         .domain([maxAge, 0])
@@ -120,13 +118,14 @@
         .append('g')
         .classed('axis', true)
         .attr("transform", `translate(${horizontalAdjust},${scatterHeight * 0.85})`)
-        .call(scatterXAxis.ticks(12).tickFormat(d3.format("d")));
+        .call(scatterXAxis.ticks(13).tickFormat(d3.format("d")));
       d3.select(scattterViz)
         .append('g')
         .classed('axis', true)
         .attr("transform", `translate(${horizontalAdjust * 1.5},${scatterHeight * 0.2})`)
         .call(scatterYAxis.ticks(15).tickFormat(d3.format("d")));
-      
+
+      // Adding dots:
       let pointGroup = d3.select(scattterViz)
         .append('g')
         .attr('class', 'pointGroup')
@@ -134,18 +133,74 @@
         .data(scatterData)
         .enter()
         .append('g')
+      // // Defining tooltip/appending it
+      // pointGroup.append("")
+      // Adding actual points:
       pointGroup.append("circle")
         .attr("transform", function(d, i)
         { 
-          console.log(d.finalYear)
-          console.log(horizYearScale(d.finalYear))
-          console.log(d.age)
-          console.log(verticalAgeScale(d.age))
           return "translate(" + (horizYearScale(d.finalYear) + horizontalAdjust) + ", " + (verticalAgeScale(d.age) + scatterHeight * 0.2) + ")"
         })
         .attr('r', function(d, i) { return (d3.min([scatterWidth, scatterHeight]) * 0.015)})
         .attr('fill', (d, i) => scatterColorScale(d.typeOfDeath) )
-        .style("stroke", "black")
+        // .style("stroke", "black")
+        .attr('class', 'allPoints')
+        .on('mouseover', function(e, d) {
+          d3.selectAll('.allPoints').transition().duration(fastTransitionDur).
+              style('opacity', 0.15).attr('stroke','none')
+              // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.015))
+          d3.select(this).transition().duration(fastTransitionDur).
+              style('opacity', 1.0).attr('stroke', '#3C1900').attr('stroke-width', 2)
+              // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.02))
+          // Adding tooltip text/rect:
+          d3.selectAll('.tempTextT').remove()
+          d3.select(scattterViz).append('rect')
+            .classed('tempTextT', true)
+            .attr("rx", 6)
+            .attr("ry", 6)
+            .attr("width", rectWidth + (5 * (d.name.length - 5)))
+            .attr("height", 0.1 * scatterHeight)
+            .attr("fill", '#3C1900')
+            .attr("opacity", 0.0)
+            .attr("x", (d.finalYear >= 1880) ? e.offsetX - 40 - (rectWidth + (5 * (d.name.length - 5)))/2 : e.offsetX - (rectWidth + (5 * (d.name.length - 5)))/2)
+            .attr("y", e.offsetY - 0.125 * scatterHeight)
+          d3.select(scattterViz).append("text")
+            .attr("x", (d.finalYear >= 1880) ? e.offsetX - 40 : e.offsetX)
+            .attr("y", e.offsetY - 0.125 * scatterHeight + 20)
+            .attr("fill", "#cf8217")
+            .style('text-anchor', 'middle')
+            .classed('tempTextT', true)
+            .style('font-size', (d.name.length >= 15 && d.finalYear >= 1880)? attrFontSize * 0.47 : attrFontSize * 0.6)
+            .text(`${d.name}`)
+            .style("opacity", 0)
+          d3.select(scattterViz).append("text")
+            .attr("x", (d.finalYear >= 1880) ? e.offsetX - 40 : e.offsetX)
+            .attr("y", e.offsetY - 0.125 * scatterHeight + 40)
+            .attr("fill", "#cf8217")
+            .style('text-anchor', 'middle')
+            .classed('tempTextT', true)
+            .style('font-size', attrFontSize * 0.6)
+            .text(`Aged ${d.age}`)
+            .style("opacity", 0)
+          d3.select(scattterViz).append("text")
+            .attr("x", (d.finalYear >= 1880) ? e.offsetX - 40 : e.offsetX)
+            .attr("y", e.offsetY - 0.125 * scatterHeight + 60)
+            .attr("fill", "#cf8217")
+            .style('text-anchor', 'middle')
+            .classed('tempTextT', true)
+            .style('font-size', attrFontSize * 0.6)
+            .text(`${d.finalYear}`)
+            .style("opacity", 0)
+          d3.selectAll('.tempTextT').transition().duration(fastTransitionDur).style("opacity", 1.0)
+        })
+        .on('mouseout', function(e, d) {
+          d3.selectAll('.allPoints').transition().duration(fastTransitionDur)
+              .style('opacity', 1.0).attr('stroke','none')
+              // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.015))
+          d3.selectAll('.tempTextT').transition().duration(fastTransitionDur).style("opacity", 0).remove()
+          // d3.selectAll('.tempTextT').transition().duration(fastTransitionDur + 10000).remove()
+          
+        })
     }
     else {
       console.error("Unable to load Artist Locations!")
