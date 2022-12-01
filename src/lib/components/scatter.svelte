@@ -39,6 +39,27 @@
     ""
   ] //Change to programmatic way here
 
+  let clickLock = false
+  let horizYearScale
+  let verticalAgeScale
+  let scatterColorScale
+  
+  let scatterXAxis
+  let scatterYAxis
+
+  let scatterXAxisG
+  let scatterYAxisG
+
+  let horizontalAdjust = 20
+
+  let positionCompare = -1
+  let prevPositionCompare = -1
+
+  function delay(time: number) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+
   // Handler functions
   export const chordGroupingFocus = (chordGroup: string) => {
     console.log(chordGroup)
@@ -51,23 +72,114 @@
   // Takes in chord group and century that the ribbon maps to
   export const chordRibbonFocus = (
     chordGroup: string, chordTime: string) => {
-      d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
-      d3.selectAll('.allPoints_'+chordGroup+'_'+chordTime).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+      // check if they are busy
+      // console.log(d3.select('.allPoints').attr('class'))
+      // console.log(d3.select('.allPoints').attr('class').includes('busy'))
+      if(d3.select('.allPoints').attr('class').includes('busy'))
+      {
+        console.log("sorry. the points are busy right now...")
+      }
+      else{
+      // if(!clickLock)
+      // {
+        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
+        d3.selectAll('.allPoints_'+chordGroup+'_'+chordTime).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+      // }
+      }
+      // positionCompare = Number(d3.select('.allPoints').attr('cx'))
   }
   export const chordRibbonReFocus = () => {
-    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
+      if(d3.select('.allPoints').attr('class').includes('busy'))
+      {
+        console.log("sorry. the points are busy right now...")
+      }
+      else{
+        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
+      }
+      // positionCompare = Number(d3.select('.allPoints').attr('cx'))
   }
 
   // Handles button interactivity
-  export const chordButttonFocus = (chordTime: string, groups: any) => {
-    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
-    for(let i = 0; i < groups.length; i++)
+  export const chordButtonFocus = (chordTime: string, groups: any) => {
+    if(!clickLock)
     {
-      d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+      d3.selectAll('.allPoints').style('opacity', '0.15')
+      for(let i = 0; i < groups.length; i++)
+      {
+        d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+      }
+    }
+    else{
+      d3.selectAll('.allPoints').style('opacity', '0.15')
+      for(let i = 0; i < groups.length; i++)
+      {
+        d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+      }
     }
   }
-  export const chordButttonReFocus = () => {
-    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
+  export const chordButtonReFocus = (chordTime: string) => {
+    if(!clickLock)
+    {
+      d3.selectAll('.allPoints').style('opacity', function(d, i){
+        // console.log(d)
+        return '1.0'
+      }).attr('stroke', 'none')
+    }
+    else{
+      d3.selectAll('.allPoints').style('opacity', function(d, i){
+        // console.log(d)s
+        if(Math.floor(d.finalYear/100) * 100 == Number(chordTime))
+        {
+          return '1.0'
+        }
+        return '0.0'
+      }).attr('stroke', 'none')
+    }
+  }
+
+  export const chordButtonClick = (chordTime: string, groups: any) => {
+    if(clickLock == false)
+    {
+      clickLock = true
+      // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 0.0)
+
+      // d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
+      console.log("yoooooohoooooohoooo")
+      // Huge help with zoom: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6
+      console.log([Number(chordTime), Number(chordTime) + 100])
+      let updatedHorizYearScale = d3.scaleLinear()
+        .domain((chordTime == '2000') ? [Number(chordTime), Number(chordTime) + 22] : [Number(chordTime), Number(chordTime) + 100])
+        .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
+      scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(updatedHorizYearScale).ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")))
+      d3.selectAll('.allPoints').classed('busy', true)
+      d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust).style('opacity', 0.0)
+      for(let i = 0; i < groups.length; i++)
+      {
+        d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).transition().duration(1000).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+          .attr('r', d3.min([scatterWidth, scatterHeight]) * 0.02)
+          .attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust)
+      }
+      delay(1200).then(() => d3.selectAll('.allPoints').classed('busy', false))
+      // d3.selectAll('.allPoints').transition().duration(1500).classed('busy', false)
+      // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust)
+      
+    }
+    else{
+      clickLock = false
+      // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 1.0)
+      scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(horizYearScale).ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")))
+      d3.selectAll('.allPoints').classed('busy', true)
+      d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust).style('opacity', 1.0)
+      for(let i = 0; i < groups.length; i++)
+      {
+        d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).transition().duration(1000).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+          .attr('r', d3.min([scatterWidth, scatterHeight]) * 0.015)
+          .attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust)
+      }
+      delay(1200).then(() => d3.selectAll('.allPoints').classed('busy', false))
+      // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust)
+    }
+    console.log(clickLock)
   }
 
   export const Initialize = (
@@ -125,36 +237,23 @@
       let maxAge = d3.max(scatterData, function(d) {return d.age})
       let minAge = d3.min(scatterData, function(d) {return d.age})
 
-      let horizontalAdjust = 20
       // Creating our scales
       // Horizontal scale: death year
-      let horizYearScale = d3.scaleLinear()
+      horizYearScale = d3.scaleLinear()
         .domain([minYear, maxYear])
         .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
       // Vertical scale: deatt age
-      let verticalAgeScale = d3.scaleLinear()
+      verticalAgeScale = d3.scaleLinear()
         .domain([maxAge, 0])
         .range([0, scatterHeight * 0.65])
       // Color scale for death type
-      let scatterColorScale = d3.scaleOrdinal()
+      scatterColorScale = d3.scaleOrdinal()
         .domain(gtDeaths)
         .range(Helpers.ColorSchemeDeaths)
 
       // Creating our axes:
-      let scatterXAxis = d3.axisBottom(horizYearScale)
-      let scatterYAxis = d3.axisLeft(verticalAgeScale)
-
-      // Appending axes
-      d3.select(scattterViz)
-        .append('g')
-        .classed('axis', true)
-        .attr("transform", `translate(${horizontalAdjust},${scatterHeight * 0.85})`)
-        .call(scatterXAxis.ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")));
-      d3.select(scattterViz)
-        .append('g')
-        .classed('axis', true)
-        .attr("transform", `translate(${horizontalAdjust * 1.5},${scatterHeight * 0.2})`)
-        .call(scatterYAxis.ticks(15).tickFormat(d3.format("d")));
+      scatterXAxis = d3.axisBottom(horizYearScale)
+      scatterYAxis = d3.axisLeft(verticalAgeScale)
 
       // Adding dots:
       let pointGroup = d3.select(scattterViz)
@@ -172,10 +271,8 @@
         attrFontSize = 30
       }
       pointGroup.append("circle")
-        .attr("transform", function(d, i)
-        { 
-          return "translate(" + (horizYearScale(d.finalYear) + horizontalAdjust) + ", " + (verticalAgeScale(d.age) + scatterHeight * 0.2) + ")"
-        })
+        .attr("cx", (d, i) => (horizYearScale(d.finalYear) + horizontalAdjust))
+        .attr("cy", (d, i) => (verticalAgeScale(d.age) + scatterHeight * 0.2))
         .attr('r', function(d, i) { return (d3.min([scatterWidth, scatterHeight]) * 0.015)})
         .attr('fill', (d, i) => scatterColorScale(d.typeOfDeath) )
         // .style("stroke", "black")
@@ -189,7 +286,6 @@
               style('opacity', 1.0).attr('stroke', '#3C1900').attr('stroke-width', 2)
               // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.02))
           // Adding tooltip text/rect:
-          console.log('lesgoooo!')
           console.log(attrFontSize)
           d3.selectAll('.tempTextT').remove()
           d3.select(scattterViz).append('rect')
@@ -236,6 +332,17 @@
           // d3.selectAll('.tempTextT').transition().duration(fastTransitionDur + 10000).remove()
           
         })
+      // Appending axes
+      scatterXAxisG = d3.select(scattterViz)
+        .append('g')
+        .classed('axis', true)
+        .attr("transform", `translate(${horizontalAdjust},${scatterHeight * 0.85})`)
+        .call(scatterXAxis.ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")));
+      scatterYAxisG = d3.select(scattterViz)
+        .append('g')
+        .classed('axis', true)
+        .attr("transform", `translate(${horizontalAdjust * 1.5},${scatterHeight * 0.2})`)
+        .call(scatterYAxis.ticks(15).tickFormat(d3.format("d")));
     }
     else {
       console.error("Unable to load Artist Locations!")

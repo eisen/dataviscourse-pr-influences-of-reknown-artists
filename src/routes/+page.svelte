@@ -256,8 +256,9 @@
 
   const RestoreRibbon_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.RestoreRibbon(selectedGrouping)
-    scatter.chordGroupingReFocus()
+    const selectedIdx = ev.detail.chordIdx
+    chord_deaths.RestoreRibbon(selectedGrouping, selectedIdx)
+    scatter.chordRibbonReFocus()
   }
 
   const HighlightGrouping_Mediums = (ev: any) => {
@@ -278,7 +279,8 @@
 
   const RestoreRibbon_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_mediums.RestoreRibbon(selectedGrouping)
+    const selectedIdx = ev.detail.chordIdx
+    chord_mediums.RestoreRibbon(selectedGrouping, selectedIdx)
   }
 
   const ArcClick_Mediums = (ev: any) => {
@@ -313,19 +315,20 @@
     const selectedTime = ev.detail.chordTime
     const selectedGroups = ev.detail.chordGroups
     chord_deaths.ClickButton(selectedTime, selectedGroups)
+    scatter.chordButtonClick(selectedTime, selectedGroups)
   }
 
   const HighlightButton_Deaths = (ev: any) => {
     const selectedTime = ev.detail.chordTime
     const selectedGroupings = ev.detail.chordGroups
     chord_deaths.HighlightButton(selectedTime, selectedGroupings)
-    scatter.chordButttonFocus(selectedTime, selectedGroupings)
+    scatter.chordButtonFocus(selectedTime, selectedGroupings)
   }
 
   const RestoreButton_Deaths = (ev: any) => {
     const selectedTime = ev.detail.chordTime
     chord_deaths.RestoreButton(selectedTime)
-    scatter.chordButttonReFocus()
+    scatter.chordButtonReFocus(selectedTime)
   }
 
   const HighlightButton_Mediums = (ev: any) => {
