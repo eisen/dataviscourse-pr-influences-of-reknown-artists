@@ -174,10 +174,11 @@
 
   // Hover Dispatches
 
-  const OnMouseOverRibbons = (group: string, idx: number) => {
+  const OnMouseOverRibbons = (group: string, idx: number, cent: string) => {
     dispatch("highlight_chord_ribbon", {
       chordGroup: group,
       chordIdx: idx,
+      chordTime: cent
     })
   }
 
@@ -629,7 +630,7 @@
         // .classed(function(d, i){ return 'ribbonPaths_' + d.slice }, true)
         .style("opacity", 0.5)
         .on("mouseover", function (e, d) {
-          OnMouseOverRibbons(d.slice, d.defIndex)
+          OnMouseOverRibbons(d.slice, d.defIndex, chordCentScale(d.cent))
           // d3.select(this).style('opacity', 0.95)
         })
         .on("mouseout", (e, d) => OnMouseLeaveRibbons(d.slice))

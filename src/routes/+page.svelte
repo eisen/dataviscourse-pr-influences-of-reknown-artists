@@ -249,12 +249,15 @@
   const HighlightRibbon_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedRibbon = ev.detail.chordIdx
+    const selectedCent = ev.detail.chordTime
     chord_deaths.HighlightRibbon(selectedGrouping, selectedRibbon)
+    scatter.chordRibbonFocus(selectedGrouping, selectedCent)
   }
 
   const RestoreRibbon_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     chord_deaths.RestoreRibbon(selectedGrouping)
+    scatter.chordGroupingReFocus()
   }
 
   const HighlightGrouping_Mediums = (ev: any) => {

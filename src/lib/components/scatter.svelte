@@ -51,11 +51,11 @@
   // Takes in chord group and century that the ribbon maps to
   export const chordRibbonFocus = (
     chordGroup: string, chordTime: string) => {
-    
+      d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
+      d3.selectAll('.allPoints_'+chordGroup+'_'+chordTime).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
   }
-  export const chordRibbonReFocus = (
-    chordGroup: string, chordTime: string) => {
-
+  export const chordRibbonReFocus = () => {
+    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
   }
 
   // Handles button interactivity
