@@ -51,7 +51,7 @@
   // Takes in chord group and century that the ribbon maps to
   export const chordRibbonFocus = (
     chordGroup: string, chordTime: string) => {
-
+    
   }
   export const chordRibbonReFocus = (
     chordGroup: string, chordTime: string) => {
@@ -172,8 +172,8 @@
         .attr('r', function(d, i) { return (d3.min([scatterWidth, scatterHeight]) * 0.015)})
         .attr('fill', (d, i) => scatterColorScale(d.typeOfDeath) )
         // .style("stroke", "black")
-        .attr('class', function(d, i){return 'allPoints_' + d.typeOfDeath})
-        .classed('allPoints', true)
+        .attr('class', function(d, i){return 'allPoints_' + d.typeOfDeath + ' allPoints_' + d.typeOfDeath + '_' + (Math.floor(d.finalYear/100) * 100) })
+        .classed('allPoints', true) 
         .on('mouseover', function(e, d) {
           d3.selectAll('.allPoints').transition().duration(fastTransitionDur).
               style('opacity', 0.15).attr('stroke','none')

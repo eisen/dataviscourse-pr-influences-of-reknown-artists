@@ -2,7 +2,7 @@
   import * as d3 from "d3"
   import { Helpers, Types } from "$lib/utilities"
   import { createEventDispatcher } from "svelte"
-  import { group } from "d3"
+  import { group, image } from "d3"
 
   const dispatch = createEventDispatcher()
 
@@ -61,7 +61,7 @@
     ""
   ]
 
-  let gtCents = [
+  let gtCentsMedium = [
     "1000",
     "1100",
     "1200",
@@ -74,16 +74,24 @@
     "1900",
   ]
 
-  let centStatus = new Array(gtCents.length).fill(false)
-
-  let medN = gtMediums.length
-
-  let chordCentScale = d3
-    .scaleOrdinal()
-    .domain(d3.range(gtCents.length))
-    .range(gtCents)
+  let gtCentsDeath = [
+    "1000",
+    "1100",
+    "1200",
+    "1300",
+    "1400",
+    "1500",
+    "1600",
+    "1700",
+    "1800",
+    "1900",
+    "2000"
+  ]
 
   let selectedG = []
+  let gtCents = []
+  let selectedColorScheme
+  let centStatus
 
   // let chordColorScale = d3
   //   .scaleOrdinal()
@@ -367,23 +375,28 @@
     groupLocs: Types.ArtistMedium[] | Types.ArtistData
   ) => {
     if (locs && groupLocs) {
+
       if (grouping == "Medium") {
         selectedG = gtMediums
+        selectedColorScheme = Helpers.ColorSchemeMediums
+        gtCents = gtCentsMedium
       } else {
         selectedG = gtDeaths
-      }
-      let selectedColorScheme
-      if(grouping == "Medium")
-      {
-        selectedColorScheme = Helpers.ColorSchemeMediums
-      }
-      else{
         selectedColorScheme = Helpers.ColorSchemeDeaths
+        gtCents = gtCentsDeath
       }
+
+      centStatus = new Array(gtCents.length).fill(false)
+      
       let chordColorScale = d3
         .scaleOrdinal()
         .domain(selectedG)
         .range(selectedColorScheme)
+      
+      let chordCentScale = d3
+        .scaleOrdinal()
+        .domain(d3.range(gtCents.length))
+        .range(gtCents)
 
       let groupedData = []
       for (let i = 0; i < selectedG.length; i++) {
@@ -424,13 +437,29 @@
                 }
               } else {
                 if (groupedData[k].slice == currGroup[j].death_type) {
-                  groupedData[k].groups[
+                  console.log("ayo?")
+                  console.log(allLocations[i][1].length)
+                  console.log(allLocations[i][1])
+                  console.log(allLocations[i][1][1].year)
+                  if(allLocations[i][1].length > 1)
+                  {
+                    groupedData[k].groups[
+                    Math.floor(Number(allLocations[i][1][1].year) / 100) - 10
+                     ] += 1
+                    centStatus[
+                    Math.floor(Number(allLocations[i][1][1].year) / 100) - 10
+                    ] = true
+                    break
+                  }
+                  else{
+                    groupedData[k].groups[
                     Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
-                  ] += 1
-                  centStatus[
+                    ] += 1
+                    centStatus[
                     Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
-                  ] = true
-                  break
+                    ] = true
+                    break
+                  }
                 }
               }
             }
@@ -653,6 +682,7 @@
         .attr("opacity", 1.0)
         .on("mouseover", function (e, d) {
           let checkStat = centStatus[gtCents.indexOf(d)]
+          console.log(checkStat)
           // console.log(gtCents.indexOf(d))
           d3.select(this)
             .transition()
@@ -663,6 +693,8 @@
             .transition()
             .duration(buttonDurr)
             .style("opacity", 0.1)
+          console.log(d3.selectAll(".ribbonPaths_" + d))
+          console.log(".ribbonPaths_" + d)
           d3.selectAll(".ribbonPaths_" + d)
             .transition()
             .duration(buttonDurr)
@@ -807,7 +839,13 @@
         .append("tspan")
         .attr("baseline-shift", "super")
         .attr("font-size", attrFontSize * 0.6)
-        .text("TH")
+        .text(function(d, i) {
+          if(d == '2000')
+          {
+            return "ST"
+          }
+          return "TH"
+        })
       
       // Group for title text that only gets written once
       let onceGroupChord = d3
