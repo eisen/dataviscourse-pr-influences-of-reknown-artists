@@ -158,6 +158,7 @@
         secondCheck = false
       }
     }
+    console.log(clickLock + ' vs. ' + secondCheck)
     if(secondCheck == false)
     {
       clickLock = true
@@ -188,7 +189,7 @@
     }
     else{
       clickLock = false
-      centClicked = chordTime
+      centClicked = ''
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 1.0)
       scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(horizYearScale).ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")))
       d3.selectAll('.allPoints').classed('busy', true)
@@ -202,7 +203,6 @@
       delay(1200).then(() => d3.selectAll('.allPoints').classed('busy', false))
       // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust)
     }
-    console.log(clickLock)
   }
 
   export const Initialize = (
