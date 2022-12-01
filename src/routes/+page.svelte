@@ -319,11 +319,13 @@
     const selectedTime = ev.detail.chordTime
     const selectedGroupings = ev.detail.chordGroups
     chord_deaths.HighlightButton(selectedTime, selectedGroupings)
+    scatter.chordButttonFocus(selectedTime, selectedGroupings)
   }
 
   const RestoreButton_Deaths = (ev: any) => {
     const selectedTime = ev.detail.chordTime
     chord_deaths.RestoreButton(selectedTime)
+    scatter.chordButttonReFocus()
   }
 
   const HighlightButton_Mediums = (ev: any) => {

@@ -59,8 +59,15 @@
   }
 
   // Handles button interactivity
-  export const chordButttonFocus = (chordTime: string) => {
-
+  export const chordButttonFocus = (chordTime: string, groups: any) => {
+    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
+    for(let i = 0; i < groups.length; i++)
+    {
+      d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+    }
+  }
+  export const chordButttonReFocus = () => {
+    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
   }
 
   export const Initialize = (
