@@ -236,13 +236,15 @@
   // Chord functions
   const HighlightGrouping_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.HighlightGrouping(selectedGrouping)
+    const selectedCent = ev.detail.chordTimeNum
+    chord_deaths.HighlightGrouping(selectedGrouping, selectedCent)
     scatter.chordGroupingFocus(selectedGrouping)
   }
 
   const RestoreGrouping_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.RestoreGrouping(selectedGrouping)
+    const selectedCent = ev.detail.chordTimeNum
+    chord_deaths.RestoreGrouping(selectedGrouping, selectedCent)
     scatter.chordGroupingReFocus()
   }
 
@@ -257,18 +259,21 @@
   const RestoreRibbon_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedIdx = ev.detail.chordIdx
-    chord_deaths.RestoreRibbon(selectedGrouping, selectedIdx)
+    const selectedCent = ev.detail.chordTimeNum
+    chord_deaths.RestoreRibbon(selectedGrouping, selectedIdx, selectedCent)
     scatter.chordRibbonReFocus()
   }
 
   const HighlightGrouping_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_mediums.HighlightGrouping(selectedGrouping)
+    const selectedCent = ev.detail.chordTimeNum
+    chord_mediums.HighlightGrouping(selectedGrouping, selectedCent)
   }
 
   const RestoreGrouping_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_mediums.RestoreGrouping(selectedGrouping)
+    const selectedCent = ev.detail.chordTimeNum
+    chord_mediums.RestoreGrouping(selectedGrouping, selectedCent)
   }
 
   const HighlightRibbon_Mediums = (ev: any) => {
@@ -280,7 +285,8 @@
   const RestoreRibbon_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedIdx = ev.detail.chordIdx
-    chord_mediums.RestoreRibbon(selectedGrouping, selectedIdx)
+    const selectedCent = ev.detail.chordTimeNum
+    chord_mediums.RestoreRibbon(selectedGrouping, selectedIdx, selectedCent)
   }
 
   const ArcClick_Mediums = (ev: any) => {

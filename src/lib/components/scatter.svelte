@@ -40,6 +40,7 @@
   ] //Change to programmatic way here
 
   let clickLock = false
+  let centClicked = ''
   let horizYearScale
   let verticalAgeScale
   let scatterColorScale
@@ -62,12 +63,23 @@
 
   // Handler functions
   export const chordGroupingFocus = (chordGroup: string) => {
-    console.log(chordGroup)
-    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
-    d3.selectAll('.allPoints_'+chordGroup).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+    if(d3.select('.allPoints').attr('class').includes('busy'))
+      {
+        console.log("sorry. the points are busy right now...")
+      }
+      else{
+        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
+        d3.selectAll('.allPoints_'+chordGroup).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
+      }
   }
   export const chordGroupingReFocus = () => {
-    d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
+    if(d3.select('.allPoints').attr('class').includes('busy'))
+      {
+        console.log("sorry. the points are busy right now...")
+      }
+      else{
+        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
+      }
   }
   // Takes in chord group and century that the ribbon maps to
   export const chordRibbonFocus = (
@@ -128,7 +140,7 @@
     else{
       d3.selectAll('.allPoints').style('opacity', function(d, i){
         // console.log(d)s
-        if(Math.floor(d.finalYear/100) * 100 == Number(chordTime))
+        if(Math.floor(d.finalYear/100) * 100 == Number(centClicked))
         {
           return '1.0'
         }
@@ -138,9 +150,18 @@
   }
 
   export const chordButtonClick = (chordTime: string, groups: any) => {
-    if(clickLock == false)
+    let secondCheck = clickLock
+    if(secondCheck = true)
+    {
+      if(chordTime != centClicked)
+      {
+        secondCheck = false
+      }
+    }
+    if(secondCheck == false)
     {
       clickLock = true
+      centClicked = chordTime
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 0.0)
 
       // d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
@@ -153,6 +174,7 @@
       scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(updatedHorizYearScale).ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")))
       d3.selectAll('.allPoints').classed('busy', true)
       d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust).style('opacity', 0.0)
+      .attr('r', d3.min([scatterWidth, scatterHeight]) * 0.015)
       for(let i = 0; i < groups.length; i++)
       {
         d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).transition().duration(1000).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
@@ -166,6 +188,7 @@
     }
     else{
       clickLock = false
+      centClicked = chordTime
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 1.0)
       scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(horizYearScale).ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")))
       d3.selectAll('.allPoints').classed('busy', true)
@@ -279,6 +302,8 @@
         .attr('class', function(d, i){return 'allPoints_' + d.typeOfDeath + ' allPoints_' + d.typeOfDeath + '_' + (Math.floor(d.finalYear/100) * 100) })
         .classed('allPoints', true) 
         .on('mouseover', function(e, d) {
+          if(!d3.select(this).attr('class').includes('busy'))
+          {
           d3.selectAll('.allPoints').transition().duration(fastTransitionDur).
               style('opacity', 0.15).attr('stroke','none')
               // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.015))
@@ -323,14 +348,17 @@
             .text(`${d.finalYear}`)
             .style("opacity", 0)
           d3.selectAll('.tempTextT').transition().duration(fastTransitionDur).style("opacity", 1.0)
+          }
         })
         .on('mouseout', function(e, d) {
+          if(!d3.select(this).attr('class').includes('busy'))
+          {
           d3.selectAll('.allPoints').transition().duration(fastTransitionDur)
               .style('opacity', 1.0).attr('stroke','none')
               // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.015))
           d3.selectAll('.tempTextT').transition().duration(fastTransitionDur).style("opacity", 0).remove()
           // d3.selectAll('.tempTextT').transition().duration(fastTransitionDur + 10000).remove()
-          
+          }
         })
       // Appending axes
       scatterXAxisG = d3.select(scattterViz)
