@@ -167,7 +167,7 @@
         secondCheck = false
       }
     }
-    if(secondCheck == false)
+    if(secondCheck == false) // Zooms
     {
       clickLock = true
       centClicked = chordTime
@@ -193,7 +193,7 @@
       // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust)
       
     }
-    else{
+    else{ // Goes back to default range
       clickLock = false
       centClicked = ''
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 1.0)

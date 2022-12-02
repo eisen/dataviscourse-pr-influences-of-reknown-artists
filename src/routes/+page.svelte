@@ -264,34 +264,76 @@
     scatter.chordRibbonReFocus()
   }
 
+  // Will highlight corresponding medium's area on area chart
   const HighlightGrouping_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedCent = ev.detail.chordTimeNum
     chord_mediums.HighlightGrouping(selectedGrouping, selectedCent)
+    area.chordMedGroupFocus(selectedGrouping)
   }
 
+  // Will restore all medium groupings to the same opacity on the area chart
   const RestoreGrouping_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedCent = ev.detail.chordTimeNum
     chord_mediums.RestoreGrouping(selectedGrouping, selectedCent)
+    area.chordMedGroupReFocus()
   }
 
+  // Will highlight area chart's corresponding medium and generate some indication of the century's frame
   const HighlightRibbon_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedRibbon = ev.detail.chordIdx
+    const selectedCentury = ev.detail.chordTime
     chord_mediums.HighlightRibbon(selectedGrouping, selectedRibbon)
+    area.chordMedRibbonFocus(selectedGrouping, selectedCentury)
   }
 
+  // Will remove/hide indication of century's time frame and restore all areas to same opacity
   const RestoreRibbon_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedIdx = ev.detail.chordIdx
     const selectedCent = ev.detail.chordTimeNum
     chord_mediums.RestoreRibbon(selectedGrouping, selectedIdx, selectedCent)
+    area.chordMedRibbonReFocus()
   }
 
+  // Zooms on horizontal axis to selected time frame AND back (see: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6)
+  const CenturyClick_Mediums = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroups = ev.detail.chordGroups
+    chord_mediums.ClickButton(selectedTime, selectedGroups)
+    area.chordMedButtonClick(selectedTime)
+  }
+
+  // Generates some indication of century's time frame on the area chart
+  const HighlightButton_Mediums = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroupings = ev.detail.chordGroups
+    chord_mediums.HighlightButton(selectedTime, selectedGroupings)
+    area.chordMedButtonFocus(selectedTime)
+  }
+
+  // Removes the indication of century's time frame on the area chart (maybe use x axis' scale to determine width and starting point for rectangle with no fill, but has an outliine color?)
+  const RestoreButton_Mediums = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    chord_mediums.RestoreButton(selectedTime)
+    area.chordMedButtonReFocus()
+  }
+
+  // I don't think we need this on second thought
   const ArcClick_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     chord_mediums.ClickGrouping(selectedGrouping)
+    //...
+  }
+
+  // I don't think we need this on second thought
+  const RibbonClick_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    const selectedTime = ev.detail.chordTime
+    chord_mediums.ClickRibbon(selectedGrouping, selectedTime)
+    //...
   }
 
   const ArcClick_Deaths = (ev: any) => {
@@ -300,22 +342,10 @@
     scatter.chordArcClick(selectedGrouping)
   }
 
-  const RibbonClick_Mediums = (ev: any) => {
-    const selectedGrouping = ev.detail.chordGroup
-    const selectedTime = ev.detail.chordTime
-    chord_mediums.ClickRibbon(selectedGrouping, selectedTime)
-  }
-
   const RibbonClick_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedTime = ev.detail.chordTime
     chord_deaths.ClickRibbon(selectedGrouping, selectedTime)
-  }
-
-  const CenturyClick_Mediums = (ev: any) => {
-    const selectedTime = ev.detail.chordTime
-    const selectedGroups = ev.detail.chordGroups
-    chord_mediums.ClickButton(selectedTime, selectedGroups)
   }
 
   const CenturyClick_Deaths = (ev: any) => {
@@ -336,17 +366,6 @@
     const selectedTime = ev.detail.chordTime
     chord_deaths.RestoreButton(selectedTime)
     scatter.chordButtonReFocus(selectedTime)
-  }
-
-  const HighlightButton_Mediums = (ev: any) => {
-    const selectedTime = ev.detail.chordTime
-    const selectedGroupings = ev.detail.chordGroups
-    chord_mediums.HighlightButton(selectedTime, selectedGroupings)
-  }
-
-  const RestoreButton_Mediums = (ev: any) => {
-    const selectedTime = ev.detail.chordTime
-    chord_mediums.RestoreButton(selectedTime)
   }
 
   onMount(async () => {
