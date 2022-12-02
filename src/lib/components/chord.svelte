@@ -1219,9 +1219,9 @@
             else{
 
               d3.select(this).transition()
-              .duration(buttonDurr).attr("fill", "#cf8217")
-              d3.select('#centText_'+d+'_'+grouping).transition()
-              .duration(buttonDurr).attr("fill", "white")//'#3C1900'
+              .duration(buttonDurr).attr("fill", "white")
+              d3.select('#centRect_'+d+'_'+grouping).transition()
+              .duration(buttonDurr).attr("fill", "#cf8217")//'#3C1900'
               clickLocks[gtCents.indexOf(d)] = false
               centClicked = ''
             }
