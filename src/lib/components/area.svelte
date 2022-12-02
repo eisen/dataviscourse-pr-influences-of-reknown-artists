@@ -46,12 +46,16 @@
 
   let area_lines:number[][]
   $: area_lines = []
+  let area_lines_percentage:number[][]
+  $: area_lines_percentage = []
+  let each_area_line:number[][]
+  $: each_area_line = []
 
   let single_total:number
-  // $: single_total
+  $: single_total
 
-  let category_names = ['painter', 'watercolourist', 'oilpainter', 'sculptor', 'printmaker', 'draughtsman', 'muralist']//,
-//'photography', 'film', 'illustrator', 'architect', 'ink', 'ceramicist', 'calligrapher', 'engraving', 'calligrapher']
+  let category_names = ['painter', 'watercolourist', 'oilpainter', 'sculptor', 'printmaker', 'draughtsman', 'muralist',
+'photography', 'film', 'illustrator', 'architect', 'ink', 'ceramicist', 'calligrapher', 'engraving']
 
   // let chordColorScale = d3
   //   .scaleOrdinal()
@@ -61,7 +65,8 @@
   let chordColorScale = d3
     .scaleOrdinal()
     .domain(d3.range(10))
-    .range(d3.schemeCategory10)
+    .range(d3.schemePaired)
+
 
   const DataForAreaChartLine = (category:string) => {
     let area_values = new Array<number>(size_years!)
@@ -81,28 +86,62 @@
           if(medium.medium === category){
             area_values[i] = area_values[i] + 1
           }
-          total_mediums_one_year = total_mediums_one_year + 1
+          total_mediums_one_year = total_mediums_one_year + 1 //TODO: check logic, should check if its there in the category_names
         }
       }
       // console.log(i, total_mediums_one_year)
-      single_total = single_total > total_mediums_one_year? single_total : total_mediums_one_year // Used for y axis 
-      // console.log(area_values[i])
+      // single_total = single_total > total_mediums_one_year? single_total : total_mediums_one_year // Used for y axis 
       // convert to percentage
       area_values[i] = (area_values[i] / total_mediums_one_year) * 100
       i=i+1
     }
     // console.log(area_values)
-    return area_values
+    return area_values //these are percentages 
 
     // for(let i=0; i<years.length; i++){
     //   area_values[i] = (area_values[i]/total) * chart_height
     // }
     
   }
-  
-  const IndividualAreaChart = (category:string) => {
-    let area_line_values = DataForAreaChartLine(category)
-    // console.log(area_line_values)
+
+  const DataForAllAreaChartLine = () => {
+    // For each category 
+    let num=0
+    for(var category of category_names){
+      let area_values = new Array<number>(size_years!)
+      let i=0
+
+      for(var year of years){
+        let total_mediums_one_year = 0
+        let alive = AliveArtists(year)
+        area_values[i] = 0
+        let alive_artist_medium_list:any = []
+
+        for(var alive_artist of alive){
+          alive_artist_medium_list = mediums.filter(d => d.artist===alive_artist[0])
+
+          for(var medium of alive_artist_medium_list){
+            if(medium.medium === category){
+              area_values[i] = area_values[i] + 1
+            }
+            total_mediums_one_year = total_mediums_one_year + 1
+          }
+        }
+        // convert to percentage
+        if(total_mediums_one_year){
+          area_values[i] = (area_values[i] / total_mediums_one_year) * 100
+        }
+        i=i+1
+      }
+      // console.log('area_values', area_values)
+      area_lines[num] = area_values
+      num = num + 1
+    }
+    console.log('final values', area_lines)
+    area_lines_percentage = area_lines
+  }
+
+  const AllAreaChart = () => {
 
     // X SCALE
     var xScale = d3.scaleLinear()
@@ -111,7 +150,7 @@
 
     // Y SCALE
     // let maxY = d3.max(area_line_values!)
-    let maxY = single_total
+    // let maxY = single_total
     var yScale = d3.scaleLinear()
     .domain([0, 100])
     .range([chart_height, 0]);
@@ -120,26 +159,94 @@
     const areaGenerator = d3.area()
       .x((d) => xScale(d.x - oldestYear!) + PADDING.left)
       .y1(d => yScale(d.y) + PADDING.top)
-      // .x((d) => tl_x_scale(d.x) + PADDING.left)
-      // .y1(d => tl_y_scale(d.y) + PADDING.top)
       .y0(chart_height + PADDING.top)
       .curve(d3.curveCatmullRom.alpha(0.6))
       .context(null);
 
+    // Calculate percentage 
+    for(var n=0; n<category_names.length-1; n++){
+      for(var y=0; y<years.length; y++){
+        // area_lines[n+1][y] = area_lines[n][y] + area_lines[n+1][y]
+        area_lines_percentage[n+1][y] = area_lines[n][y] + area_lines[n+1][y]
+      }
+    }
+
+    // Draw all in category
+    let num = 0
+    for(var category of category_names){
+      // console.log(category_names.length - 1 - num)
+      let area_line_values = area_lines_percentage[category_names.length - 1 - num]
+      num = num + 1
+      each_area_line = []
+      for(let i=0; i<years.length; i++){
+        const each_pair: any = {
+          x: years[i],
+          y: area_line_values[i],
+        }
+        each_area_line.push(each_pair)
+      }
+      let area_id = '#area-chart-' + num.toString()
+      // console.log(area_id)
+      d3.select('#all-area-chart')
+      .append('path')
+      .attr('id', area_id)
+      .datum(each_area_line)
+      .attr("d", areaGenerator)
+      .style('fill', ColourFunc(num))
+      .attr('opacity', '1.0')
+
+    }
+    
+  }
+  
+  const IndividualAreaChart = (category:string) => {
+    let idx = category_names.indexOf(category)
+    console.log(idx)
+    // Make all category area chart transparent 
+    d3.select('#all-area-chart')
+    .attr('opacity', '0.0')
+
+    // let area_line_values = DataForAreaChartLine(category)
+    let area_line_values = area_lines[idx]
+    console.log('area_line_values', area_line_values)
+
+    // X SCALE
+    var xScale = d3.scaleLinear()
+    .domain([0, size_years!])
+    .range([0, chart_width]);
+
+    // Y SCALE
+    // let maxY = d3.max(area_line_values!)
+    // let maxY = single_total
+    var yScale = d3.scaleLinear()
+    .domain([0, 100])
+    .range([chart_height, 0]);
+
+    
+    const areaGenerator = d3.area()
+      .x((d) => xScale(d.x - oldestYear!) + PADDING.left)
+      .y1(d => yScale(d.y) + PADDING.top)
+      .y0(chart_height + PADDING.top)
+      .curve(d3.curveCatmullRom.alpha(0.6))
+      .context(null);
+
+    each_area_line = []
     for(let i=0; i<years.length; i++){
       const each_pair: any = {
         x: years[i],
         y: area_line_values[i],
       }
-      area_lines.push(each_pair)
+      each_area_line.push(each_pair)
     }
     
     d3.select('#area-chart')
-    .datum(area_lines)
+    .datum(each_area_line)
     .attr("d", areaGenerator)
     .style('fill', '#ee7722') // TODO: change this colour selection 
     
   }
+
+
 
   const AliveArtists = (year: number) => {
     let alive = group_artists.filter(([, locations]) => {
@@ -152,42 +259,6 @@
     return alive
   }
 
-  const CalculatePercentage = (year: number) => {
-    
-    artists_alive = AliveArtists(year)
-
-    let category_mediums = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; // number of categories considered, [painter, sculptor, watercolourist, printmaker, draughtsman]
-
-    for(var alive_artist of artists_alive){
-      const artist_medium_list = mediums.filter(d => d.artist===alive_artist[0])
-      for(var medium of artist_medium_list){
-        for(var category of category_names){
-          if(medium.medium === category){
-            let index = category_names.indexOf(category)
-            category_mediums[index] = category_mediums[index] + 1
-          }
-        }
-      }
-    }
-  
-    // console.log('before category_mediums', category_mediums)
-    let total = 0
-    for(let i=0; i<category_mediums.length; i++){
-      total = total + category_mediums[i]
-      category_mediums[i] = total
-    }
-    // console.log('after category_mediums', category_mediums)
-    for(let i=0; i<category_mediums.length; i++){
-      category_mediums[i] = (category_mediums[i]/total) * chart_height
-    }
-    // console.log('percentage+caliberate category_mediums', category_mediums)
-
-    return category_mediums;
-
-    //vertical line hover from hw4
-
-  }
-
   const ColourFunc = (num: number):string => {
     if(num){
       return chordColorScale(num.toString()) as string
@@ -195,11 +266,6 @@
     else{
       return 'black'
     }
-  }
-
-  const Stroke_size = () => {
-    let stroke_width = chart_width / size_years!
-    return stroke_width
   }
 
   const DrawAxesSingle = () => {
@@ -231,6 +297,13 @@
 
   }
 
+  const SetYears = (young: number, old: number) => {
+    size_years = young - old // TODO: change this when clicking on century button to show only that century
+    for(let i=0; i<size_years; i++){
+      years[i] = old + i 
+    }
+  }
+
   export const Initialize = (
     location_data: Types.ArtistLocation[],
     medium_data: Types.ArtistMedium[]
@@ -239,26 +312,45 @@
     mediums = medium_data
 
     chart_width = width - PADDING.left - PADDING.right
-    chart_height = height - PADDING.top - PADDING.bottom
+    chart_width = width * 0.8
+    // chart_height = height - PADDING.top - PADDING.bottom
+    chart_height = height * 0.75
+    group_artists = d3.groups(artists, d => d.artist)
+    num_categories = d3.range(category_names.length).reverse()
 
 
     oldestYear = +d3.min(location_data, (d) => d.year)! // TODO: Change this
-    oldestYear = 1500
     youngestYear = +d3.max(location_data, (d) => d.year)!
-    youngestYear = 1600
-    size_years = youngestYear - oldestYear // TODO: change this when clicking on century button to show only that century
-    for(let i=0; i<size_years; i++){
-      years[i] = oldestYear + i 
-    }
 
-    group_artists = d3.groups(artists, d => d.artist)
-    num_categories = d3.range(category_names.length).reverse()
-    // CalculatePercentage(1900)
-    // Stroke_size()
+
+    
+   
+    // size_years = youngestYear - oldestYear // TODO: change this when clicking on century button to show only that century
+    // for(let i=0; i<size_years; i++){
+    //   years[i] = oldestYear + i 
+    // }
+
+    // Change to show all categories of aea chart 
+    oldestYear = 1800
+    youngestYear = 1900
+    SetYears(youngestYear, oldestYear)
+
 
     // TODO: onClick, selecting the medium should display only that category
-    IndividualAreaChart('painter')
     DrawAxesSingle()
+    DataForAllAreaChartLine()
+    AllAreaChart()
+
+    // HighlightCategory('sculptor')
+
+    // Change to individual area chart 
+    oldestYear = 1500
+    youngestYear = 1700
+    SetYears(youngestYear, oldestYear)
+    DrawAxesSingle()
+    DataForAllAreaChartLine()
+    IndividualAreaChart('painter')
+
   }
 </script>
 
@@ -277,27 +369,13 @@
   <g id="lines-chart">
     <g id="x-axis"></g>
     <g id="y-axis"></g>
+
     <g id="single-area">
       <path id="area-chart"></path>
     </g>
     
-    <!-- <g id="all-area">
-      {#each years as year, idx}
-        {#each num_categories as num}
-          <g>
-            <line
-            x1={PADDING.left + idx*Stroke_size()}
-            y1={PADDING.top + chart_height - (CalculatePercentage ? CalculatePercentage(+year)[num] : 200)}
-            x2={PADDING.left + idx*Stroke_size()}
-            y2={PADDING.top + chart_height}
-            stroke-width={Stroke_size()}
-            stroke={ColourFunc(num)}
-            opacity="1.0"
-            />
-          </g>
-        {/each}
-      {/each}
-    </g> -->
+    <g id='all-area-chart'>
+    </g>
       
   </g>
   <!-- each, each, out, line, out -->
