@@ -1,7 +1,10 @@
 <script lang="ts">
   import * as d3 from "d3"
   import { Helpers, Types } from "$lib/utilities"
-  import { color } from "d3";
+  import { createEventDispatcher } from "svelte"
+  import { chord, color } from "d3";
+
+  const dispatch = createEventDispatcher()
 
   export let width: number = 0
   export let height: number = 0
@@ -49,6 +52,48 @@
   let colorScale
   let spacingVarH
   let spacingVarV
+  let lilDurr = 200
+
+  // Function for highlighting legend item based on one ribbon or arc:
+  export const singleGroupingFocus = (chordGroup: string) => {
+      d3.selectAll('.legendaryText_'+grouping).transition().duration(lilDurr)
+        .style('opacity', 0.1)
+      d3.selectAll('.legendaryRect_'+grouping).transition().duration(lilDurr)
+        .style('opacity', 0.1)
+      
+      d3.select('#legendaryText_'+grouping+'_'+chordGroup).transition().duration(lilDurr)
+        .style('opacity', 1.0)
+      d3.select('#legendaryRect_'+grouping+'_'+chordGroup).transition().duration(lilDurr)
+        .style('opacity', 1.0)
+  }
+  export const singleGroupingReFocus = () => {
+      d3.selectAll('.legendaryText_'+grouping).transition().duration(lilDurr)
+        .style('opacity', 1.0)
+      d3.selectAll('.legendaryRect_'+grouping).transition().duration(lilDurr)
+        .style('opacity', 1.0)
+  }
+
+  export const multipleGroupingsFocus = (chordGroups: any) => {
+      d3.selectAll('.legendaryText_'+grouping).transition().duration(lilDurr)
+        .style('opacity', 0.1)
+      d3.selectAll('.legendaryRect_'+grouping).transition().duration(lilDurr)
+        .style('opacity', 0.1)
+
+      for(let i = 0; i < chordGroups.length; i++)
+      {
+        d3.select('#legendaryText_'+grouping+'_'+chordGroups[i]).transition().duration(lilDurr)
+          .style('opacity', 1.0)
+        d3.select('#legendaryRect_'+grouping+'_'+chordGroups[i]).transition().duration(lilDurr)
+          .style('opacity', 1.0)
+      }
+  }
+
+  export const multipleGroupingsReFocus = () => {
+      d3.selectAll('.legendaryText_'+grouping).transition().duration(lilDurr)
+        .style('opacity', 1.0)
+      d3.selectAll('.legendaryRect_'+grouping).transition().duration(lilDurr)
+        .style('opacity', 1.0)
+  }
 
   export const Initialize = () => {
     if(grouping == "Medium")
@@ -110,8 +155,10 @@
                                   )
             .attr("y", (d, i) => ((i) >= selectedG.length / 2) ? (height*0.25 + (height * 0.35)) : height * 0.25)
             .attr('stroke-width', 2)
+            .classed('legendaryRect_'+grouping, true)
             // .attr('stroke', "#DBE2E9")
             .attr('stroke', (d, i) => d3.rgb(colorScale(d)).brighter(3))
+            .attr('id', (d, i) => 'legendaryRect_'+grouping+'_'+d)
     colorGroup.append("text")
         .attr("x", (d, i) => (width/20) + ((7 * attrFontSize * 0.5) + 15) 
                                   + (((width * spacingVarH) / (selectedG.length ) + ((7 * attrFontSize * 0.5) + 15)) 
@@ -123,10 +170,12 @@
         .attr("y", (d, i) => ((i) >= selectedG.length / 2) ? ((height * 0.35 - attrFontSize * 0.6) + (height * spacingVarV)) : height * 0.5 - attrFontSize * 0.6 )
         .attr("fill", "#cf8217")
         .style('text-anchor', 'center')
-        .classed('legendSmallLabel', true)
+        .classed('legendaryText_'+grouping, true)
         .style('font-size', (d, i) => (d.length > 15) ? attrFontSize * 0.7 : attrFontSize * 0.8)
         .text((d, i) => d.charAt(0).toUpperCase() + d.slice(1))
         .style("opacity", 1.0)
+        .attr('id', (d, i) => 'legendaryText_'+grouping+'_'+d)
+
   }
 </script>
 

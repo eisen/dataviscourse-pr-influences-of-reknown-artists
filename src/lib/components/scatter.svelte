@@ -61,6 +61,16 @@
     return new Promise(resolve => setTimeout(resolve, time));
   }
 
+  // Dispatch functions:
+  const OnMouseOverDots = (group: string) => {
+    dispatch("highlight_scatter_dots", {
+      deathGroup: group,
+    })
+  }
+  const OnMouseLeaveDots = (group: string) => {
+    dispatch("restore_scatter_dots", {
+    })
+  }
 
   // Handler functions
   export const chordGroupingFocus = (chordGroup: string) => {
@@ -168,6 +178,7 @@
     }
     if(secondCheck == false) // Zooms
     {
+      d3.selectAll('.allPoints').classed('busy', true)
       clickLock = true
       centClicked = chordTime
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 0.0)
@@ -178,7 +189,7 @@
         .domain((chordTime == '2000') ? [Number(chordTime), Number(chordTime) + 22] : [Number(chordTime), Number(chordTime) + 100])
         .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
       scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(updatedHorizYearScale).ticks((scatterWidth <= 490) ? 8 : 13).tickFormat(d3.format("d")))
-      d3.selectAll('.allPoints').classed('busy', true)
+      
       d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust).style('opacity', 0.0)
       .attr('r', d3.min([scatterWidth, scatterHeight]) * 0.015)
       for(let i = 0; i < groups.length; i++)
@@ -187,17 +198,18 @@
           .attr('r', d3.min([scatterWidth, scatterHeight]) * 0.02)
           .attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust)
       }
-      delay(1200).then(() => d3.selectAll('.allPoints').classed('busy', false))
+      delay(2200).then(() => d3.selectAll('.allPoints').classed('busy', false))
       // d3.selectAll('.allPoints').transition().duration(1500).classed('busy', false)
       // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust)
       
     }
     else{ // Goes back to default range
+      d3.selectAll('.allPoints').classed('busy', true)
       clickLock = false
       centClicked = ''
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 1.0)
       scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(horizYearScale).ticks((scatterWidth <= 490) ? 8 : 13).tickFormat(d3.format("d")))
-      d3.selectAll('.allPoints').classed('busy', true)
+      
       d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust).style('opacity', 1.0)
       for(let i = 0; i < groups.length; i++)
       {
@@ -370,6 +382,8 @@
             .text(`${d.finalYear}`)
             .style("opacity", 0)
           d3.selectAll('.tempTextT').transition().duration(fastTransitionDur).style("opacity", 1.0)
+          // Call function to update legend:
+          OnMouseOverDots(d.typeOfDeath)
           }
         })
         .on('mouseout', function(e, d) {
@@ -380,7 +394,8 @@
               // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.015))
           d3.selectAll('.tempTextT').transition().duration(fastTransitionDur).style("opacity", 0).remove()
           // d3.selectAll('.tempTextT').transition().duration(fastTransitionDur + 10000).remove()
-          }
+          OnMouseLeaveDots()
+        }
         })
       // Appending axes
       scatterXAxisG = d3.select(scattterViz)

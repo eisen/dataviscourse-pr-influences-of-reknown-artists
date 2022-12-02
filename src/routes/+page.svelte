@@ -239,6 +239,7 @@
     const selectedCent = ev.detail.chordTimeNum
     chord_deaths.HighlightGrouping(selectedGrouping, selectedCent)
     scatter.chordGroupingFocus(selectedGrouping)
+    legend_deaths.singleGroupingFocus(selectedGrouping)
   }
 
   const RestoreGrouping_Deaths = (ev: any) => {
@@ -246,6 +247,7 @@
     const selectedCent = ev.detail.chordTimeNum
     chord_deaths.RestoreGrouping(selectedGrouping, selectedCent)
     scatter.chordGroupingReFocus()
+    legend_deaths.singleGroupingReFocus()
   }
 
   const HighlightRibbon_Deaths = (ev: any) => {
@@ -254,6 +256,7 @@
     const selectedCent = ev.detail.chordTime
     chord_deaths.HighlightRibbon(selectedGrouping, selectedRibbon)
     scatter.chordRibbonFocus(selectedGrouping, selectedCent)
+    legend_deaths.singleGroupingFocus(selectedGrouping)
   }
 
   const RestoreRibbon_Deaths = (ev: any) => {
@@ -262,6 +265,7 @@
     const selectedCent = ev.detail.chordTimeNum
     chord_deaths.RestoreRibbon(selectedGrouping, selectedIdx, selectedCent)
     scatter.chordRibbonReFocus()
+    legend_deaths.singleGroupingReFocus()
   }
 
   // Will highlight corresponding medium's area on area chart
@@ -270,6 +274,8 @@
     const selectedCent = ev.detail.chordTimeNum
     chord_mediums.HighlightGrouping(selectedGrouping, selectedCent)
     area.chordMedGroupFocus(selectedGrouping)
+    legend_mediums.singleGroupingFocus(selectedGrouping)
+
   }
 
   // Will restore all medium groupings to the same opacity on the area chart
@@ -278,6 +284,7 @@
     const selectedCent = ev.detail.chordTimeNum
     chord_mediums.RestoreGrouping(selectedGrouping, selectedCent)
     area.chordMedGroupReFocus()
+    legend_mediums.singleGroupingReFocus()
   }
 
   // Will highlight area chart's corresponding medium and generate some indication of the century's frame
@@ -287,6 +294,7 @@
     const selectedCentury = ev.detail.chordTime
     chord_mediums.HighlightRibbon(selectedGrouping, selectedRibbon)
     area.chordMedRibbonFocus(selectedGrouping, selectedCentury)
+    legend_mediums.singleGroupingFocus(selectedGrouping)
   }
 
   // Will remove/hide indication of century's time frame and restore all areas to same opacity
@@ -296,6 +304,7 @@
     const selectedCent = ev.detail.chordTimeNum
     chord_mediums.RestoreRibbon(selectedGrouping, selectedIdx, selectedCent)
     area.chordMedRibbonReFocus()
+    legend_mediums.singleGroupingReFocus()
   }
 
   // Zooms on horizontal axis to selected time frame AND back (see: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6)
@@ -312,6 +321,7 @@
     const selectedGroupings = ev.detail.chordGroups
     chord_mediums.HighlightButton(selectedTime, selectedGroupings)
     area.chordMedButtonFocus(selectedTime)
+    legend_mediums.multipleGroupingsFocus(selectedGroupings)
   }
 
   // Removes the indication of century's time frame on the area chart (maybe use x axis' scale to determine width and starting point for rectangle with no fill, but has an outliine color?)
@@ -319,6 +329,7 @@
     const selectedTime = ev.detail.chordTime
     chord_mediums.RestoreButton(selectedTime)
     area.chordMedButtonReFocus()
+    legend_mediums.multipleGroupingsReFocus()
   }
 
   // I don't think we need this on second thought
@@ -360,12 +371,23 @@
     const selectedGroupings = ev.detail.chordGroups
     chord_deaths.HighlightButton(selectedTime, selectedGroupings)
     scatter.chordButtonFocus(selectedTime, selectedGroupings)
+    legend_deaths.multipleGroupingsFocus(selectedGroupings)
   }
 
   const RestoreButton_Deaths = (ev: any) => {
     const selectedTime = ev.detail.chordTime
     chord_deaths.RestoreButton(selectedTime)
     scatter.chordButtonReFocus(selectedTime)
+    legend_deaths.multipleGroupingsReFocus()
+  }
+
+  // Scatter functions
+  const HighlightScatterDots = (ev: any) => {
+    const selectedGrouping = ev.detail.deathGroup
+    legend_deaths.singleGroupingFocus(selectedGrouping)
+  }
+  const RestoreScatterDots = (ev: any) => {
+    legend_deaths.singleGroupingReFocus()
   }
 
   onMount(async () => {
@@ -555,6 +577,8 @@
           width={scatter_width}
           height={scatter_height}
           topOffset={legend_height}
+          on:highlight_scatter_dots={HighlightScatterDots}
+          on:restore_scatter_dots={RestoreScatterDots}
         />
       </div>
     </div>
