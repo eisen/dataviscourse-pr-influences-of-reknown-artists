@@ -96,6 +96,7 @@
   let clickLock = false
   let centClicked = ''
   let clickLocks = []
+  let clickedArcs = []
 
   // All of the data will be here:
   let groupedData = []
@@ -254,7 +255,9 @@
 
   export const ClickGrouping = (chordGroup: string) => {
     // ...
-    // console.log('Group click for: ' + chordGroup)
+    console.log('Group click for: ' + chordGroup)
+    clickedArcs[selectedG.indexOf(chordGroup)] = !clickedArcs[selectedG.indexOf(chordGroup)]
+    console.log(clickedArcs)
   }
 
   export const ClickRibbon = (chordGroup: string, chordTime: string) => {
@@ -292,8 +295,8 @@
         d3.selectAll(".arcPaths"+grouping)
           .transition()
           .duration(fastTransitionDur)
-          .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1) ? 0.4 : 1.0 )
-          .style("stroke", "white")
+          .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
+          .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217")
           .style("stroke-width", 1)
         d3.selectAll("#arc_" + chordGroup)
           .transition()
@@ -307,8 +310,8 @@
         d3.selectAll(".arcPaths"+grouping)
           .transition()
           .duration(fastTransitionDur)
-          .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1) ? 0.4 : 1.0 )
-          .style("stroke", "white")
+          .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
+          .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
           .style("stroke-width", 1)
         d3.selectAll("#arc_" + chordGroup)
           .transition()
@@ -367,8 +370,8 @@
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(slowTransitionDur)
-                .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1) ? 0.4 : 1.0 )
-                .style("stroke", "white")
+                .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
+                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
                 .style("stroke-width", 1)
             }
             else{
@@ -376,7 +379,7 @@
                 .transition()
                 .duration(slowTransitionDur)
                 .style("opacity", (d, i) => 1.0 )
-                .style("stroke", "white")
+                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
                 .style("stroke-width", 1)
             }
     }
@@ -390,8 +393,8 @@
       d3.selectAll(".arcPaths"+grouping)
         .transition()
         .duration(slowTransitionDur)
-        .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1) ? 0.4 : 1.0)
-        .style("stroke", "white")
+        .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0)
+        .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
         .style("stroke-width", 1)
     }
 
@@ -433,8 +436,8 @@
           d3.selectAll("#arc_"+selectedG[i])
             .transition()
             .duration(fastTransitionDur)
-            .style("opacity", 0.4)
-            .style("stroke", "white")
+            .style("opacity", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 0.4 : 1.0)
+            .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
             .style("stroke-width", 1)
         }
       }
@@ -454,7 +457,7 @@
       .transition()
       .duration(fastTransitionDur)
       .style("opacity", 1.0)
-      .style("stroke", "white")
+      .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
       .style("stroke-width", 1)
   }
 
@@ -481,8 +484,21 @@
       d3.selectAll(".arcPaths"+grouping)
         .transition()
         .duration(slowTransitionDur)
-        .style("opacity", (d, i) => groupsSelected.includes(d.slice) ? 1.0: 0.4)
-        .style("stroke", "white")
+        .style("opacity", function(d, i)
+        { 
+          if(groupsSelected.includes(d.slice))
+          {
+            return 1.0
+          } 
+          else if(clickedArcs[selectedG.indexOf(d.slice)] == true)
+          { 
+            return 1.0
+          } 
+          else {
+            return 0.4
+          }
+        })
+        .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white': "#cf8217")
         .style("stroke-width", 1)
     }
     else{
@@ -497,7 +513,7 @@
         .transition()
         .duration(slowTransitionDur)
         .style("opacity", 1.0)
-        .style("stroke", "white")
+        .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
         .style("stroke-width", 1)
     }
     // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
@@ -517,8 +533,8 @@
           d3.selectAll("#arc_"+selectedG[i])
             .transition()
             .duration(fastTransitionDur)
-            .style("opacity", 0.4)
-            .style("stroke", "white")
+            .style("opacity", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 0.4: 1.0)
+            .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
             .style("stroke-width", 1)
         }
       }
@@ -553,6 +569,7 @@
 
       clickLocks = new Array(gtCents.length).fill(false)
 
+      clickedArcs = new Array(selectedG.length).fill(false)
 
       centStatus = new Array(gtCents.length).fill(false)
       
@@ -896,8 +913,20 @@
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => (groupsSelected.includes(d.slice) || mainGroupsSelected.includes(d.slice)) ? 1.0: 0.4)
-                .style("stroke", "white")
+                .style("opacity", function(d, i){
+                  if(groupsSelected.includes(d.slice) || mainGroupsSelected.includes(d.slice))
+                  {
+                    return 1.0
+                  }
+                  else if(clickedArcs[selectedG.indexOf(d.slice)] == true)
+                  {
+                    return 1.0
+                  }
+                  else{
+                    return 0.4
+                  }
+                })
+                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
             // }
             OnMouseOverButtons(d, groupsSelected)
           }
@@ -953,15 +982,15 @@
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1) ? 0.4 : 1.0 )
-                .style("stroke", "white")
+                .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
+                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
             }
             else{
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
                 .style("opacity", (d, i) => 1.0 )
-                .style("stroke", "white")
+                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
             }
             // }
             OnMouseLeaveButtons(d)
@@ -1014,7 +1043,7 @@
             d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => (groupsSelected.includes(d.slice)) ? 1.0: 0.4)
+                .style("opacity", (d, i) => (groupsSelected.includes(d.slice) || clickedArcs[selectedG.indexOf(d.slice)] == true) ? 1.0: 0.4)
             }
             else{
 
@@ -1098,8 +1127,20 @@
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => (groupsSelected.includes(d.slice) || mainGroupsSelected.includes(d.slice)) ? 1.0: 0.4)
-                .style("stroke", "white")
+                .style("opacity", function(d, i){
+                  if(groupsSelected.includes(d.slice) || mainGroupsSelected.includes(d.slice))
+                  {
+                    return 1.0 
+                  } 
+                  else if(clickedArcs[selectedG.indexOf(d.slice)] == true)
+                  {
+                    return 1.0
+                  }
+                  else{
+                    return 0.4
+                  }
+                })
+                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
             // }
             OnMouseOverButtons(d, groupsSelected)
           }
@@ -1155,7 +1196,7 @@
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1) ? 0.4 : 1.0 )
+                .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
             }
             else{
               d3.selectAll(".arcPaths" + grouping)
@@ -1214,7 +1255,18 @@
             d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => (groupsSelected.includes(d.slice)) ? 1.0: 0.4)
+                .style("opacity", function(d, i){
+                  if(groupsSelected.includes(d.slice)){
+                    return 1.0
+                   } 
+                   else if(clickedArcs[selectedG.indexOf(d.slice)] == true)
+                   {
+                    return 1.0
+                   }
+                   else{
+                    return 0.4
+                  }
+                })
             }
             else{
 
