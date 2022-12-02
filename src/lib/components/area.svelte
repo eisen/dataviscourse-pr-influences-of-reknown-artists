@@ -26,6 +26,7 @@
   const tickEvery = 50 // TODO: hardcoded right now 
   const yearEvery = 100
   const yearEverySingle = 10
+  const title_length = 80
 
   let tl_x_scale: d3.ScaleLinear<number, number, never>
   $: tl_x_scale
@@ -262,7 +263,7 @@
   const HighlightCategory = (category:string) => {
     highlight_medium = true
     let idx = category_names.indexOf(category)
-    // idx = 5
+    idx = 5
     console.log('idx', idx)
     
 
@@ -409,10 +410,47 @@
           .attr("stroke", "black")
           .attr('stroke-width', '2')
 
-      
+      // Put rectangles
+      d3.select('#hover-overlay-rect')
+          .selectAll('rect')
+          .data((d) => {
+
+            for(var category of category_names){
+              let idx = category_names.indexOf(category)
+            }
+            let non_zero_categories = category_names.filter(d => {
+              let idx_cat = category_names.indexOf(d)
+              let val = 0
+              if(idx_cat!==0){
+                val = area_lines_percentage[idx_cat][year_hover_idx] - area_lines_percentage[idx_cat-1][year_hover_idx]
+              }
+              else{
+                val = area_lines_percentage[0][year_hover_idx]
+              }
+              if(val){
+                return d
+              }
+            })
+            return non_zero_categories.reverse()
+          })
+          .join('rect')
+          .attr('x', (d) => {
+            if(ev.offsetX < chart_width - 200){
+              return ev.offsetX + font_size - 10;
+            }
+            return ev.offsetX - 210
+          })
+          .attr('y', (d,i) => {
+            return font_size * i + font_size/3 + PADDING.top
+          })
+          .attr("width", 200)
+          .attr("height", font_size)
+          .attr('rx', "10")
+          .style('fill', 'white')
+          .style('opacity', '0.8')
 
       // Put text
-      d3.select('#hover-overlay')
+      d3.select('#hover-overlay-text')
           .selectAll('text')
           .data((d) => {
 
@@ -472,8 +510,11 @@
     //   d3.select('#hover-overlay').selectAll('*').remove(); // TODO: not working 
     // }
 
-    d3.select('#hover-overlay')
-      .append('text')
+    // Draw year 
+    d3.select('#hover-overlay-year')
+      .selectAll('text')
+      .data([0])
+      .join('text')
       .text(d => `In year ${year_hover_idx + oldestYear}`)
       .attr('x', (d) => {
         if(ev.offsetX < chart_width - 200){
@@ -482,7 +523,7 @@
         return ev.offsetX - 200
       })
       .attr('y', (d) => {
-        return PADDING.top - 2
+        return PADDING.top - font_size/3
       })
       .attr('fill', (d, i) => {
         return 'black'
@@ -562,10 +603,10 @@
 
     chart_width = width * 0.8
     chart_height = height * 0.7
-    PADDING.top = width * 0.05
-    PADDING.bottom = width * 0.25
-    PADDING.left = height * 0.15
-    PADDING.right = height * 0.05
+    PADDING.top = height * 0.05
+    PADDING.bottom = height * 0.25
+    PADDING.left = width * 0.15
+    PADDING.right = width * 0.05
     group_artists = d3.groups(artists, d => d.artist)
     num_categories = d3.range(category_names.length).reverse()
 
@@ -588,12 +629,12 @@
     youngestYear = 2020
     SetYears(youngestYear, oldestYear)
     // TODO: onClick, selecting the medium should display only that category
-    DrawAxesSingle()
+    DrawAxesSingle() //TODO: call again when selecting a century to change x axis 
     DataForAllAreaChartLine()
     AllAreaChart()
 
     // To highlight selected category 
-    // HighlightCategory('painter')
+    HighlightCategory('painter')
 
   }
 </script>
@@ -611,20 +652,16 @@
     >
     <!-- #each for all years, call function for each year calc mediums % , #each give line generater -->
     <g id="axes-titles">
-      <!-- <text
-        class="cursor-default"
-        transform="translate({offset_x +
-          chart_width / 2 -
-          text_width / 2}, {offset_y - tabPadding - 5})"
-        font-weight="700">Influencees</text
-      >
       <text
-        class="cursor-default"
-        transform="translate({offset_x - tabPadding - 5}, {offset_y +
-          chart_height / 2 +
-          text_width / 2}) rotate(-90)"
-        font-weight="700">Influencers</text
-      > -->
+        transform="translate({PADDING.left + chart_width / 2 - title_length / 2}, 
+        {PADDING.top + chart_height + font_size + PADDING.bottom/3})"
+        font-weight="700">Years
+      </text>
+      <text
+        transform="translate({PADDING.left - font_size - 5}, 
+        {PADDING.top + chart_height / 2 + title_length / 2}) rotate(-90)"
+        font-weight="700">Percentage
+      </text>
     </g>
     <g id="lines-chart">
       <g id="x-axis"></g>
@@ -643,6 +680,9 @@
       <g id="highlight-area"></g>
       <g id="hover-overlay">
         <line/>
+        <g id="hover-overlay-year"></g>
+        <g id="hover-overlay-rect"></g>
+        <g id="hover-overlay-text"></g>
       </g>
     </g>
   </svg>
