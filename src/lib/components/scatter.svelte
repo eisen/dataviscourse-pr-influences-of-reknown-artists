@@ -43,6 +43,7 @@
 
   let clickLock = false
   let centClicked = ''
+  let mouseOverCent = false
   let horizYearScale
   let verticalAgeScale
   let scatterColorScale
@@ -68,13 +69,14 @@
       }
       else{
         d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', function(d, i){
-          if(!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)])
-          { 
-            return '0.15'
-          } 
-          else{
-            return '1.0'
-          }
+          // if(!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)])
+          // { 
+          //   return '0.15'
+          // } 
+          // else{
+          //   return '1.0'
+          // }
+          return '0.15'
         })
         d3.selectAll('.allPoints_'+chordGroup).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
       }
@@ -120,19 +122,22 @@
   export const chordButtonFocus = (chordTime: string, groups: any) => {
     if(!clickLock)
     {
-      d3.selectAll('.allPoints').style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? '0.15' : '1.0')
+      // d3.selectAll('.allPoints').style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? '0.15' : '1.0')
+      d3.selectAll('.allPoints').style('opacity', '0.15')
       for(let i = 0; i < groups.length; i++)
       {
         d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
       }
     }
     else{
-      d3.selectAll('.allPoints').style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? '0.15' : '1.0')
+      // d3.selectAll('.allPoints').style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? '0.15' : '1.0')
+      d3.selectAll('.allPoints').style('opacity', '0.15')
       for(let i = 0; i < groups.length; i++)
       {
         d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
       }
     }
+    mouseOverCent = true
   }
   export const chordButtonReFocus = (chordTime: string) => {
     if(!clickLock)
@@ -150,6 +155,7 @@
         return '0.0' //Hmmm
       }).attr('stroke', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 'none' : '#3C1900')
     }
+    mouseOverCent = false
   }
 
   export const chordButtonClick = (chordTime: string, groups: any) => {
@@ -193,7 +199,7 @@
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 1.0)
       scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(horizYearScale).ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")))
       d3.selectAll('.allPoints').classed('busy', true)
-      d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust).style('opacity', 1.0)
+      d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust).style('opacity', (mouseOverCent) ? 0.15 : 1.0)
       for(let i = 0; i < groups.length; i++)
       {
         d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).transition().duration(1000).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
@@ -321,7 +327,8 @@
           if(!d3.select(this).attr('class').includes('busy'))
           {
           d3.selectAll('.allPoints').transition().duration(fastTransitionDur).
-              style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 0.15 : 1.0).attr('stroke','none')
+              style('opacity', 0.15).attr('stroke',(d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 'none' : '#3C1900')
+              // style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 0.15 : 1.0).attr('stroke','none')
               // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.015))
           d3.select(this).transition().duration(fastTransitionDur).
               style('opacity', 1.0).attr('stroke', '#3C1900').attr('stroke-width', 2)
