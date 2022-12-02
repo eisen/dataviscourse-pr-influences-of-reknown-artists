@@ -255,9 +255,7 @@
 
   export const ClickGrouping = (chordGroup: string) => {
     // ...
-    console.log('Group click for: ' + chordGroup)
     clickedArcs[selectedG.indexOf(chordGroup)] = !clickedArcs[selectedG.indexOf(chordGroup)]
-    console.log(clickedArcs)
   }
 
   export const ClickRibbon = (chordGroup: string, chordTime: string) => {
@@ -281,7 +279,6 @@
             }
     if(!clickLocks[chordTimeNum])
     {
-      console.log("THE LEGEND")
         // Chaning Ribbon Opacity
         d3.selectAll(".ribbonPaths"+grouping)
           .transition()

@@ -39,6 +39,8 @@
     ""
   ] //Change to programmatic way here
 
+  let deathTypeLocks = new Array(gtDeaths.length).fill(false)
+
   let clickLock = false
   let centClicked = ''
   let horizYearScale
@@ -53,9 +55,6 @@
 
   let horizontalAdjust = 20
 
-  let positionCompare = -1
-  let prevPositionCompare = -1
-
   function delay(time: number) {
     return new Promise(resolve => setTimeout(resolve, time));
   }
@@ -63,38 +62,44 @@
 
   // Handler functions
   export const chordGroupingFocus = (chordGroup: string) => {
-    if(d3.select('.allPoints').attr('class').includes('busy'))
+      if(d3.select('.allPoints').attr('class').includes('busy'))
       {
-        console.log("sorry. the points are busy right now...")
+        console.log("sorry. the points are busy moving right now...")
       }
       else{
-        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
+        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', function(d, i){
+          if(!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)])
+          { 
+            return '0.15'
+          } 
+          else{
+            return '1.0'
+          }
+        })
         d3.selectAll('.allPoints_'+chordGroup).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
       }
   }
   export const chordGroupingReFocus = () => {
     if(d3.select('.allPoints').attr('class').includes('busy'))
       {
-        console.log("sorry. the points are busy right now...")
+        console.log("sorry. the points are busy moving right now...")
       }
       else{
-        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
+        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 'none' : '#3C1900')
       }
   }
   // Takes in chord group and century that the ribbon maps to
   export const chordRibbonFocus = (
     chordGroup: string, chordTime: string) => {
       // check if they are busy
-      // console.log(d3.select('.allPoints').attr('class'))
-      // console.log(d3.select('.allPoints').attr('class').includes('busy'))
       if(d3.select('.allPoints').attr('class').includes('busy'))
       {
-        console.log("sorry. the points are busy right now...")
+        console.log("sorry. the points are busy moving right now...")
       }
       else{
       // if(!clickLock)
       // {
-        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
+        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? '0.15' : '1.0')
         d3.selectAll('.allPoints_'+chordGroup+'_'+chordTime).transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
       // }
       }
@@ -103,10 +108,10 @@
   export const chordRibbonReFocus = () => {
       if(d3.select('.allPoints').attr('class').includes('busy'))
       {
-        console.log("sorry. the points are busy right now...")
+        console.log("sorry. the points are busy moving right now...")
       }
       else{
-        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', 'none')
+        d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '1.0').attr('stroke', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 'none' : '#3C1900')
       }
       // positionCompare = Number(d3.select('.allPoints').attr('cx'))
   }
@@ -115,14 +120,14 @@
   export const chordButtonFocus = (chordTime: string, groups: any) => {
     if(!clickLock)
     {
-      d3.selectAll('.allPoints').style('opacity', '0.15')
+      d3.selectAll('.allPoints').style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? '0.15' : '1.0')
       for(let i = 0; i < groups.length; i++)
       {
         d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
       }
     }
     else{
-      d3.selectAll('.allPoints').style('opacity', '0.15')
+      d3.selectAll('.allPoints').style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? '0.15' : '1.0')
       for(let i = 0; i < groups.length; i++)
       {
         d3.selectAll('.allPoints_'+groups[i]+'_'+chordTime).style('opacity', '1.0').attr('stroke', '#3C1900').attr('stroke-width', 2)
@@ -133,19 +138,17 @@
     if(!clickLock)
     {
       d3.selectAll('.allPoints').style('opacity', function(d, i){
-        // console.log(d)
         return '1.0'
-      }).attr('stroke', 'none')
+      }).attr('stroke', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 'none' : '#3C1900')
     }
     else{
       d3.selectAll('.allPoints').style('opacity', function(d, i){
-        // console.log(d)s
         if(Math.floor(d.finalYear/100) * 100 == Number(centClicked))
         {
           return '1.0'
         }
-        return '0.0'
-      }).attr('stroke', 'none')
+        return '0.0' //Hmmm
+      }).attr('stroke', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 'none' : '#3C1900')
     }
   }
 
@@ -158,7 +161,6 @@
         secondCheck = false
       }
     }
-    console.log(clickLock + ' vs. ' + secondCheck)
     if(secondCheck == false)
     {
       clickLock = true
@@ -166,9 +168,7 @@
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 0.0)
 
       // d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
-      console.log("yoooooohoooooohoooo")
       // Huge help with zoom: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6
-      console.log([Number(chordTime), Number(chordTime) + 100])
       let updatedHorizYearScale = d3.scaleLinear()
         .domain((chordTime == '2000') ? [Number(chordTime), Number(chordTime) + 22] : [Number(chordTime), Number(chordTime) + 100])
         .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
@@ -203,6 +203,21 @@
       delay(1200).then(() => d3.selectAll('.allPoints').classed('busy', false))
       // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust)
     }
+  }
+
+  export const chordArcClick = (chordGroup: string) => {
+    // Old way...
+    // if(d3.sele)
+    // d3.selectAll('.allPoints_'+chordGroup+'_'+'staying')
+    // let stayingClass = '.allPoints_'+chordGroup+'_staying'
+    // if(d3.selectAll(stayingClass)._groups[0].length == 0)
+    // {
+    //   d3.selectAll('.allPoints_'+chordGroup).classed('allPoints_'+chordGroup+'_staying', true)
+    // }
+    // else{
+    //   d3.selectAll('.allPoints_'+chordGroup).classed('allPoints_'+chordGroup+'_staying', false)
+    // }
+    deathTypeLocks[gtDeaths.indexOf(chordGroup)] = !deathTypeLocks[gtDeaths.indexOf(chordGroup)]
   }
 
   export const Initialize = (
@@ -249,6 +264,7 @@
             name: allLocations[i][0],
             age: ageCalc,
             finalYear: yearCalc,
+            // finalCent: String(Math.floor(yearCalc/100) * 100),
             typeOfDeath: deathDeriv
           } )
         }
@@ -305,13 +321,12 @@
           if(!d3.select(this).attr('class').includes('busy'))
           {
           d3.selectAll('.allPoints').transition().duration(fastTransitionDur).
-              style('opacity', 0.15).attr('stroke','none')
+              style('opacity', (d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 0.15 : 1.0).attr('stroke','none')
               // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.015))
           d3.select(this).transition().duration(fastTransitionDur).
               style('opacity', 1.0).attr('stroke', '#3C1900').attr('stroke-width', 2)
               // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.02))
           // Adding tooltip text/rect:
-          console.log(attrFontSize)
           d3.selectAll('.tempTextT').remove()
           d3.select(scattterViz).append('rect')
             .classed('tempTextT', true)
@@ -354,7 +369,7 @@
           if(!d3.select(this).attr('class').includes('busy'))
           {
           d3.selectAll('.allPoints').transition().duration(fastTransitionDur)
-              .style('opacity', 1.0).attr('stroke','none')
+              .style('opacity', 1.0).attr('stroke',(d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 'none' : '#3C1900')
               // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.015))
           d3.selectAll('.tempTextT').transition().duration(fastTransitionDur).style("opacity", 0).remove()
           // d3.selectAll('.tempTextT').transition().duration(fastTransitionDur + 10000).remove()

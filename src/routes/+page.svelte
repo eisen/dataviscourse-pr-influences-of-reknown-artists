@@ -297,6 +297,7 @@
   const ArcClick_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     chord_deaths.ClickGrouping(selectedGrouping)
+    scatter.chordArcClick(selectedGrouping)
   }
 
   const RibbonClick_Mediums = (ev: any) => {
