@@ -57,6 +57,8 @@
 
   let horizontalAdjust = 20
 
+  let dbBusy = false
+
   function delay(time: number) {
     return new Promise(resolve => setTimeout(resolve, time));
   }
@@ -67,14 +69,14 @@
       deathGroup: group,
     })
   }
-  const OnMouseLeaveDots = (group: string) => {
+  const OnMouseLeaveDots = () => {
     dispatch("restore_scatter_dots", {
     })
   }
 
   // Handler functions
   export const chordGroupingFocus = (chordGroup: string) => {
-      if(d3.select('.allPoints').attr('class').includes('busy'))
+      if(dbBusy)
       {
         console.log("sorry. the points are busy moving right now...")
       }
@@ -93,7 +95,7 @@
       }
   }
   export const chordGroupingReFocus = () => {
-    if(d3.select('.allPoints').attr('class').includes('busy'))
+    if(dbBusy)
       {
         console.log("sorry. the points are busy moving right now...")
       }
@@ -105,7 +107,7 @@
   export const chordRibbonFocus = (
     chordGroup: string, chordTime: string) => {
       // check if they are busy
-      if(d3.select('.allPoints').attr('class').includes('busy'))
+      if(dbBusy)
       {
         console.log("sorry. the points are busy moving right now...")
       }
@@ -119,7 +121,7 @@
       // positionCompare = Number(d3.select('.allPoints').attr('cx'))
   }
   export const chordRibbonReFocus = () => {
-      if(d3.select('.allPoints').attr('class').includes('busy'))
+      if(dbBusy)
       {
         console.log("sorry. the points are busy moving right now...")
       }
@@ -178,7 +180,8 @@
     }
     if(secondCheck == false) // Zooms
     {
-      d3.selectAll('.allPoints').classed('busy', true)
+      // d3.selectAll('.allPoints').classed('busy', true)
+      dbBusy = true
       clickLock = true
       centClicked = chordTime
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 0.0)
@@ -198,13 +201,16 @@
           .attr('r', d3.min([scatterWidth, scatterHeight]) * 0.02)
           .attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust)
       }
-      delay(2200).then(() => d3.selectAll('.allPoints').classed('busy', false))
+      // delay(2200).then(() => d3.selectAll('.allPoints').classed('busy', false))
+      delay(2000).then(() => dbBusy = false)
+
       // d3.selectAll('.allPoints').transition().duration(1500).classed('busy', false)
       // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust)
       
     }
     else{ // Goes back to default range
-      d3.selectAll('.allPoints').classed('busy', true)
+      // d3.selectAll('.allPoints').classed('busy', true)
+      dbBusy = true
       clickLock = false
       centClicked = ''
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 1.0)
@@ -217,7 +223,8 @@
           .attr('r', d3.min([scatterWidth, scatterHeight]) * 0.015)
           .attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust)
       }
-      delay(1200).then(() => d3.selectAll('.allPoints').classed('busy', false))
+      // delay(2200).then(() => d3.selectAll('.allPoints').classed('busy', false))
+      delay(2000).then(() => dbBusy = false)
       // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust)
     }
   }
@@ -334,8 +341,8 @@
         // .style("stroke", "black")
         .attr('class', function(d, i){return 'allPoints_' + d.typeOfDeath + ' allPoints_' + d.typeOfDeath + '_' + (Math.floor(d.finalYear/100) * 100) })
         .classed('allPoints', true) 
-        .on('mouseover', function(e, d) {
-          if(!d3.select(this).attr('class').includes('busy'))
+        .on('mouseover', function(e, d, boolL = dbBusy) {
+          if(!boolL)
           {
           d3.selectAll('.allPoints').transition().duration(fastTransitionDur).
               style('opacity', 0.15).attr('stroke',(d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 'none' : '#3C1900')
@@ -386,8 +393,8 @@
           OnMouseOverDots(d.typeOfDeath)
           }
         })
-        .on('mouseout', function(e, d) {
-          if(!d3.select(this).attr('class').includes('busy'))
+        .on('mouseout', function(e, d, boolL = dbBusy) {
+          if(!boolL)
           {
           d3.selectAll('.allPoints').transition().duration(fastTransitionDur)
               .style('opacity', 1.0).attr('stroke',(d, i) => (!deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)]) ? 'none' : '#3C1900')
