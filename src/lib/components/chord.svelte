@@ -9,6 +9,7 @@
   export let width: number
   export let height: number
   export let grouping: string
+  export let topOffset: number
 
   // Sizing dependent on window
   $: chordCHeight = height * 0.45 > 275 ? 275 : height * 0.45
@@ -1297,7 +1298,7 @@
       onceGroupChord
         .append("text")
         .attr("x", 0)
-        .attr("y", (chordCHeight / 270) * -270)
+        .attr("y", (chordCHeight / 270) * -270 + 5)
         .style("text-anchor", "middle")
         .style("font-size", titleFontSize > 20 ? 20 : titleFontSize)
         .text("Distribution of Artists by " + grouping + " Over Centuries")
@@ -1310,7 +1311,7 @@
 <div
   id="container"
   class="inline-block relative align-top overflow-hidden"
-  style="width: {width}px; height: {height}px;"
+  style="width: {width}px; height: {height}px; top: {(topOffset) > 50 ? 50 : topOffset * 0.9}px;"
 >
   <svg
     class="inline-block absolute top-0 left-0"

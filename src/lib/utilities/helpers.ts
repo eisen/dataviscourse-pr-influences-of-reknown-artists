@@ -11,7 +11,7 @@ export const ColorSchemeMediums = [
   "rgb(211, 157, 69)", // Dark Orange
   "rgb(222, 182, 254)", // Light Purple
   "#1e90ff", // Light Blue
-  "#00ff00", // Bright Green
+  "#00cc66", // Bright Green
   "rgb(20, 57, 59)", // Dark Green
   "rgb(195, 72, 54)", // Redish Orange
   "rgb(52, 25, 58)", // Dark Purple
@@ -22,7 +22,7 @@ export const ColorSchemeMediums = [
 ]
 
 export const ColorSchemeDeaths = [
-  "#00ff00", // Bright Green, Illness
+  "#00cc66", // Bright Green, Illness
   "rgb(163, 0, 48)", // Brither Red, Still Alive
   "rgb(222, 182, 254)", // Light Purple, Suicide
   "#7624C2", // Purple, No Mention

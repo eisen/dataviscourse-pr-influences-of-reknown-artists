@@ -8,6 +8,7 @@
 
   export let width: number = 0
   export let height: number = 0
+  export let topOffset: number = 0
 
   const PADDING = { left: 50, right: 50, top: 50, bottom: 50 }
 
@@ -320,7 +321,7 @@
 <div
   id="container"
   class="inline-block relative align-top overflow-hidden"
-  style="width: {width}px; height: {height}px;"
+  style="width: {width}px; height: {height}px; top: {(topOffset) > 50 ? 50 : topOffset * 0.9}px;"
 >
   <svg
     class="inline-block absolute top-0 left-0"

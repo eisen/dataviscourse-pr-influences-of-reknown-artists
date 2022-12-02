@@ -27,7 +27,7 @@
 
   $: area_width = Math.abs(width - horizontalPadding) / 2
   $: area_height = Math.abs(
-    height - verticalPadding - header_height - footer_height
+    (height - verticalPadding - header_height - footer_height) * 0.8
   )
 
   $: network_width = width
@@ -36,7 +36,7 @@
 
   $: chord_width = Math.abs(width - horizontalPadding) / 2
   $: chord_height = Math.abs(
-    height - verticalPadding - header_height - footer_height
+    (height - verticalPadding - header_height - footer_height)*0.8
   )
 
   $: matrix_width = Math.abs(width - horizontalPadding) / 2
@@ -49,7 +49,7 @@
 
   $: scatter_width = Math.abs(width - horizontalPadding) / 2
   $: scatter_height = Math.abs(
-    height - verticalPadding - header_height - footer_height
+    (height - verticalPadding - header_height - footer_height)*0.8
   )
 
   $: legend_width = width
@@ -528,13 +528,18 @@
         bind:this={legend_deaths}
         width={legend_width}
         height={legend_height}
+        grouping={'Death'}
+        topOffset={header_height}
       />
-      <div class="grid-cols-2 inline-block">
+      <div class="grid-cols-2 inline-block" 
+            
+        >
         <Chord
           bind:this={chord_deaths}
           width={chord_width}
           height={chord_height}
           grouping="Death"
+          topOffset={legend_height}
           on:highlight_chord_group={HighlightGrouping_Deaths}
           on:restore_chord_group={RestoreGrouping_Deaths}
           on:highlight_chord_ribbon={HighlightRibbon_Deaths}
@@ -549,6 +554,7 @@
           bind:this={scatter}
           width={scatter_width}
           height={scatter_height}
+          topOffset={legend_height}
         />
       </div>
     </div>
@@ -565,13 +571,17 @@
         bind:this={legend_mediums}
         width={legend_width}
         height={legend_height}
+        grouping={'Medium'}
+        topOffset={header_height}
       />
-      <div class="grid-cols-2 inline-block">
+      <div class="grid-cols-2 inline-block" 
+        >
         <Chord
           bind:this={chord_mediums}
           width={chord_width}
           height={chord_height}
           grouping="Medium"
+          topOffset={legend_height}
           on:highlight_chord_group={HighlightGrouping_Mediums}
           on:restore_chord_group={RestoreGrouping_Mediums}
           on:highlight_chord_ribbon={HighlightRibbon_Mediums}
@@ -582,7 +592,7 @@
           on:highlight_chord_button={HighlightButton_Mediums}
           on:restore_chord_button={RestoreButton_Mediums}
         />
-        <Area bind:this={area} width={area_width} height={area_height} />
+        <Area bind:this={area} width={area_width} height={area_height} topOffset={legend_height}/>
       </div>
     </div>
   </div>

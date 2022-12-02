@@ -8,6 +8,7 @@
 
   export let width: number = 0
   export let height: number = 0
+  export let topOffset: number = 0
 
   let svg: SVGSVGElement
   let scattterViz: SVGGElement
@@ -176,7 +177,7 @@
       let updatedHorizYearScale = d3.scaleLinear()
         .domain((chordTime == '2000') ? [Number(chordTime), Number(chordTime) + 22] : [Number(chordTime), Number(chordTime) + 100])
         .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
-      scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(updatedHorizYearScale).ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")))
+      scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(updatedHorizYearScale).ticks((scatterWidth <= 490) ? 8 : 13).tickFormat(d3.format("d")))
       d3.selectAll('.allPoints').classed('busy', true)
       d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust).style('opacity', 0.0)
       .attr('r', d3.min([scatterWidth, scatterHeight]) * 0.015)
@@ -195,7 +196,7 @@
       clickLock = false
       centClicked = ''
       // d3.selectAll('.allPoints').transition().duration(1000).style('opacity', 1.0)
-      scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(horizYearScale).ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")))
+      scatterXAxisG.transition().duration(1000).call(scatterXAxis.scale(horizYearScale).ticks((scatterWidth <= 490) ? 8 : 13).tickFormat(d3.format("d")))
       d3.selectAll('.allPoints').classed('busy', true)
       d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust).style('opacity', 1.0)
       for(let i = 0; i < groups.length; i++)
@@ -386,7 +387,7 @@
         .append('g')
         .classed('axis', true)
         .attr("transform", `translate(${horizontalAdjust},${scatterHeight * 0.85})`)
-        .call(scatterXAxis.ticks((scatterWidth <= 450) ? 8 : 13).tickFormat(d3.format("d")));
+        .call(scatterXAxis.ticks((scatterWidth <= 490) ? 8 : 13).tickFormat(d3.format("d")));
       scatterYAxisG = d3.select(scattterViz)
         .append('g')
         .classed('axis', true)
@@ -396,22 +397,15 @@
       d3.select(scattterViz)
         .append('text')
         .attr("x", scatterWidth / 2)
-        .attr("y", scatterHeight * 0.9 + 5)
+        .attr("y", scatterHeight * 0.95)
         .attr("fill", "black")
         .style('text-anchor', 'middle')
         .classed('axesBigLabel', true)
-        .style('font-size',  attrFontSize * 0.52)
+        .style('font-size',  attrFontSize * 0.65)
         .text('Artists\' Ages of Death Plotted Against Latest Years Alive')
         .style("opacity", 1.0)
-      d3.select(scattterViz)
-        .append('text')
-        .attr("x", scatterWidth / 2)
-        .attr("y", scatterHeight * 0.9 + 5)
-        .attr("fill", "black")
-        .style('text-anchor', 'middle')
-        .classed('axesBigLabel', true)
-        .style('font-size',  attrFontSize * 0.3)
-        .style("opacity", 1.0)
+        // .attr('font-weight', d3.min([scatterHeight, scatterWidth]) * 0.6 )
+        
     }
     else {
       console.error("Unable to load Artist Locations!")
@@ -424,7 +418,7 @@
 <div
   id="container"
   class="inline-block relative align-top overflow-hidden"
-  style="width: {width}px; height: {height}px;"
+  style="width: {width}px; height: {height}px; top: {(topOffset) > 50 ? 50 : topOffset * 0.9}px;"
 >
   <svg
     class="inline-block absolute top-0 left-0"
