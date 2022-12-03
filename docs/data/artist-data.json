@@ -31,7 +31,7 @@
     },
     {
         "artist": "Barbara Hepworth",
-        "death_type": "",
+        "death_type": "accident",
         "thumbnail": "/thumbnails/barbara_hepworth.png"
     },
     {
@@ -41,7 +41,7 @@
     },
     {
         "artist": "Carlo Carrà",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/carlo_carra.png"
     },
     {
@@ -126,7 +126,7 @@
     },
     {
         "artist": "Georges Braque",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/georges_braque.png"
     },
     {
@@ -156,17 +156,17 @@
     },
     {
         "artist": "Henry Moore",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/henry_moore.png"
     },
     {
         "artist": "Isamu Noguchi",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/isamu_noguchi.png"
     },
     {
         "artist": "Jacob Epstein",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/jacob_epstein.png"
     },
     {
@@ -331,7 +331,7 @@
     },
     {
         "artist": "Pieter Cornelis Mondriaan",
-        "death_type": "",
+        "death_type": "illness",
         "thumbnail": "/thumbnails/pieter_cornelis_mondriaan.png"
     },
     {
@@ -351,12 +351,12 @@
     },
     {
         "artist": "Richard Wentworth",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/richard_wentworth.png"
     },
     {
         "artist": "Robert Rauschenberg",
-        "death_type": "",
+        "death_type": "heartattack",
         "thumbnail": "/thumbnails/robert_rauschenberg.png"
     },
     {
@@ -391,7 +391,7 @@
     },
     {
         "artist": "Umberto Boccioni",
-        "death_type": "",
+        "death_type": "accident",
         "thumbnail": "/thumbnails/umberto_boccioni.png"
     },
     {
@@ -431,57 +431,57 @@
     },
     {
         "artist": "Domenico Ghirlandaio",
-        "death_type": "",
+        "death_type": "illness",
         "thumbnail": "/thumbnails/domenico_ghirlandaio.png"
     },
     {
         "artist": "Daniele da Volterra",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/daniele_da_volterra.png"
     },
     {
         "artist": "Giotto",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/giotto.png"
     },
     {
         "artist": "Masaccio",
-        "death_type": "",
+        "death_type": "murder",
         "thumbnail": "/thumbnails/masaccio.png"
     },
     {
         "artist": "Peter Paul Rubens",
-        "death_type": "",
+        "death_type": "illness",
         "thumbnail": "/thumbnails/peter_paul_rubens.png"
     },
     {
         "artist": "Gherardo Starnina",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/gherardo_starnina.png"
     },
     {
         "artist": "Masolino",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/masolino.png"
     },
     {
         "artist": "Michelozzo",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/michelozzo.png"
     },
     {
         "artist": "Paolo Uccello",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/paolo_uccello.png"
     },
     {
         "artist": "Antonio del Pollaiuolo",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/antonio_del_pollaiuolo.png"
     },
     {
         "artist": "Franz von Stuck",
-        "death_type": "",
+        "death_type": "no-mention",
         "thumbnail": "/thumbnails/franz_von_stuck.png"
     }
 ]
