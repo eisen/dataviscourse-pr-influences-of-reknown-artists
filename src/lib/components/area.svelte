@@ -512,13 +512,13 @@
           } else if (d == "muralist") {
             updatedWording = "Murals"
           } else if (d == "painter") {
-            updatedWording = "Paints"
+            updatedWording = "Paintings"
           } else if (d == "printmaker") {
             updatedWording = "Prints"
           } else if (d == "sculptor") {
             updatedWording = "Sculptures"
           } else if (d == "photography-film") {
-            updatedWording = "Photography/Film"
+            updatedWording = "Photos & Film"
           }
           let str = ""
           let idx_cat = gtMediums.indexOf(d)
@@ -570,7 +570,7 @@
       .selectAll("text")
       .data([0])
       .join("text")
-      .text((d) => `In year ${year_hover_idx + oldestYear}`)
+      .text((d) => `Exact Year: ${year_hover_idx + oldestYear}`)
       .attr("x", (d) => {
         if (ev.offsetX < chart_width - 200) {
           return ev.offsetX + font_size

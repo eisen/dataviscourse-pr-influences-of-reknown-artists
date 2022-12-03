@@ -223,13 +223,13 @@
         } else if (d == "muralist") {
           updatedWording = "Murals"
         } else if (d == "painter") {
-          updatedWording = "Paints"
+          updatedWording = "Paintings"
         } else if (d == "printmaker") {
           updatedWording = "Prints"
         } else if (d == "sculptor") {
           updatedWording = "Sculptures"
         } else if (d == "photography-film") {
-          updatedWording = "Photography/Film"
+          updatedWording = "Photos & Film"
         }
         return updatedWording.charAt(0).toUpperCase() + updatedWording.slice(1)
       })
