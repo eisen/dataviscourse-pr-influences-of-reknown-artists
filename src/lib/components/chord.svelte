@@ -14,7 +14,7 @@
   $: chordCHeight = height * 0.45 > 275 ? 275 : height * 0.45
   $: chartRad = width * 0.45 > 390 ? 390 : width * 0.45 // Max size for more possible screens
   //   $: angleD = (chordCHeight / 270) * 90 - 5
-  $: angleD = (chordCHeight / 270) * 90 - 10
+  $: angleD = (chordCHeight / 270) * 85 - 10
   $: rectWidth = (chartRad / 370) * 120
   $: attrFontSize =
     height <= width ? (chordCHeight / 270) * 15 : (chartRad / 370) * 15
@@ -29,36 +29,6 @@
 
   let allGroupings: [string, Types.ArtistMedium[]][]
   $: allGroupings = []
-
-  let gtMediums = [
-    "sculptor",
-    "painter",
-    "printmaker",
-    "draughtsman",
-    "photography",
-    "film",
-    "watercolourist",
-    "oilpainter",
-    "illustrator",
-    "muralist",
-    "architect",
-    "ink",
-    "ceramicist",
-    "calligrapher",
-    "engraving",
-  ]
-
-  let gtDeaths = [
-    "illness",
-    "alive",
-    "suicide",
-    "no-mention",
-    "heartattack",
-    "heartattack-overdose-probably",
-    "natural",
-    "accident",
-    "murder",
-  ]
 
   let gtCentsMedium = [
     "1000",
@@ -599,18 +569,39 @@
 
   export const Initialize = (
     locs: Types.ArtistLocation[],
-    groupLocs: Types.ArtistMedium[] | Types.ArtistData
+    groupLocs: Types.ArtistMedium[] | Types.ArtistData[]
   ) => {
     if (locs && groupLocs) {
+      let rolledUp
       if (grouping == "Medium") {
-        selectedG = gtMediums
+        rolledUp = d3.groups(groupLocs, (d) => d.medium)
+        console.log('rolledUp')
+        console.log(rolledUp) 
+        console.log(rolledUp.length) 
+        // selectedG = gtMediums
         selectedColorScheme = Helpers.ColorSchemeMediums
         gtCents = gtCentsMedium
       } else {
-        selectedG = gtDeaths
+        rolledUp = d3.groups(groupLocs, (d) => d.death_type)
+        console.log('rolledUp')
+        console.log(rolledUp) 
+        console.log(rolledUp.length) 
+        // selectedG = gtDeaths
         selectedColorScheme = Helpers.ColorSchemeDeaths
         gtCents = gtCentsDeath
       }
+      for(let i = 0; i < rolledUp.length; i++)
+      {
+        selectedG.push(rolledUp[i][0])
+      }
+      selectedG.sort(d3.ascending)
+
+      allGroupings = d3.groups(groupLocs, (d) => d.artist)
+
+      allLocations = d3.groups(locs, (d) => d.artist)
+      // console.log(allLocations)
+
+      console.log('selectedG 1: ', selectedG)
 
       clickLocks = new Array(gtCents.length).fill(false)
 
@@ -639,11 +630,6 @@
           groups: new Array(gtCents.length).fill(0),
         })
       }
-
-      allGroupings = d3.groups(groupLocs, (d) => d.artist)
-
-      allLocations = d3.groups(locs, (d) => d.artist)
-      // console.log(allLocations)
 
       let currGroup = []
       let foundMatch = false
@@ -742,6 +728,7 @@
         let runningRTally = 0.0
         let otherSide = false
         let rTallyInt = 0
+        let nowGoOver = false
         // console.log(groupedData)
 
         let padCheck = false
@@ -752,7 +739,7 @@
             if (groupedData[i].groups[j] > 0) {
               let currSegment = groupedData[i].groups[j]
               runningRTally += unitAngleR * currSegment
-              if (runningRTally < (angleD * Math.PI) / 180) {
+              if (runningRTally < ((angleD) * Math.PI) / 180) {
                 retArr.push({
                   startAngle:
                     padCheck && i > 0 ? padR + forwardAngle : forwardAngle,
@@ -774,7 +761,31 @@
                     : unitAngleR * currSegment
               } else {
                 let baseTerm = 2 * Math.PI
-                retArr.push({
+                if(nowGoOver == false)
+                {
+                  nowGoOver = true
+                  retArr.push({
+                  startAngle:
+                    padCheck && i > 0 ? padR + forwardAngle : forwardAngle,
+                  endAngle:
+                    padCheck && i > 0
+                      ? padR + unitAngleR * currSegment + forwardAngle
+                      : unitAngleR * currSegment + forwardAngle,
+                  vertIdx: j,
+                  colorIndex: colorIndex,
+                  half: 0,
+                  cent: j,
+                  addLabel: padCheck ? true : false,
+                  slice: groupedData[i].slice,
+                  defIndex: rTallyInt,
+                })
+                forwardAngle +=
+                  padCheck && i > 0
+                    ? padR + unitAngleR * currSegment
+                    : unitAngleR * currSegment
+                }
+                else{
+                  retArr.push({
                   startAngle:
                     padCheck && i > 0
                       ? baseTerm -
@@ -801,6 +812,7 @@
                   padCheck && i > 0
                     ? padR + unitAngleR * currSegment
                     : unitAngleR * currSegment
+                }
               }
               if (padCheck) {
                 padCheck = false
@@ -1356,6 +1368,7 @@
         .attr("y", (chordCHeight / 270) * -270 + 5)
         .style("text-anchor", "middle")
         .style("font-size", titleFontSize > 20 ? 20 : titleFontSize)
+        .attr('font-weight', 700)
         .text("Distribution of Artists by " + grouping + " Over Centuries")
     } else {
       console.error("Unable to load Artist Locations!")

@@ -422,8 +422,8 @@
     area.Initialize(locs!, medLocs!)
     chord_deaths.Initialize(locs!, artist_data!)
     chord_mediums.Initialize(locs!, medLocs!)
-    legend_deaths.Initialize()
-    legend_mediums.Initialize()
+    legend_deaths.Initialize(artist_data!)
+    legend_mediums.Initialize(medLocs!)
     map.Initialize(
       features,
       allInfluencers!,

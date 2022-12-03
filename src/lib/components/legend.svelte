@@ -3,6 +3,7 @@
   import { Helpers, Types } from "$lib/utilities"
   import { createEventDispatcher } from "svelte"
   import { chord, color } from "d3"
+  import { updated } from "$app/stores";
 
   const dispatch = createEventDispatcher()
 
@@ -15,36 +16,6 @@
   // height <= width ? (height / 270) * 15 : (width / 370) * 15
 
   let legendViz: SVGElement
-
-  let gtMediums = [
-    "sculptor",
-    "painter",
-    "printmaker",
-    "draughtsman",
-    "photography",
-    "film",
-    "watercolourist",
-    "oilpainter",
-    "illustrator",
-    "muralist",
-    "architect",
-    "ink",
-    "ceramicist",
-    "calligrapher",
-    "engraving",
-  ]
-
-  let gtDeaths = [
-    "illness",
-    "alive",
-    "suicide",
-    "no-mention",
-    "heartattack",
-    "heartattack-overdose-probably",
-    "natural",
-    "accident",
-    "murder",
-  ]
 
   let selectedG = []
   let colorScale
@@ -116,24 +87,34 @@
       .style("opacity", 1.0)
   }
 
-  export const Initialize = () => {
+  export const Initialize = (
+    groupLocs: Types.ArtistMedium[] | Types.ArtistData[]
+  ) => {
+    let rolledUpG
     if (grouping == "Medium") {
-      selectedG = gtMediums
+      // selectedG = gtMediums
       colorScale = d3
         .scaleOrdinal()
         .domain(selectedG)
         .range(Helpers.ColorSchemeMediums)
       spacingVarH = 0.67
       spacingVarV = 0.5
+      rolledUpG = d3.groups(groupLocs, (d) => d.medium)
     } else {
-      selectedG = gtDeaths
+      // selectedG = gtDeaths
       colorScale = d3
         .scaleOrdinal()
         .domain(selectedG)
         .range(Helpers.ColorSchemeDeaths)
       spacingVarH = 1.1
       spacingVarV = 0.5
+      rolledUpG = d3.groups(groupLocs, (d) => d.death_type)
     }
+    for(let i = 0; i < rolledUpG.length; i++)
+    {
+      selectedG.push(rolledUpG[i][0])
+    }
+    selectedG.sort(d3.ascending)
     console.log("alright. here we are again.")
     // Append Legend Rect:
     d3.select(legendViz)
@@ -149,18 +130,18 @@
       .attr("stroke-width", 1)
       .attr("stroke", "none")
     // .style('opacity', 0.9)
-    // d3.select(legendViz)
-    //   .append("text")
-    //   .attr("x", width / 20)
-    //   .attr("y", 45)
-    //   .attr("fill", "#cf8217")
-    //   // .style('text-anchor', 'left')
-    //   .classed("legendBigLabel", true)
-    //   .style("font-size", attrFontSize)
+    d3.select(legendViz)
+      .append("text")
+      .attr("x", width / 20)
+      .attr("y", 45)
+      .attr("fill", "black")
+      // .style('text-anchor', 'left')
+      .classed("legendBigLabel", true)
+      .style("font-size", attrFontSize)
 
-    //   .text("Legend: ")
-    //   .style("opacity", 1.0)
-    //   .attr("font-weight", 700)
+      .text((grouping == 'Death') ? 'Means of Death: ' : 'Artistic Medium: ')
+      .style("opacity", 1.0)
+      .attr("font-weight", 700)
     // console.log(attrFontSize)
     // Adding all color rectangles:
     let colorGroup = d3
@@ -187,7 +168,7 @@
           ((width * spacingVarH) / selectedG.length +
             (7 * attrFontSize * 0.5 + 15)) *
             (i >= selectedG.length / 2 ? i - selectedG.length / 2 : i)
-        // + ((7 * attrFontSize * 0.5) + 15)
+        + ((7 * attrFontSize * 0.5) + 15)
       )
       .attr("y", (d, i) =>
         i >= selectedG.length / 2
@@ -209,8 +190,8 @@
           ((width * spacingVarH) / selectedG.length +
             (7 * attrFontSize * 0.5 + 15)) *
             (i >= selectedG.length / 2 ? i - selectedG.length / 2 : i) +
-          // - ((d.length / 9) * (attrFontSize * 0.8))
-          // + ((7 * attrFontSize * 0.5) + 15)
+          // - ((d.length / 9) * (attrFontSize * 0.8)) 
+           ((7 * attrFontSize * 0.5) + 15)+
           (width * 0.67) / (selectedG.length * 4) +
           7
       )
@@ -225,7 +206,74 @@
       .style("font-size", (d, i) =>
         d.length > 15 ? attrFontSize * 0.7 : attrFontSize * 0.8
       )
-      .text((d, i) => d.charAt(0).toUpperCase() + d.slice(1))
+      .text(function(d, i){
+        let updatedWording = d
+        if(d == 'illness')
+        {
+          updatedWording = 'Sickness'
+        }
+        else if(d == 'heartattack')
+        {
+          updatedWording = 'Heart Attack'
+        }
+        else if(d == 'alive')
+        {
+          updatedWording = 'Still Alive'
+        }
+        else if(d == 'natural')
+        {
+          updatedWording = 'Natural Causes'
+        }
+        else if(d == 'no-mention')
+        {
+          updatedWording = 'Cause Unknown'
+        }
+        else if(d == 'architect')
+        {
+          updatedWording = 'Architecture'
+        }
+        else if(d == 'calligrapher')
+        {
+          updatedWording = 'Calligraphy'
+        }
+        else if(d == 'ceramicist')
+        {
+          updatedWording = 'ceramics'
+        }
+        else if(d == 'draughtsman')
+        {
+          updatedWording = 'Blueprints'
+        }
+        else if(d == 'illustrator')
+        {
+          updatedWording = 'Illustrations'
+        }
+        else if(d == 'muralist')
+        {
+          updatedWording = 'Murals'
+        }
+        else if(d == 'oilpainter')
+        {
+          updatedWording = 'Oil Paints'
+        }
+        else if(d == 'painter')
+        {
+          updatedWording = 'Paints'
+        }
+        else if(d == 'printmaker')
+        {
+          updatedWording = 'Prints'
+        }
+        else if(d == 'sculptor')
+        {
+          updatedWording = 'Sculptures'
+        }
+        else if(d == 'watercolourist')
+        {
+          updatedWording = 'Water Colors'
+        }
+        return updatedWording.charAt(0).toUpperCase() + updatedWording.slice(1)
+      })
       .style("opacity", 1.0)
       .attr("id", (d, i) => "legendaryText_" + grouping + "_" + d)
   }
