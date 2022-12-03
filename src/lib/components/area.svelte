@@ -65,7 +65,7 @@
   $: highlight_medium = false
 
   let chordColorScale
-  let gtMediums = []
+  let gtMediums:any = []
 
   let xAxisGroup
 
@@ -387,7 +387,7 @@
 
   const RestoreAfterHover = () => {
     let i = 0
-    for(var category of category_names){
+    for(var category of gtMediums){
       // Make everyone opacity = 0.2
       let select_area_id = '#area-chart-' + i
       d3.select(select_area_id)
