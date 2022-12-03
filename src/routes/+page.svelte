@@ -1,6 +1,14 @@
 <script lang="ts">
   import * as d3 from "d3"
-  import { Area, Chord, Map, Matrix, Network, Scatter } from "$lib/components"
+  import {
+    Area,
+    Chord,
+    Legend,
+    Map,
+    Matrix,
+    Network,
+    Scatter,
+  } from "$lib/components"
   import { Config, Types } from "$lib/utilities"
   import { fade } from "svelte/transition"
   import { Jellyfish } from "svelte-loading-spinners"
@@ -19,7 +27,7 @@
 
   $: area_width = Math.abs(width - horizontalPadding) / 2
   $: area_height = Math.abs(
-    height - verticalPadding - header_height - footer_height
+    (height - verticalPadding - header_height - footer_height) * 0.8
   )
 
   $: network_width = width
@@ -28,7 +36,7 @@
 
   $: chord_width = Math.abs(width - horizontalPadding) / 2
   $: chord_height = Math.abs(
-    height - verticalPadding - header_height - footer_height
+    (height - verticalPadding - header_height - footer_height)*0.8
   )
 
   $: matrix_width = Math.abs(width - horizontalPadding) / 2
@@ -41,11 +49,11 @@
 
   $: scatter_width = Math.abs(width - horizontalPadding) / 2
   $: scatter_height = Math.abs(
-    height - verticalPadding - header_height - footer_height
+    (height - verticalPadding - header_height - footer_height)*0.8
   )
 
-  $: color_legend_width = width
-  $: color_legend_height = height / 9
+  $: legend_width = width
+  $: legend_height = height / 9
 
   let allLocations: Types.LocationGroup[]
   $: allLocations = []
@@ -58,6 +66,8 @@
   let network: Network
   let chord_deaths: Chord
   let chord_mediums: Chord
+  let legend_deaths: Legend
+  let legend_mediums: Legend
   let map: Map
   let matrix: Matrix
   let scatter: Scatter
@@ -209,8 +219,7 @@
     const influencee = ev.detail.influencee
     const row = ev.detail.row
     const col = ev.detail.col
-    network.HighlightArtist(influencer)
-    network.HighlightArtist(influencee)
+    network.HighlightPair(influencer, influencee)
     matrix.HighlightPair(influencer, influencee, row, col)
   }
 
@@ -220,54 +229,165 @@
     const row = ev.detail.row
     const col = ev.detail.col
 
-    network.RestoreArtist(influencer)
-    network.RestoreArtist(influencee)
+    network.RestorePair(influencer, influencee)
     matrix.RestorePair(influencer, influencee, row, col)
   }
 
   // Chord functions
   const HighlightGrouping_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.HighlightGrouping(selectedGrouping)
+    const selectedCent = ev.detail.chordTimeNum
+    chord_deaths.HighlightGrouping(selectedGrouping, selectedCent)
+    scatter.chordGroupingFocus(selectedGrouping)
+    legend_deaths.singleGroupingFocus(selectedGrouping)
   }
 
   const RestoreGrouping_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.RestoreGrouping(selectedGrouping)
-
+    const selectedCent = ev.detail.chordTimeNum
+    chord_deaths.RestoreGrouping(selectedGrouping, selectedCent)
+    scatter.chordGroupingReFocus()
+    legend_deaths.singleGroupingReFocus()
   }
 
   const HighlightRibbon_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedRibbon = ev.detail.chordIdx
+    const selectedCent = ev.detail.chordTime
     chord_deaths.HighlightRibbon(selectedGrouping, selectedRibbon)
+    scatter.chordRibbonFocus(selectedGrouping, selectedCent)
+    legend_deaths.singleGroupingFocus(selectedGrouping)
   }
 
   const RestoreRibbon_Deaths = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.RestoreRibbon(selectedGrouping)
-
+    const selectedIdx = ev.detail.chordIdx
+    const selectedCent = ev.detail.chordTimeNum
+    chord_deaths.RestoreRibbon(selectedGrouping, selectedIdx, selectedCent)
+    scatter.chordRibbonReFocus()
+    legend_deaths.singleGroupingReFocus()
   }
 
+  // Will highlight corresponding medium's area on area chart
   const HighlightGrouping_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.HighlightGrouping(selectedGrouping)
+    const selectedCent = ev.detail.chordTimeNum
+    chord_mediums.HighlightGrouping(selectedGrouping, selectedCent)
+    area.chordMedGroupFocus(selectedGrouping)
+    legend_mediums.singleGroupingFocus(selectedGrouping)
+
   }
 
+  // Will restore all medium groupings to the same opacity on the area chart
   const RestoreGrouping_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.RestoreGrouping(selectedGrouping)
+    const selectedCent = ev.detail.chordTimeNum
+    chord_mediums.RestoreGrouping(selectedGrouping, selectedCent)
+    area.chordMedGroupReFocus()
+    legend_mediums.singleGroupingReFocus()
   }
 
+  // Will highlight area chart's corresponding medium and generate some indication of the century's frame
   const HighlightRibbon_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     const selectedRibbon = ev.detail.chordIdx
-    chord_deaths.HighlightRibbon(selectedGrouping, selectedRibbon)
+    const selectedCentury = ev.detail.chordTime
+    chord_mediums.HighlightRibbon(selectedGrouping, selectedRibbon)
+    area.chordMedRibbonFocus(selectedGrouping, selectedCentury)
+    legend_mediums.singleGroupingFocus(selectedGrouping)
   }
 
+  // Will remove/hide indication of century's time frame and restore all areas to same opacity
   const RestoreRibbon_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    chord_deaths.RestoreRibbon(selectedGrouping)
+    const selectedIdx = ev.detail.chordIdx
+    const selectedCent = ev.detail.chordTimeNum
+    chord_mediums.RestoreRibbon(selectedGrouping, selectedIdx, selectedCent)
+    area.chordMedRibbonReFocus()
+    legend_mediums.singleGroupingReFocus()
+  }
+
+  // Zooms on horizontal axis to selected time frame AND back (see: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6)
+  const CenturyClick_Mediums = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroups = ev.detail.chordGroups
+    chord_mediums.ClickButton(selectedTime, selectedGroups)
+    area.chordMedButtonClick(selectedTime)
+  }
+
+  // Generates some indication of century's time frame on the area chart
+  const HighlightButton_Mediums = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroupings = ev.detail.chordGroups
+    chord_mediums.HighlightButton(selectedTime, selectedGroupings)
+    area.chordMedButtonFocus(selectedTime)
+    legend_mediums.multipleGroupingsFocus(selectedGroupings)
+  }
+
+  // Removes the indication of century's time frame on the area chart (maybe use x axis' scale to determine width and starting point for rectangle with no fill, but has an outliine color?)
+  const RestoreButton_Mediums = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    chord_mediums.RestoreButton(selectedTime)
+    area.chordMedButtonReFocus()
+    legend_mediums.multipleGroupingsReFocus()
+  }
+
+  // I don't think we need this on second thought
+  const ArcClick_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_mediums.ClickGrouping(selectedGrouping)
+    //...
+  }
+
+  // I don't think we need this on second thought
+  const RibbonClick_Mediums = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    const selectedTime = ev.detail.chordTime
+    chord_mediums.ClickRibbon(selectedGrouping, selectedTime)
+    //...
+  }
+
+  const ArcClick_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    chord_deaths.ClickGrouping(selectedGrouping)
+    scatter.chordArcClick(selectedGrouping)
+  }
+
+  const RibbonClick_Deaths = (ev: any) => {
+    const selectedGrouping = ev.detail.chordGroup
+    const selectedTime = ev.detail.chordTime
+    chord_deaths.ClickRibbon(selectedGrouping, selectedTime)
+  }
+
+  const CenturyClick_Deaths = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroups = ev.detail.chordGroups
+    chord_deaths.ClickButton(selectedTime, selectedGroups)
+    scatter.chordButtonClick(selectedTime, selectedGroups)
+  }
+
+  const HighlightButton_Deaths = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    const selectedGroupings = ev.detail.chordGroups
+    chord_deaths.HighlightButton(selectedTime, selectedGroupings)
+    scatter.chordButtonFocus(selectedTime, selectedGroupings)
+    legend_deaths.multipleGroupingsFocus(selectedGroupings)
+  }
+
+  const RestoreButton_Deaths = (ev: any) => {
+    const selectedTime = ev.detail.chordTime
+    chord_deaths.RestoreButton(selectedTime)
+    scatter.chordButtonReFocus(selectedTime)
+    legend_deaths.multipleGroupingsReFocus()
+  }
+
+  // Scatter functions
+  const HighlightScatterDots = (ev: any) => {
+    const selectedGrouping = ev.detail.deathGroup
+    legend_deaths.singleGroupingFocus(selectedGrouping)
+  }
+  const RestoreScatterDots = (ev: any) => {
+    legend_deaths.singleGroupingReFocus()
   }
 
   onMount(async () => {
@@ -301,8 +421,10 @@
     }
 
     area.Initialize(locs!, medLocs!)
-    chord_deaths.Initialize(locs!, medLocs!)
+    chord_deaths.Initialize(locs!, artist_data!)
     chord_mediums.Initialize(locs!, medLocs!)
+    legend_deaths.Initialize()
+    legend_mediums.Initialize()
     map.Initialize(
       features,
       allInfluencers!,
@@ -312,7 +434,7 @@
     )
     matrix.Initialize(artist_data!, influence_data!)
     network.Initialize(artist_data!, influence_data!)
-    scatter.Initialize()
+    scatter.Initialize(locs!, artist_data!)
 
     data_loaded = true
   })
@@ -376,7 +498,7 @@
     style="height: {height}px; width: {width * 3}px; transition: 0.5s ease all;"
   >
     <div
-      class="grid-cols-2 inline-block"
+      class="flex flex-col"
       style={(data_loaded ? "opacity: 1;" : "opacity:0;") +
         "margin-top: " +
         header_height +
@@ -393,28 +515,30 @@
         on:restore_artist={RestoreArtist}
         on:reset_influences={ResetInfluences}
       />
-      <Matrix
-        bind:this={matrix}
-        width={matrix_width}
-        height={matrix_height}
-        on:highlight_artist={HighlightArtist}
-        on:restore_artist={RestoreArtist}
-        on:highlight_influence_pair={HighlightPair}
-        on:restore_influence_pair={RestorePair}
-        on:select_influencer={SelectInfluencer}
-        on:select_influencee={SelectInfluencee}
-        on:reset_influences={ResetInfluences}
-        on:select_pair={SelectPair}
-      />
-      <Map
-        bind:this={map}
-        width={map_width}
-        height={map_height}
-        on:reset_influences={ResetInfluences}
-      />
+      <div class="grid-cols-2 inline-block">
+        <Matrix
+          bind:this={matrix}
+          width={matrix_width}
+          height={matrix_height}
+          on:highlight_artist={HighlightArtist}
+          on:restore_artist={RestoreArtist}
+          on:highlight_influence_pair={HighlightPair}
+          on:restore_influence_pair={RestorePair}
+          on:select_influencer={SelectInfluencer}
+          on:select_influencee={SelectInfluencee}
+          on:reset_influences={ResetInfluences}
+          on:select_pair={SelectPair}
+        />
+        <Map
+          bind:this={map}
+          width={map_width}
+          height={map_height}
+          on:reset_influences={ResetInfluences}
+        />
+      </div>
     </div>
     <div
-      class="grid-cols-2 inline-block"
+      class="flex flex-col"
       style={(data_loaded ? "opacity: 1;" : "opacity:0;") +
         "margin-top: " +
         header_height +
@@ -422,29 +546,44 @@
         width +
         "px;"}
     >
-      <Scatter
-        bind:this={scatter}
-        width={color_legend_width}
-        height={color_legend_height}
+      <Legend
+        bind:this={legend_deaths}
+        width={legend_width}
+        height={legend_height}
+        grouping={'Death'}
+        topOffset={header_height}
       />
-      <Chord
-        bind:this={chord_deaths}
-        width={chord_width}
-        height={chord_height}
-        grouping="Death"
-        on:highlight_chord_group={HighlightGrouping_Deaths}
-        on:restore_chord_group={RestoreGrouping_Deaths}
-        on:highlight_chord_ribbon={HighlightRibbon_Deaths}
-        on:restore_chord_ribbon={RestoreRibbon_Deaths}
-      />
-      <Scatter
-        bind:this={scatter}
-        width={scatter_width}
-        height={scatter_height}
-      />
+      <div class="grid-cols-2 inline-block" 
+            
+        >
+        <Chord
+          bind:this={chord_deaths}
+          width={chord_width}
+          height={chord_height}
+          grouping="Death"
+          topOffset={legend_height}
+          on:highlight_chord_group={HighlightGrouping_Deaths}
+          on:restore_chord_group={RestoreGrouping_Deaths}
+          on:highlight_chord_ribbon={HighlightRibbon_Deaths}
+          on:restore_chord_ribbon={RestoreRibbon_Deaths}
+          on:click_chord_by_arc={ArcClick_Deaths}
+          on:click_chord_by_ribbon={RibbonClick_Deaths}
+          on:click_chord_by_century={CenturyClick_Deaths}
+          on:highlight_chord_button={HighlightButton_Deaths}
+          on:restore_chord_button={RestoreButton_Deaths}
+        />
+        <Scatter
+          bind:this={scatter}
+          width={scatter_width}
+          height={scatter_height}
+          topOffset={legend_height}
+          on:highlight_scatter_dots={HighlightScatterDots}
+          on:restore_scatter_dots={RestoreScatterDots}
+        />
+      </div>
     </div>
     <div
-      class="grid-cols-2 inline-block"
+      class="flex flex-col"
       style={(data_loaded ? "opacity: 1;" : "opacity:0;") +
         "margin-top: " +
         header_height +
@@ -452,22 +591,33 @@
         width +
         "px;"}
     >
-      <Scatter
-        bind:this={scatter}
-        width={color_legend_width}
-        height={color_legend_height}
+      <Legend
+        bind:this={legend_mediums}
+        width={legend_width}
+        height={legend_height}
+        grouping={'Medium'}
+        topOffset={header_height}
       />
-      <Chord
-        bind:this={chord_mediums}
-        width={chord_width}
-        height={chord_height}
-        grouping="Medium"
-        on:highlight_chord_group={HighlightGrouping_Mediums}
-        on:restore_chord_group={RestoreGrouping_Mediums}
-        on:highlight_chord_ribbon={HighlightRibbon_Mediums}
-        on:restore_chord_ribbon={RestoreRibbon_Mediums}
-      />
-      <Area bind:this={area} width={area_width} height={area_height} />
+      <div class="grid-cols-2 inline-block" 
+        >
+        <Chord
+          bind:this={chord_mediums}
+          width={chord_width}
+          height={chord_height}
+          grouping="Medium"
+          topOffset={legend_height}
+          on:highlight_chord_group={HighlightGrouping_Mediums}
+          on:restore_chord_group={RestoreGrouping_Mediums}
+          on:highlight_chord_ribbon={HighlightRibbon_Mediums}
+          on:restore_chord_ribbon={RestoreRibbon_Mediums}
+          on:click_chord_by_arc={ArcClick_Mediums}
+          on:click_chord_by_ribbon={RibbonClick_Mediums}
+          on:click_chord_by_century={CenturyClick_Mediums}
+          on:highlight_chord_button={HighlightButton_Mediums}
+          on:restore_chord_button={RestoreButton_Mediums}
+        />
+        <Area bind:this={area} width={area_width} height={area_height} topOffset={legend_height}/>
+      </div>
     </div>
   </div>
 </div>

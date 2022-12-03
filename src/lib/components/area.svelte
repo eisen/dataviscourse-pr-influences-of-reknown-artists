@@ -2,9 +2,13 @@
   import { Types, Helpers } from "$lib/utilities"
   import type { ArtistData, ArtistInfluence, ArtistLocation, ArtistMedium } from "$lib/utilities/types"
   import * as d3 from "d3"
+  import { createEventDispatcher } from "svelte"
+
+  const dispatch = createEventDispatcher()
 
   export let width: number = 0
   export let height: number = 0
+  export let topOffset: number = 0
 
   const PADDING = { left: 50, right: 50, top: 50, bottom: 50 }
 
@@ -587,6 +591,58 @@
 
   }
 
+  // Receiving sign from chord that a medium arc was highlighted/is no longer highlighted
+  export const chordMedGroupFocus = (chordMedium: string) => {
+    // Will implement logic for highlighting area in this component that corresponds to chordMedium
+    console.log('Chord medium was highlighted on chord: ', chordMedium)
+  }
+
+  export const chordMedGroupReFocus = () => {
+    // Will implement logic for making all areas equal in focus again
+    console.log('Chord medium is no longer highlighted on chord.')
+  }
+
+  // Receiving sign from chord that a ribbon got highlighted/is no longer highlighted
+  export const chordMedRibbonFocus = (chordMedium: string, chordCentury: string) => {
+    // Will implement logic for highlighting area in this component that corresponds to chordMedium and chordCentury
+    // We also gotta put some indication of the century's time frame on the chart when this happens for focus
+    console.log('Chord ribbon was highlighted on chord for medium: ', chordMedium, ' and century: ', chordCentury)
+  }
+
+  export const chordMedRibbonReFocus = () => {
+    // Will implement logic for removing highlights from medium area and indication of century time frame on x axis
+    console.log('That ribbon is no longer highlighted...')
+  }
+
+  // Receiving sign from chord that a button got clicked in any way
+  export const chordMedButtonClick = (chordCentury: string) => {
+    // Will implement logic for zooming in to the century associated with the button clicked
+    // And then either returning to regular scale or another century if that is clicked
+    
+    // So we can have:
+    // Click 1200 ---> Click 1200
+    //    This zooms to 1200 ------> and then back to the full range of time
+    // Or
+    // Click 1200 ---> Click 1800
+    //    This zooms to 1200 ------> and then zooms to 1800
+    // You can check out the scatter plot's click handle function (chordButtonClick)
+    //    and this: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6 for help.
+    console.log('Chord says to zoom to this century: ', chordCentury)
+    // You should probably create an array of booleans of length = centuries.length and then
+    // update accordingly with this function!
+  }
+
+  // Receiving sign from chord a century button is highlighted/not anymore
+  export const chordMedButtonFocus = (chordCentury: string) => {
+    // Will implement logic for some indication of the century's time span (like a rectangle or something)
+    console.log('User highlighted button for century: ', chordCentury)
+  }
+
+  export const chordMedButtonReFocus = () => {
+    // Will implement logic to get rid of some indication of the century's time span
+    console.log('User is no longer highlighting century button...')
+  }
+
   const SetYears = (young: number, old: number) => {
     size_years = young - old + 1// TODO: change this when clicking on century button to show only that century
     for(let i=0; i<size_years; i++){
@@ -642,7 +698,7 @@
 <div
   id="container"
   class="inline-block relative align-top overflow-hidden"
-  style="width: {width}px; height: {height}px;"
+  style="width: {width}px; height: {height}px; top: {(topOffset) > 50 ? 50 : topOffset * 0.9}px;"
 >
   <svg
     class="inline-block absolute top-0 left-0"
