@@ -471,50 +471,28 @@
           .join('text')
           .text( (d) => {
             let updatedWording = d
-            if(d == 'architect')
-            {
-              updatedWording = 'Architecture'
-            }
-            else if(d == 'calligrapher')
-            {
-              updatedWording = 'Calligraphy'
-            }
-            else if(d == 'ceramicist')
-            {
-              updatedWording = 'ceramics'
-            }
-            else if(d == 'draughtsman')
-            {
-              updatedWording = 'Blueprints'
-            }
-            else if(d == 'illustrator')
-            {
-              updatedWording = 'Illustrations'
-            }
-            else if(d == 'muralist')
-            {
-              updatedWording = 'Murals'
-            }
-            else if(d == 'oilpainter')
-            {
-              updatedWording = 'Oil Paints'
-            }
-            else if(d == 'painter')
-            {
-              updatedWording = 'Paints'
-            }
-            else if(d == 'printmaker')
-            {
-              updatedWording = 'Prints'
-            }
-            else if(d == 'sculptor')
-            {
-              updatedWording = 'Sculptures'
-            }
-            else if(d == 'watercolourist')
-            {
-              updatedWording = 'Water Colors'
-            }
+          if (d == "architect") {
+            updatedWording = "Architecture"
+          } else if (d == "calligrapher") {
+            updatedWording = "Calligraphy"
+          } else if (d == "ceramicist") {
+            updatedWording = "ceramics"
+          } else if (d == "draughtsman") {
+            updatedWording = "Blueprints"
+          } else if (d == "illustrator") {
+            updatedWording = "Illustrations"
+          } else if (d == "muralist") {
+            updatedWording = "Murals"
+          } else if (d == "painter") {
+            updatedWording = "Paints"
+          } else if (d == "printmaker") {
+            updatedWording = "Prints"
+          } else if (d == "sculptor") {
+            updatedWording = "Sculptures"
+          } else if (d == "photography-film") {
+            updatedWording = "Photography/Film"
+          }
+          let str = ""
             let str = ''
             let idx_cat = gtMediums.indexOf(d)
             let val = 0
