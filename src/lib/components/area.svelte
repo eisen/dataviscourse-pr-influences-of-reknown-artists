@@ -611,7 +611,8 @@
   }
 
   const ColourFunc = (num: number): string => {
-    if (num) {
+    if (num >= 0 && num < gtMediums.length) {
+      // console.log(chordColorScale(gtMediums[0]))
       return chordColorScale(gtMediums[num]) as string
     } else {
       return "black"
@@ -640,6 +641,8 @@
       })
       .ticks((youngestYear! - oldestYear!) / tickEvery)
     d3.select("#x-axis")
+      .transition()
+      .duration(1000)
       .attr(
         "transform",
         `translate(${PADDING.left}, ${chart_height + PADDING.top})`
