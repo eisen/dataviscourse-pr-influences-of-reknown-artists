@@ -575,33 +575,32 @@
       let rolledUp
       if (grouping == "Medium") {
         rolledUp = d3.groups(groupLocs, (d) => d.medium)
-        console.log('rolledUp')
-        console.log(rolledUp) 
-        console.log(rolledUp.length) 
+        console.log("rolledUp")
+        console.log(rolledUp)
+        console.log(rolledUp.length)
         // selectedG = gtMediums
-        selectedColorScheme = Helpers.ColorSchemeMediums
+        selectedColorScheme = d3.schemePaired
         gtCents = gtCentsMedium
       } else {
         rolledUp = d3.groups(groupLocs, (d) => d.death_type)
-        console.log('rolledUp')
-        console.log(rolledUp) 
-        console.log(rolledUp.length) 
+        console.log("rolledUp")
+        console.log(rolledUp)
+        console.log(rolledUp.length)
         // selectedG = gtDeaths
-        selectedColorScheme = Helpers.ColorSchemeDeaths
+        selectedColorScheme = d3.schemePaired
         gtCents = gtCentsDeath
       }
-      for(let i = 0; i < rolledUp.length; i++)
-      {
+      for (let i = 0; i < rolledUp.length; i++) {
         selectedG.push(rolledUp[i][0])
       }
       selectedG.sort(d3.ascending)
-      console.log('mediums over here for chord: ', selectedG)
+      console.log("mediums over here for chord: ", selectedG)
       allGroupings = d3.groups(groupLocs, (d) => d.artist)
 
       allLocations = d3.groups(locs, (d) => d.artist)
       // console.log(allLocations)
 
-      console.log('selectedG 1: ', selectedG)
+      console.log("selectedG 1: ", selectedG)
 
       clickLocks = new Array(gtCents.length).fill(false)
 
@@ -739,7 +738,7 @@
             if (groupedData[i].groups[j] > 0) {
               let currSegment = groupedData[i].groups[j]
               runningRTally += unitAngleR * currSegment
-              if (runningRTally < ((angleD) * Math.PI) / 180) {
+              if (runningRTally < (angleD * Math.PI) / 180) {
                 retArr.push({
                   startAngle:
                     padCheck && i > 0 ? padR + forwardAngle : forwardAngle,
@@ -761,57 +760,55 @@
                     : unitAngleR * currSegment
               } else {
                 let baseTerm = 2 * Math.PI
-                if(nowGoOver == false)
-                {
+                if (nowGoOver == false) {
                   nowGoOver = true
                   retArr.push({
-                  startAngle:
-                    padCheck && i > 0 ? padR + forwardAngle : forwardAngle,
-                  endAngle:
+                    startAngle:
+                      padCheck && i > 0 ? padR + forwardAngle : forwardAngle,
+                    endAngle:
+                      padCheck && i > 0
+                        ? padR + unitAngleR * currSegment + forwardAngle
+                        : unitAngleR * currSegment + forwardAngle,
+                    vertIdx: j,
+                    colorIndex: colorIndex,
+                    half: 0,
+                    cent: j,
+                    addLabel: padCheck ? true : false,
+                    slice: groupedData[i].slice,
+                    defIndex: rTallyInt,
+                  })
+                  forwardAngle +=
                     padCheck && i > 0
-                      ? padR + unitAngleR * currSegment + forwardAngle
-                      : unitAngleR * currSegment + forwardAngle,
-                  vertIdx: j,
-                  colorIndex: colorIndex,
-                  half: 0,
-                  cent: j,
-                  addLabel: padCheck ? true : false,
-                  slice: groupedData[i].slice,
-                  defIndex: rTallyInt,
-                })
-                forwardAngle +=
-                  padCheck && i > 0
-                    ? padR + unitAngleR * currSegment
-                    : unitAngleR * currSegment
-                }
-                else{
+                      ? padR + unitAngleR * currSegment
+                      : unitAngleR * currSegment
+                } else {
                   retArr.push({
-                  startAngle:
+                    startAngle:
+                      padCheck && i > 0
+                        ? baseTerm -
+                          padR -
+                          unitAngleR * currSegment -
+                          forwardAngleD
+                        : baseTerm - unitAngleR * currSegment - forwardAngleD,
+                    endAngle:
+                      padCheck && i > 0
+                        ? baseTerm - padR - forwardAngleD
+                        : baseTerm - forwardAngleD,
+                    vertIdx: j,
+                    colorIndex: colorIndex,
+                    half: 1,
+                    cent: j,
+                    addLabel: padCheck || !otherSide ? true : false,
+                    slice: groupedData[i].slice,
+                    defIndex: rTallyInt,
+                  })
+                  if (!otherSide) {
+                    otherSide = true
+                  }
+                  forwardAngleD +=
                     padCheck && i > 0
-                      ? baseTerm -
-                        padR -
-                        unitAngleR * currSegment -
-                        forwardAngleD
-                      : baseTerm - unitAngleR * currSegment - forwardAngleD,
-                  endAngle:
-                    padCheck && i > 0
-                      ? baseTerm - padR - forwardAngleD
-                      : baseTerm - forwardAngleD,
-                  vertIdx: j,
-                  colorIndex: colorIndex,
-                  half: 1,
-                  cent: j,
-                  addLabel: padCheck || !otherSide ? true : false,
-                  slice: groupedData[i].slice,
-                  defIndex: rTallyInt,
-                })
-                if (!otherSide) {
-                  otherSide = true
-                }
-                forwardAngleD +=
-                  padCheck && i > 0
-                    ? padR + unitAngleR * currSegment
-                    : unitAngleR * currSegment
+                      ? padR + unitAngleR * currSegment
+                      : unitAngleR * currSegment
                 }
               }
               if (padCheck) {
@@ -1368,7 +1365,7 @@
         .attr("y", (chordCHeight / 270) * -270 + 5)
         .style("text-anchor", "middle")
         .style("font-size", titleFontSize > 20 ? 20 : titleFontSize)
-        .attr('font-weight', 700)
+        .attr("font-weight", 700)
         .text("Distribution of Artists by " + grouping + " Over Centuries")
     } else {
       console.error("Unable to load Artist Locations!")

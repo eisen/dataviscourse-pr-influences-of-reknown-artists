@@ -73,12 +73,12 @@
   let scatter: Scatter
 
   const ScrollCharts = (target: any, pos: number) => {
-    d3.selectAll(".highlight")
+    d3.selectAll(".highlight-button")
       .classed("bg-utah-red", false)
       .classed("bg-transparent", true)
 
     d3.select(target)
-      .select(".highlight")
+      .select(".highlight-button")
       .classed("bg-utah-red", true)
       .classed("bg-transparent", false)
 
@@ -106,16 +106,12 @@
       (d) => d[0] === artist
     )
     if (artistInfluencers.length > 0) {
-      // console.log("Influencers")
       for (let influence of artistInfluencers[0][1]) {
         const data = allLocations.find(
           (loc) => loc[1][0].artist === influence.artist
         )
         if (data) {
           influencers.push(data)
-          // console.log(
-          //   allLocations.find((loc) => loc[1][0].artist === influence.artist)
-          // )
         }
       }
     }
@@ -128,18 +124,12 @@
       (d) => d[0] === artist
     )
     if (artistInfluencees.length > 0) {
-      //console.log("Influencees")
       for (let influence of artistInfluencees[0][1]) {
         const data = allLocations.find(
           (loc) => loc[1][0].artist === influence.influenced
         )
         if (data) {
           influencees.push(data)
-          // console.log(
-          //   allLocations.find(
-          //     (loc) => loc[1][0].artist === influence.influenced
-          //   )
-          // )
         }
       }
     }
@@ -450,32 +440,32 @@
       <nav class="isolate flex divide-x divide-gray-200 rounded-lg shadow">
         <!-- Current: "text-gray-900", Default: "text-gray-500 hover:text-gray-700" -->
         <div
-          class="text-gray-900 rounded-l-lg group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+          class="text-gray-900 rounded-l-lg group relative min-w-0 overflow-hidden bg-white py-2 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
           on:click={DisplayInfluences}
         >
           <span class="pointer-events-none">Influences</span>
           <span
-            class="highlight bg-utah-red absolute inset-x-0 bottom-0 h-0.5"
+            class="highlight-button bg-utah-red absolute inset-x-0 bottom-0 h-0.5"
           />
         </div>
 
         <div
-          class="text-gray-500 hover:text-gray-700 group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+          class="text-gray-500 hover:text-gray-700 group relative min-w-0 overflow-hidden bg-white py-2 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
           on:click={DisplayDeaths}
         >
           <span class="pointer-events-none">Deaths</span>
           <span
-            class="highlight bg-transparent absolute inset-x-0 bottom-0 h-0.5"
+            class="highlight-button bg-transparent absolute inset-x-0 bottom-0 h-0.5"
           />
         </div>
 
         <div
-          class="text-gray-500 hover:text-gray-700 group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+          class="text-gray-500 hover:text-gray-700 group relative min-w-0 overflow-hidden bg-white py-2 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
           on:click={DisplayMediums}
         >
           <span class="pointer-events-none">Mediums</span>
           <span
-            class="highlight bg-transparent absolute inset-x-0 bottom-0 h-0.5"
+            class="highlight-button bg-transparent absolute inset-x-0 bottom-0 h-0.5"
           />
         </div>
       </nav>
