@@ -646,6 +646,11 @@
     console.log('Chord medium is no longer highlighted on chord.')
   }
 
+  export const chordMedGroupClick = (chordMedium: string) => {
+    // Here is the function for clicking an arc
+    console.log("Medium to isolate: ", chordMedium)
+  }
+
   // Receiving sign from chord that a ribbon got highlighted/is no longer highlighted
   export const chordMedRibbonFocus = (chordMedium: string, chordCentury: string) => {
     // Will implement logic for highlighting area in this component that corresponds to chordMedium and chordCentury

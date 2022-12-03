@@ -331,11 +331,11 @@
     legend_mediums.multipleGroupingsReFocus()
   }
 
-  // I don't think we need this on second thought
+  // For showing only the clicked medium on the area chart
   const ArcClick_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     chord_mediums.ClickGrouping(selectedGrouping)
-    //...
+    area.chordMedGroupClick(selectedGrouping)
   }
 
   // I don't think we need this on second thought
@@ -343,7 +343,6 @@
     const selectedGrouping = ev.detail.chordGroup
     const selectedTime = ev.detail.chordTime
     chord_mediums.ClickRibbon(selectedGrouping, selectedTime)
-    //...
   }
 
   const ArcClick_Deaths = (ev: any) => {
