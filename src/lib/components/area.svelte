@@ -136,7 +136,7 @@
       area_lines[num] = area_values
       num = num + 1
     }
-    console.log('final area_lines', area_lines)
+    // console.log('final area_lines', area_lines)
     area_lines_percentage = {...area_lines}
 
     // Calculate percentage 
@@ -147,7 +147,7 @@
       }
     }
 
-    console.log('final area_lines_percentage', area_lines_percentage)
+    // console.log('final area_lines_percentage', area_lines_percentage)
   }
 
   const AllAreaChart = () => {
@@ -164,14 +164,6 @@
     var yScale = d3.scaleLinear()
     .domain([0, 100])
     .range([chart_height, 0]);
-
-    
-    const areaGenerator = d3.area()
-      .x((d) => xScale(d.x - oldestYear!) + PADDING.left)
-      .y1(d => yScale(d.y) + PADDING.top)
-      .y0(chart_height + PADDING.top)
-      .curve(d3.curveCatmullRom.alpha(0.6))
-      .context(null);
     
     const areaGenerator1 = d3.area()
       .x((d) => xScale(d.x - oldestYear!) + PADDING.left)
@@ -213,7 +205,6 @@
       .style('fill', ColourFunc(num))
       .attr('opacity', '1.0')
 
-      // num = num + 1
     }
     
   }
@@ -267,7 +258,7 @@
   const HighlightCategory = (category:string) => {
     highlight_medium = true
     let idx = category_names.indexOf(category)
-    idx = 5
+    // idx = 5
     console.log('idx', idx)
     
 
@@ -563,6 +554,12 @@
     }
   }
 
+  const ClearAreaChart = () => {
+    d3.select('#all-area-chart')
+      .selectAll('*')
+      .attr('opacity', '0.0')
+  }
+
   const DrawAxesSingle = () => {
     tl_x_scale = d3
       .scaleLinear()
@@ -628,6 +625,15 @@
     // You can check out the scatter plot's click handle function (chordButtonClick)
     //    and this: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6 for help.
     console.log('Chord says to zoom to this century: ', chordCentury)
+
+    oldestYear = +chordCentury
+    youngestYear = +chordCentury + 100
+    SetYears(youngestYear, oldestYear)
+    ClearAreaChart()
+    DrawAxesSingle() 
+    DataForAllAreaChartLine()
+    AllAreaChart()
+
     // You should probably create an array of booleans of length = centuries.length and then
     // update accordingly with this function!
   }
@@ -644,7 +650,8 @@
   }
 
   const SetYears = (young: number, old: number) => {
-    size_years = young - old + 1// TODO: change this when clicking on century button to show only that century
+    size_years = young - old// TODO: change this when clicking on century button to show only that century
+    years = []
     for(let i=0; i<size_years; i++){
       years[i] = old + i 
     }
@@ -682,7 +689,7 @@
 
     // Change to show all categories of aea chart 
     oldestYear = 1400
-    youngestYear = 2020
+    // youngestYear = 1800
     SetYears(youngestYear, oldestYear)
     // TODO: onClick, selecting the medium should display only that category
     DrawAxesSingle() //TODO: call again when selecting a century to change x axis 
@@ -690,7 +697,7 @@
     AllAreaChart()
 
     // To highlight selected category 
-    HighlightCategory('painter')
+    // HighlightCategory('painter')
 
   }
 </script>
@@ -719,7 +726,7 @@
         font-weight="700">Percentage
       </text>
     </g>
-    <g id="lines-chart">
+    <g id="area-chart">
       <g id="x-axis"></g>
       <g id="y-axis"></g>
       
