@@ -6,6 +6,13 @@ export type AdjacencyData = {
   influencee: string
 }
 
+export type ScatterData = {
+  name: string
+  age: number
+  finalYear: number
+  typeOfDeath: string
+}
+
 export type ArtistLocation = {
   artist: string
   year: number
