@@ -2,7 +2,6 @@
   import * as d3 from "d3"
   import { Helpers, Types } from "$lib/utilities"
   import { createEventDispatcher } from "svelte"
-  import { group, image } from "d3"
 
   const dispatch = createEventDispatcher()
 
@@ -15,7 +14,7 @@
   $: chordCHeight = height * 0.45 > 275 ? 275 : height * 0.45
   $: chartRad = width * 0.45 > 390 ? 390 : width * 0.45 // Max size for more possible screens
   //   $: angleD = (chordCHeight / 270) * 90 - 5
-  $: angleD = (chordCHeight / 270) * 90 - 10
+  $: angleD = (chordCHeight / 270) * 85 - 10
   $: rectWidth = (chartRad / 370) * 120
   $: attrFontSize =
     height <= width ? (chordCHeight / 270) * 15 : (chartRad / 370) * 15
@@ -30,37 +29,6 @@
 
   let allGroupings: [string, Types.ArtistMedium[]][]
   $: allGroupings = []
-
-  let gtMediums = [
-    "sculptor",
-    "painter",
-    "printmaker",
-    "draughtsman",
-    "photography",
-    "film",
-    "watercolourist",
-    "oilpainter",
-    "illustrator",
-    "muralist",
-    "architect",
-    "ink",
-    "ceramicist",
-    "calligrapher",
-    "engraving",
-  ]
-
-  let gtDeaths = [
-    "illness",
-    "alive",
-    "suicide",
-    "no-mention",
-    "heartattack",
-    "heartattack-overdose-probably",
-    "natural",
-    "accident",
-    "murder",
-    ""
-  ]
 
   let gtCentsMedium = [
     "1000",
@@ -86,7 +54,7 @@
     "1700",
     "1800",
     "1900",
-    "2000"
+    "2000",
   ]
 
   let selectedG = []
@@ -95,7 +63,7 @@
   let centStatus
 
   let clickLock = false
-  let centClicked = ''
+  let centClicked = ""
   let clickLocks = []
   let clickedArcs = []
 
@@ -193,21 +161,21 @@
     dispatch("highlight_chord_ribbon", {
       chordGroup: group,
       chordIdx: idx,
-      chordTime: cent
+      chordTime: cent,
     })
   }
 
   const OnMouseLeaveRibbons = (group: string, idx: number) => {
     dispatch("restore_chord_ribbon", {
       chordGroup: group,
-      chordIdx: idx
+      chordIdx: idx,
     })
   }
 
   const OnMouseOverArcs = (group: string, centNum: number) => {
     dispatch("highlight_chord_group", {
       chordGroup: group,
-      chordTimeNum: centNum
+      chordTimeNum: centNum,
     })
   }
 
@@ -229,7 +197,7 @@
       chordTime: time,
     })
   }
-  
+
   // Click Dispatches
 
   const OnClickArcs = (group: string) => {
@@ -241,14 +209,14 @@
   const OnClickRibbons = (group: string, time: string) => {
     dispatch("click_chord_by_ribbon", {
       chordGroup: group,
-      chordTime: time
+      chordTime: time,
     })
   }
 
   const OnClickButtons = (time: string, groups: any) => {
     dispatch("click_chord_by_century", {
       chordTime: time,
-      chordGroups: groups
+      chordGroups: groups,
     })
   }
 
@@ -256,7 +224,8 @@
 
   export const ClickGrouping = (chordGroup: string) => {
     // ...
-    clickedArcs[selectedG.indexOf(chordGroup)] = !clickedArcs[selectedG.indexOf(chordGroup)]
+    clickedArcs[selectedG.indexOf(chordGroup)] =
+      !clickedArcs[selectedG.indexOf(chordGroup)]
   }
 
   export const ClickRibbon = (chordGroup: string, chordTime: string) => {
@@ -270,65 +239,83 @@
     // console.log(chordGroups)
   }
 
-  export const HighlightGrouping = (chordGroup: string, chordTimeNum: number) => {
+  export const HighlightGrouping = (
+    chordGroup: string,
+    chordTimeNum: number
+  ) => {
     let groupsSelected = []
-            let centSelected = Number(centClicked) / 100 - 10
-            for (let k = 0; k < groupedData.length; k++) {
-              if (groupedData[k].groups[centSelected] > 0) {
-                groupsSelected.push(groupedData[k].slice)
-              }
-            }
-    if(!clickLocks[chordTimeNum])
-    {
-        // Chaning Ribbon Opacity
-        d3.selectAll(".ribbonPaths"+grouping)
-          .transition()
-          .duration(fastTransitionDur)
-          .style("opacity", (d, i) => (clickLocks[d.cent])? 0.95: 0.1)
-        d3.selectAll(".ribbonPaths_" + chordGroup)
-          .transition()
-          .duration(fastTransitionDur)
-          .style("opacity", 0.95)
-        // Changing Arc Opacity
-        d3.selectAll(".arcPaths"+grouping)
-          .transition()
-          .duration(fastTransitionDur)
-          .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
-          .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217")
-          .style("stroke-width", 1)
-        d3.selectAll("#arc_" + chordGroup)
-          .transition()
-          .duration(fastTransitionDur)
-          .style("opacity", 1.0)
-          .style("stroke", "#cf8217")
-          // .style("stroke-width", 3)
+    let centSelected = Number(centClicked) / 100 - 10
+    for (let k = 0; k < groupedData.length; k++) {
+      if (groupedData[k].groups[centSelected] > 0) {
+        groupsSelected.push(groupedData[k].slice)
+      }
     }
-    else{
-        // Changing Arc Opacity
-        d3.selectAll(".arcPaths"+grouping)
-          .transition()
-          .duration(fastTransitionDur)
-          .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
-          .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
-          .style("stroke-width", 1)
-        d3.selectAll("#arc_" + chordGroup)
-          .transition()
-          .duration(fastTransitionDur)
-          .style("opacity", 1.0)
-          .style("stroke", "#cf8217")
-          // .style("stroke-width", 3)
-        
-       // Chaning Ribbon Opacity
-        d3.selectAll(".ribbonPaths"+grouping)
-          .transition()
-          .duration(fastTransitionDur)
-          .style("opacity", (d, i) => (chordCentScale(d.cent) == centClicked) ? 0.95 : 0.1)
-        d3.selectAll(".ribbonPaths_" + chordGroup)
-          .transition()
-          .duration(fastTransitionDur)
-          .style("opacity", (d, i) => (chordCentScale(d.cent) == centClicked) ? 0.95 : 0.5)
+    if (!clickLocks[chordTimeNum]) {
+      // Chaning Ribbon Opacity
+      d3.selectAll(".ribbonPaths" + grouping)
+        .transition()
+        .duration(fastTransitionDur)
+        .style("opacity", (d, i) => (clickLocks[d.cent] ? 0.95 : 0.1))
+      d3.selectAll(".ribbonPaths_" + chordGroup)
+        .transition()
+        .duration(fastTransitionDur)
+        .style("opacity", 0.95)
+      // Changing Arc Opacity
+      d3.selectAll(".arcPaths" + grouping)
+        .transition()
+        .duration(fastTransitionDur)
+        .style("opacity", (d, i) =>
+          groupsSelected.indexOf(d.slice) == -1 &&
+          clickedArcs[selectedG.indexOf(d.slice)] == false
+            ? 0.4
+            : 1.0
+        )
+        .style("stroke", (d, i) =>
+          clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217"
+        )
+        .style("stroke-width", 1)
+      d3.selectAll("#arc_" + chordGroup)
+        .transition()
+        .duration(fastTransitionDur)
+        .style("opacity", 1.0)
+        .style("stroke", "#cf8217")
+      // .style("stroke-width", 3)
+    } else {
+      // Changing Arc Opacity
+      d3.selectAll(".arcPaths" + grouping)
+        .transition()
+        .duration(fastTransitionDur)
+        .style("opacity", (d, i) =>
+          groupsSelected.indexOf(d.slice) == -1 &&
+          clickedArcs[selectedG.indexOf(d.slice)] == false
+            ? 0.4
+            : 1.0
+        )
+        .style("stroke", (d, i) =>
+          clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217"
+        )
+        .style("stroke-width", 1)
+      d3.selectAll("#arc_" + chordGroup)
+        .transition()
+        .duration(fastTransitionDur)
+        .style("opacity", 1.0)
+        .style("stroke", "#cf8217")
+      // .style("stroke-width", 3)
+
+      // Chaning Ribbon Opacity
+      d3.selectAll(".ribbonPaths" + grouping)
+        .transition()
+        .duration(fastTransitionDur)
+        .style("opacity", (d, i) =>
+          chordCentScale(d.cent) == centClicked ? 0.95 : 0.1
+        )
+      d3.selectAll(".ribbonPaths_" + chordGroup)
+        .transition()
+        .duration(fastTransitionDur)
+        .style("opacity", (d, i) =>
+          chordCentScale(d.cent) == centClicked ? 0.95 : 0.5
+        )
     }
-    
 
     // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).attr("outerRadius", chartRad * 1.05 )
     // d3.arc()
@@ -341,58 +328,74 @@
   export const RestoreGrouping = (chordGroup: string, chordTimeNum: number) => {
     // Changing Arc Opacity
     let groupsSelected = []
-      let centSelected = Number(centClicked) / 100 - 10
-      for (let k = 0; k < groupedData.length; k++) {
-        if (groupedData[k].groups[centSelected] > 0) {
-          groupsSelected.push(groupedData[k].slice)
-        }
+    let centSelected = Number(centClicked) / 100 - 10
+    for (let k = 0; k < groupedData.length; k++) {
+      if (groupedData[k].groups[centSelected] > 0) {
+        groupsSelected.push(groupedData[k].slice)
       }
-    if(!clickLocks[chordTimeNum])
-    {
+    }
+    if (!clickLocks[chordTimeNum]) {
       // Restoring Ribbon Styling
-      d3.selectAll(".ribbonPaths"+grouping)
+      d3.selectAll(".ribbonPaths" + grouping)
         .transition()
         .duration(slowTransitionDur)
-        .style("opacity", function(d, i){
-
-      if(clickLocks.includes(true))
-      {
-        return clickLocks[d.cent] ? 0.95 : 0.1
-      }
-      return 0.5
-      })
+        .style("opacity", function (d, i) {
+          if (clickLocks.includes(true)) {
+            return clickLocks[d.cent] ? 0.95 : 0.1
+          }
+          return 0.5
+        })
       // Restoring Arc Styliing
       // Changing Arc Opacity
-      if(clickLocks.includes(true))
-            {
-              d3.selectAll(".arcPaths" + grouping)
-                .transition()
-                .duration(slowTransitionDur)
-                .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
-                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
-                .style("stroke-width", 1)
-            }
-            else{
-              d3.selectAll(".arcPaths" + grouping)
-                .transition()
-                .duration(slowTransitionDur)
-                .style("opacity", (d, i) => 1.0 )
-                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
-                .style("stroke-width", 1)
-            }
-    }
-    else{
+      if (clickLocks.includes(true)) {
+        d3.selectAll(".arcPaths" + grouping)
+          .transition()
+          .duration(slowTransitionDur)
+          .style("opacity", (d, i) =>
+            groupsSelected.indexOf(d.slice) == -1 &&
+            clickedArcs[selectedG.indexOf(d.slice)] == false
+              ? 0.4
+              : 1.0
+          )
+          .style("stroke", (d, i) =>
+            clickedArcs[selectedG.indexOf(d.slice)] == false
+              ? "white"
+              : "#cf8217"
+          )
+          .style("stroke-width", 1)
+      } else {
+        d3.selectAll(".arcPaths" + grouping)
+          .transition()
+          .duration(slowTransitionDur)
+          .style("opacity", (d, i) => 1.0)
+          .style("stroke", (d, i) =>
+            clickedArcs[selectedG.indexOf(d.slice)] == false
+              ? "white"
+              : "#cf8217"
+          )
+          .style("stroke-width", 1)
+      }
+    } else {
       // Restoring Ribbon Styling
-      d3.selectAll(".ribbonPaths_"+chordGroup)
+      d3.selectAll(".ribbonPaths_" + chordGroup)
         .transition()
         .duration(slowTransitionDur)
-        .style("opacity", (d, i) => (chordCentScale(d.cent) == centClicked) ? 0.95 : 0.1)
+        .style("opacity", (d, i) =>
+          chordCentScale(d.cent) == centClicked ? 0.95 : 0.1
+        )
       // Restoring Arc Styliing
-      d3.selectAll(".arcPaths"+grouping)
+      d3.selectAll(".arcPaths" + grouping)
         .transition()
         .duration(slowTransitionDur)
-        .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0)
-        .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
+        .style("opacity", (d, i) =>
+          groupsSelected.indexOf(d.slice) == -1 &&
+          clickedArcs[selectedG.indexOf(d.slice)] == false
+            ? 0.4
+            : 1.0
+        )
+        .style("stroke", (d, i) =>
+          clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217"
+        )
         .style("stroke-width", 1)
     }
 
@@ -409,41 +412,45 @@
 
   export const HighlightRibbon = (chordGroup: string, chordIdx: number) => {
     // Keeping bold those ribbons connected to the clicked button:
-      let groupsSelected = []
-      let centSelected = Number(centClicked) / 100 - 10
-      for (let k = 0; k < groupedData.length; k++) {
-        if (groupedData[k].groups[centSelected] > 0) {
-          groupsSelected.push(groupedData[k].slice)
-        }
+    let groupsSelected = []
+    let centSelected = Number(centClicked) / 100 - 10
+    for (let k = 0; k < groupedData.length; k++) {
+      if (groupedData[k].groups[centSelected] > 0) {
+        groupsSelected.push(groupedData[k].slice)
       }
-      for(let i = 0; i < gtCents.length; i++)
-      {
-        if(centClicked != gtCents[i])
-        {
-          d3.selectAll(".ribbonPaths_" + gtCents[i] + '_' + grouping)
-            .transition()
-            .duration(fastTransitionDur)
-            .style("opacity", 0.1)
-        }
+    }
+    for (let i = 0; i < gtCents.length; i++) {
+      if (centClicked != gtCents[i]) {
+        d3.selectAll(".ribbonPaths_" + gtCents[i] + "_" + grouping)
+          .transition()
+          .duration(fastTransitionDur)
+          .style("opacity", 0.1)
       }
+    }
 
-      for(let i = 0; i < selectedG.length; i++)
-      {
-        if(groupsSelected.indexOf(selectedG[i]) == -1)
-        {
-          d3.selectAll("#arc_"+selectedG[i])
-            .transition()
-            .duration(fastTransitionDur)
-            .style("opacity", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 0.4 : 1.0)
-            .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
-            .style("stroke-width", 1)
-        }
+    for (let i = 0; i < selectedG.length; i++) {
+      if (groupsSelected.indexOf(selectedG[i]) == -1) {
+        d3.selectAll("#arc_" + selectedG[i])
+          .transition()
+          .duration(fastTransitionDur)
+          .style("opacity", (d, i) =>
+            clickedArcs[selectedG.indexOf(d.slice)] == false ? 0.4 : 1.0
+          )
+          .style("stroke", (d, i) =>
+            clickedArcs[selectedG.indexOf(d.slice)] == false
+              ? "white"
+              : "#cf8217"
+          )
+          .style("stroke-width", 1)
       }
-      // if(chordGroup == )
-      d3.selectAll(".ribbonPaths_" + chordGroup)
-        .transition()
-        .duration(fastTransitionDur)
-        .style("opacity", (d, i) => (chordCentScale(d.cent) == centClicked) ? 0.95 : 0.5)
+    }
+    // if(chordGroup == )
+    d3.selectAll(".ribbonPaths_" + chordGroup)
+      .transition()
+      .duration(fastTransitionDur)
+      .style("opacity", (d, i) =>
+        chordCentScale(d.cent) == centClicked ? 0.95 : 0.5
+      )
     // Regular highlight
     d3.selectAll("#r_" + chordGroup + "_" + chordIdx)
       .transition()
@@ -455,84 +462,95 @@
       .transition()
       .duration(fastTransitionDur)
       .style("opacity", 1.0)
-      .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
+      .style("stroke", (d, i) =>
+        clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217"
+      )
       .style("stroke-width", 1)
   }
 
-  export const RestoreRibbon = (chordGroup: string, chordIdx: number, chordTimeNum: number ) => {
+  export const RestoreRibbon = (
+    chordGroup: string,
+    chordIdx: number,
+    chordTimeNum: number
+  ) => {
     let groupsSelected = []
-      let centSelected = Number(centClicked) / 100 - 10
-      for (let k = 0; k < groupedData.length; k++) {
-        if (groupedData[k].groups[centSelected] > 0) {
-          groupsSelected.push(groupedData[k].slice)
-        }
+    let centSelected = Number(centClicked) / 100 - 10
+    for (let k = 0; k < groupedData.length; k++) {
+      if (groupedData[k].groups[centSelected] > 0) {
+        groupsSelected.push(groupedData[k].slice)
       }
-    if(!clickLocks[chordTimeNum])
-    {
-    // Restoring Ribbon Styling
-    if(clickLocks.includes(true))
-    {
-      d3.selectAll(".ribbonPaths"+grouping)
-      .transition()
-      .duration(slowTransitionDur)
-      .style("opacity", (d, i) => (clickLocks[d.cent])? 0.95: 0.1)
-      // d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style("stroke-width", 1)
-      // Restoring Arc Styliing
-      // Changing Arc Opacity
-      d3.selectAll(".arcPaths"+grouping)
-        .transition()
-        .duration(slowTransitionDur)
-        .style("opacity", function(d, i)
-        { 
-          if(groupsSelected.includes(d.slice))
-          {
-            return 1.0
-          } 
-          else if(clickedArcs[selectedG.indexOf(d.slice)] == true)
-          { 
-            return 1.0
-          } 
-          else {
-            return 0.4
-          }
-        })
-        .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white': "#cf8217")
-        .style("stroke-width", 1)
     }
-    else{
-      d3.selectAll(".ribbonPaths"+grouping)
-      .transition()
-      .duration(slowTransitionDur)
-      .style("opacity", (d, i) => 0.5)
-      // d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style("stroke-width", 1)
-      // Restoring Arc Styliing
-      // Changing Arc Opacity
-      d3.selectAll(".arcPaths"+grouping)
-        .transition()
-        .duration(slowTransitionDur)
-        .style("opacity", 1.0)
-        .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
-        .style("stroke-width", 1)
-    }
-    // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
-    // d3.selectAll('#r_'+ chordGroup).style('opacity', 0.95)
-    }
-    else{
+    if (!clickLocks[chordTimeNum]) {
+      // Restoring Ribbon Styling
+      if (clickLocks.includes(true)) {
+        d3.selectAll(".ribbonPaths" + grouping)
+          .transition()
+          .duration(slowTransitionDur)
+          .style("opacity", (d, i) => (clickLocks[d.cent] ? 0.95 : 0.1))
+        // d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style("stroke-width", 1)
+        // Restoring Arc Styliing
+        // Changing Arc Opacity
+        d3.selectAll(".arcPaths" + grouping)
+          .transition()
+          .duration(slowTransitionDur)
+          .style("opacity", function (d, i) {
+            if (groupsSelected.includes(d.slice)) {
+              return 1.0
+            } else if (clickedArcs[selectedG.indexOf(d.slice)] == true) {
+              return 1.0
+            } else {
+              return 0.4
+            }
+          })
+          .style("stroke", (d, i) =>
+            clickedArcs[selectedG.indexOf(d.slice)] == false
+              ? "white"
+              : "#cf8217"
+          )
+          .style("stroke-width", 1)
+      } else {
+        d3.selectAll(".ribbonPaths" + grouping)
+          .transition()
+          .duration(slowTransitionDur)
+          .style("opacity", (d, i) => 0.5)
+        // d3.selectAll('.ribbonPaths').transition().duration(fastTransitionDur).style("stroke-width", 1)
+        // Restoring Arc Styliing
+        // Changing Arc Opacity
+        d3.selectAll(".arcPaths" + grouping)
+          .transition()
+          .duration(slowTransitionDur)
+          .style("opacity", 1.0)
+          .style("stroke", (d, i) =>
+            clickedArcs[selectedG.indexOf(d.slice)] == false
+              ? "white"
+              : "#cf8217"
+          )
+          .style("stroke-width", 1)
+      }
+      // d3.selectAll('#arc_'+ chordGroup).transition().duration(fastTransitionDur).style('opacity', 1.0)
+      // d3.selectAll('#r_'+ chordGroup).style('opacity', 0.95)
+    } else {
       // Restore ribbon group:
-      d3.selectAll('.ribbonPaths_'+chordGroup)
+      d3.selectAll(".ribbonPaths_" + chordGroup)
         .transition()
         .duration(slowTransitionDur)
-        .style("opacity", (d, i) => (chordCentScale(d.cent) == centClicked) ? 0.95 : 0.1)
+        .style("opacity", (d, i) =>
+          chordCentScale(d.cent) == centClicked ? 0.95 : 0.1
+        )
 
-      for(let i = 0; i < selectedG.length; i++)
-      {
-        if(groupsSelected.indexOf(selectedG[i]) == -1)
-        {
-          d3.selectAll("#arc_"+selectedG[i])
+      for (let i = 0; i < selectedG.length; i++) {
+        if (groupsSelected.indexOf(selectedG[i]) == -1) {
+          d3.selectAll("#arc_" + selectedG[i])
             .transition()
             .duration(fastTransitionDur)
-            .style("opacity", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 0.4: 1.0)
-            .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
+            .style("opacity", (d, i) =>
+              clickedArcs[selectedG.indexOf(d.slice)] == false ? 0.4 : 1.0
+            )
+            .style("stroke", (d, i) =>
+              clickedArcs[selectedG.indexOf(d.slice)] == false
+                ? "white"
+                : "#cf8217"
+            )
             .style("stroke-width", 1)
         }
       }
@@ -540,47 +558,66 @@
   }
 
   export const HighlightButton = (chordTime: string, chordGroups: any) => {
-      // ...
-      // console.log('Button hover for: ' + chordTime + ', ')
+    // ...
+    // console.log('Button hover for: ' + chordTime + ', ')
   }
 
   export const RestoreButton = (chordTime: string) => {
-      // ...
-      // console.log('Button hover-leave for: ' + chordTime)
+    // ...
+    // console.log('Button hover-leave for: ' + chordTime)
   }
 
   export const Initialize = (
     locs: Types.ArtistLocation[],
-    groupLocs: Types.ArtistMedium[] | Types.ArtistData
+    groupLocs: Types.ArtistMedium[] | Types.ArtistData[]
   ) => {
     if (locs && groupLocs) {
-
+      let rolledUp
       if (grouping == "Medium") {
-        selectedG = gtMediums
-        selectedColorScheme = Helpers.ColorSchemeMediums
+        rolledUp = d3.groups(groupLocs, (d) => d.medium)
+        console.log("rolledUp")
+        console.log(rolledUp)
+        console.log(rolledUp.length)
+        // selectedG = gtMediums
+        selectedColorScheme = d3.schemePaired
         gtCents = gtCentsMedium
       } else {
-        selectedG = gtDeaths
-        selectedColorScheme = Helpers.ColorSchemeDeaths
+        rolledUp = d3.groups(groupLocs, (d) => d.death_type)
+        console.log("rolledUp")
+        console.log(rolledUp)
+        console.log(rolledUp.length)
+        // selectedG = gtDeaths
+        selectedColorScheme = d3.schemePaired
         gtCents = gtCentsDeath
       }
+      for (let i = 0; i < rolledUp.length; i++) {
+        selectedG.push(rolledUp[i][0])
+      }
+      selectedG.sort(d3.ascending)
+      console.log("mediums over here for chord: ", selectedG)
+      allGroupings = d3.groups(groupLocs, (d) => d.artist)
+
+      allLocations = d3.groups(locs, (d) => d.artist)
+      // console.log(allLocations)
+
+      console.log("selectedG 1: ", selectedG)
 
       clickLocks = new Array(gtCents.length).fill(false)
 
       clickedArcs = new Array(selectedG.length).fill(false)
 
       centStatus = new Array(gtCents.length).fill(false)
-      
+
       let chordColorScale = d3
         .scaleOrdinal()
         .domain(selectedG)
         .range(selectedColorScheme)
-      
+
       chordCentScale = d3
         .scaleOrdinal()
         .domain(d3.range(gtCents.length))
         .range(gtCents)
-      
+
       // chordClickedScale = d3.
       //   scaleLinear()
       //   .domain(gtCents)
@@ -592,11 +629,6 @@
           groups: new Array(gtCents.length).fill(0),
         })
       }
-
-      allGroupings = d3.groups(groupLocs, (d) => d.artist)
-
-      allLocations = d3.groups(locs, (d) => d.artist)
-      // console.log(allLocations)
 
       let currGroup = []
       let foundMatch = false
@@ -624,23 +656,20 @@
                 }
               } else {
                 if (groupedData[k].slice == currGroup[j].death_type) {
-
-                  if(allLocations[i][1].length > 1)
-                  {
+                  if (allLocations[i][1].length > 1) {
                     groupedData[k].groups[
-                    Math.floor(Number(allLocations[i][1][1].year) / 100) - 10
-                     ] += 1
-                    centStatus[
-                    Math.floor(Number(allLocations[i][1][1].year) / 100) - 10
-                    ] = true
-                    break
-                  }
-                  else{
-                    groupedData[k].groups[
-                    Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
+                      Math.floor(Number(allLocations[i][1][1].year) / 100) - 10
                     ] += 1
                     centStatus[
-                    Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
+                      Math.floor(Number(allLocations[i][1][1].year) / 100) - 10
+                    ] = true
+                    break
+                  } else {
+                    groupedData[k].groups[
+                      Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
+                    ] += 1
+                    centStatus[
+                      Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
                     ] = true
                     break
                   }
@@ -698,6 +727,7 @@
         let runningRTally = 0.0
         let otherSide = false
         let rTallyInt = 0
+        let nowGoOver = false
         // console.log(groupedData)
 
         let padCheck = false
@@ -730,33 +760,56 @@
                     : unitAngleR * currSegment
               } else {
                 let baseTerm = 2 * Math.PI
-                retArr.push({
-                  startAngle:
+                if (nowGoOver == false) {
+                  nowGoOver = true
+                  retArr.push({
+                    startAngle:
+                      padCheck && i > 0 ? padR + forwardAngle : forwardAngle,
+                    endAngle:
+                      padCheck && i > 0
+                        ? padR + unitAngleR * currSegment + forwardAngle
+                        : unitAngleR * currSegment + forwardAngle,
+                    vertIdx: j,
+                    colorIndex: colorIndex,
+                    half: 0,
+                    cent: j,
+                    addLabel: padCheck ? true : false,
+                    slice: groupedData[i].slice,
+                    defIndex: rTallyInt,
+                  })
+                  forwardAngle +=
                     padCheck && i > 0
-                      ? baseTerm -
-                        padR -
-                        unitAngleR * currSegment -
-                        forwardAngleD
-                      : baseTerm - unitAngleR * currSegment - forwardAngleD,
-                  endAngle:
+                      ? padR + unitAngleR * currSegment
+                      : unitAngleR * currSegment
+                } else {
+                  retArr.push({
+                    startAngle:
+                      padCheck && i > 0
+                        ? baseTerm -
+                          padR -
+                          unitAngleR * currSegment -
+                          forwardAngleD
+                        : baseTerm - unitAngleR * currSegment - forwardAngleD,
+                    endAngle:
+                      padCheck && i > 0
+                        ? baseTerm - padR - forwardAngleD
+                        : baseTerm - forwardAngleD,
+                    vertIdx: j,
+                    colorIndex: colorIndex,
+                    half: 1,
+                    cent: j,
+                    addLabel: padCheck || !otherSide ? true : false,
+                    slice: groupedData[i].slice,
+                    defIndex: rTallyInt,
+                  })
+                  if (!otherSide) {
+                    otherSide = true
+                  }
+                  forwardAngleD +=
                     padCheck && i > 0
-                      ? baseTerm - padR - forwardAngleD
-                      : baseTerm - forwardAngleD,
-                  vertIdx: j,
-                  colorIndex: colorIndex,
-                  half: 1,
-                  cent: j,
-                  addLabel: padCheck || !otherSide ? true : false,
-                  slice: groupedData[i].slice,
-                  defIndex: rTallyInt,
-                })
-                if (!otherSide) {
-                  otherSide = true
+                      ? padR + unitAngleR * currSegment
+                      : unitAngleR * currSegment
                 }
-                forwardAngleD +=
-                  padCheck && i > 0
-                    ? padR + unitAngleR * currSegment
-                    : unitAngleR * currSegment
               }
               if (padCheck) {
                 padCheck = false
@@ -794,9 +847,7 @@
         .style("fill", function (d) {
           return chordColorScale(d.slice)
         })
-        .style("stroke", (d, i) =>
-          d3.rgb(chordColorScale(d.slice)).darker()
-        )
+        .style("stroke", (d, i) => d3.rgb(chordColorScale(d.slice)).darker())
         .style("stroke-width", 1)
         .attr("id", (d, i) => "r_" + d.slice + "_" + i)
         .attr("class", function (d, i) {
@@ -805,19 +856,23 @@
             d.slice +
             " " +
             "ribbonPaths_" +
-            chordCentScale(d.cent) + '_' + grouping
+            chordCentScale(d.cent) +
+            "_" +
+            grouping
           )
         })
         // .classed(`ribbonPaths_${(d, i) => chordCentScale(d.cent)}`, true)
-        .classed("ribbonPaths"+grouping, true)
+        .classed("ribbonPaths" + grouping, true)
         // .classed(function(d, i){ return 'ribbonPaths_' + d.slice }, true)
         .style("opacity", 0.5)
         .on("mouseover", function (e, d) {
           OnMouseOverRibbons(d.slice, d.defIndex, chordCentScale(d.cent))
           // d3.select(this).style('opacity', 0.95)
         })
-        .on("mouseout", (e, d) => OnMouseLeaveRibbons(d.slice, d.defIndex, d.cent))
-        .on('click', (e, d) => OnClickRibbons(d.slice, chordCentScale(d.cent)))
+        .on("mouseout", (e, d) =>
+          OnMouseLeaveRibbons(d.slice, d.defIndex, d.cent)
+        )
+        .on("click", (e, d) => OnClickRibbons(d.slice, chordCentScale(d.cent)))
 
       // Group for everything but the ribbons
       let groupChord = d3
@@ -837,7 +892,7 @@
         .attr("d", arcGen)
         .attr("id", (d, i) => "arc_" + d.slice)
         .attr("class", (d, i) => "arcPaths_" + chordCentScale(d.cent))
-        .classed("arcPaths"+grouping, true)
+        .classed("arcPaths" + grouping, true)
         .classed("cursor-pointer", true)
         .on("mouseover", (e, d) => OnMouseOverArcs(d.slice, d.cent))
         .on("mouseout", (e, d) => OnMouseLeaveArcs(d.slice, d.cent))
@@ -864,21 +919,19 @@
         .attr("fill", "#00005C")
         .attr("opacity", 1.0)
         .on("mouseover", function (e, d) {
-            // Selecting groups of arcs, not just individual one
-            let groupsSelected = []
-            let mainGroupsSelected = []
-            let centSelected = Number(d) / 100 - 10
-            for (let k = 0; k < groupedData.length; k++) {
-              if (groupedData[k].groups[centSelected] > 0) {
-                groupsSelected.push(groupedData[k].slice)
-              }
-              if(groupedData[k].groups[gtCents.indexOf(centClicked)] > 0)
-              {
-                mainGroupsSelected.push(groupedData[k].slice)
-              }
+          // Selecting groups of arcs, not just individual one
+          let groupsSelected = []
+          let mainGroupsSelected = []
+          let centSelected = Number(d) / 100 - 10
+          for (let k = 0; k < groupedData.length; k++) {
+            if (groupedData[k].groups[centSelected] > 0) {
+              groupsSelected.push(groupedData[k].slice)
             }
-          if(!clickLocks[gtCents.indexOf(d)])
-          {
+            if (groupedData[k].groups[gtCents.indexOf(centClicked)] > 0) {
+              mainGroupsSelected.push(groupedData[k].slice)
+            }
+          }
+          if (!clickLocks[gtCents.indexOf(d)]) {
             let checkStat = centStatus[gtCents.indexOf(d)]
 
             // console.log(gtCents.indexOf(d))
@@ -887,15 +940,14 @@
               .duration(buttonDurr)
               .attr("fill", checkStat ? "#cf8217" : "#00005C")
             // Highlighting connecting ribbons
-            d3.selectAll(".ribbonPaths"+grouping)
+            d3.selectAll(".ribbonPaths" + grouping)
               .transition()
               .duration(buttonDurr)
-              .style("opacity", function(d, i){
-
+              .style("opacity", function (d, i) {
                 return clickLocks[d.cent] ? 0.95 : 0.1
-            })
+              })
 
-            d3.selectAll(".ribbonPaths_" + d + '_' +grouping)
+            d3.selectAll(".ribbonPaths_" + d + "_" + grouping)
               .transition()
               .duration(buttonDurr)
               .style("opacity", 0.95)
@@ -908,29 +960,29 @@
             //     return clickLocks[d.cent] ? 1.0 : 0.4
             // })
             // for (let k = 0; k < groupsSelected.length; k++) {
-              d3.selectAll(".arcPaths" + grouping)
-                .transition()
-                .duration(buttonDurr)
-                .style("opacity", function(d, i){
-                  if(groupsSelected.includes(d.slice) || mainGroupsSelected.includes(d.slice))
-                  {
-                    return 1.0
-                  }
-                  else if(clickedArcs[selectedG.indexOf(d.slice)] == true)
-                  {
-                    return 1.0
-                  }
-                  else{
-                    return 0.4
-                  }
-                })
-                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
+            d3.selectAll(".arcPaths" + grouping)
+              .transition()
+              .duration(buttonDurr)
+              .style("opacity", function (d, i) {
+                if (
+                  groupsSelected.includes(d.slice) ||
+                  mainGroupsSelected.includes(d.slice)
+                ) {
+                  return 1.0
+                } else if (clickedArcs[selectedG.indexOf(d.slice)] == true) {
+                  return 1.0
+                } else {
+                  return 0.4
+                }
+              })
+              .style("stroke", (d, i) =>
+                clickedArcs[selectedG.indexOf(d.slice)] == false
+                  ? "white"
+                  : "#cf8217"
+              )
             // }
             OnMouseOverButtons(d, groupsSelected)
-          }
-          else if(centClicked == d)
-          {
-
+          } else if (centClicked == d) {
             // let groupsSelected = []
             // let centSelected = Number(d) / 100 - 10
             // for (let k = 0; k < groupedData.length; k++) {
@@ -942,25 +994,22 @@
           }
         })
         .on("mouseout", function (e, d) {
-          if(!clickLocks[gtCents.indexOf(d)])
-          {
+          if (!clickLocks[gtCents.indexOf(d)]) {
             // console.log("hmmmmmmmmmmmmmmmm")
             d3.select(this)
-            .transition()
-            .duration(buttonDurr)
-            .attr("fill", "#00005C")
+              .transition()
+              .duration(buttonDurr)
+              .attr("fill", "#00005C")
             // Highlighting connecting ribbons
-            d3.selectAll(".ribbonPaths"+grouping)
-            .transition()
-            .duration(buttonDurr)
-            .style("opacity", function(d, i){
-
-                if(clickLocks.includes(true))
-                {
+            d3.selectAll(".ribbonPaths" + grouping)
+              .transition()
+              .duration(buttonDurr)
+              .style("opacity", function (d, i) {
+                if (clickLocks.includes(true)) {
                   return clickLocks[d.cent] ? 0.95 : 0.1
                 }
                 return 0.5
-            })
+              })
             // Focusing for Arcs
             // d3.selectAll(".arcPaths"+grouping)
             // .transition()
@@ -975,87 +1024,106 @@
             }
 
             // for (let k = 0; k < groupsSelected.length; k++) {
-            if(clickLocks.includes(true))
-            {
+            if (clickLocks.includes(true)) {
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
-                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
-            }
-            else{
+                .style("opacity", (d, i) =>
+                  groupsSelected.indexOf(d.slice) == -1 &&
+                  clickedArcs[selectedG.indexOf(d.slice)] == false
+                    ? 0.4
+                    : 1.0
+                )
+                .style("stroke", (d, i) =>
+                  clickedArcs[selectedG.indexOf(d.slice)] == false
+                    ? "white"
+                    : "#cf8217"
+                )
+            } else {
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => 1.0 )
-                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
+                .style("opacity", (d, i) => 1.0)
+                .style("stroke", (d, i) =>
+                  clickedArcs[selectedG.indexOf(d.slice)] == false
+                    ? "white"
+                    : "#cf8217"
+                )
             }
             // }
             OnMouseLeaveButtons(d)
-          }
-          else if(centClicked == d)
-          {
+          } else if (centClicked == d) {
             OnMouseLeaveButtons(d)
-          }          
+          }
         })
-        .on('click', function(e, d) {
-          if(centStatus[gtCents.indexOf(d)])
-          {
+        .on("click", function (e, d) {
+          if (centStatus[gtCents.indexOf(d)]) {
             let groupsSelected = []
             let centSelected = Number(d) / 100 - 10
-           for (let k = 0; k < groupedData.length; k++) {
+            for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
               }
             }
             OnClickButtons(d, groupsSelected)
-            if(!clickLocks[gtCents.indexOf(d)])
-            {
-              d3.select(this).transition()
-              .duration(buttonDurr).attr("fill", '#3C1900')
-              d3.select('#centText_'+d+'_'+grouping).transition()
-              .duration(buttonDurr).attr("fill", "#cf8217")//'#3C1900'
-              if(clickLocks.includes(true))
-              {
-                d3.select('#centRect_'+centClicked+'_'+grouping).transition()
-                .duration(buttonDurr).attr("fill", '#00005C')
-                d3.select('#centText_'+centClicked+'_'+grouping).transition()
-                .duration(buttonDurr).attr("fill", "white")//'#3C1900'
+            if (!clickLocks[gtCents.indexOf(d)]) {
+              d3.select(this)
+                .transition()
+                .duration(buttonDurr)
+                .attr("fill", "#3C1900")
+              d3.select("#centText_" + d + "_" + grouping)
+                .transition()
+                .duration(buttonDurr)
+                .attr("fill", "#cf8217") //'#3C1900'
+              if (clickLocks.includes(true)) {
+                d3.select("#centRect_" + centClicked + "_" + grouping)
+                  .transition()
+                  .duration(buttonDurr)
+                  .attr("fill", "#00005C")
+                d3.select("#centText_" + centClicked + "_" + grouping)
+                  .transition()
+                  .duration(buttonDurr)
+                  .attr("fill", "white") //'#3C1900'
               }
-              
+
               // console.log(chordCentScale.invert(d))
-              if(centClicked != '')
-              {
+              if (centClicked != "") {
                 clickLocks[gtCents.indexOf(centClicked)] = false
               }
               clickLocks[gtCents.indexOf(d)] = true
 
               centClicked = d
-              d3.selectAll(".ribbonPaths"+grouping)
-              .transition()
-              .duration(buttonDurr)
-              .style("opacity", function(d, i){
-
-                return clickLocks[d.cent] ? 0.95 : 0.1
-            })
-            d3.selectAll(".arcPaths" + grouping)
+              d3.selectAll(".ribbonPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => (groupsSelected.includes(d.slice) || clickedArcs[selectedG.indexOf(d.slice)] == true) ? 1.0: 0.4)
-            }
-            else{
-
-              d3.select(this).transition()
-              .duration(buttonDurr).attr("fill", "#cf8217")
-              d3.select('#centText_'+d+'_'+grouping).transition()
-              .duration(buttonDurr).attr("fill", "white")//'#3C1900'
+                .style("opacity", function (d, i) {
+                  return clickLocks[d.cent] ? 0.95 : 0.1
+                })
+              d3.selectAll(".arcPaths" + grouping)
+                .transition()
+                .duration(buttonDurr)
+                .style("opacity", (d, i) =>
+                  groupsSelected.includes(d.slice) ||
+                  clickedArcs[selectedG.indexOf(d.slice)] == true
+                    ? 1.0
+                    : 0.4
+                )
+            } else {
+              d3.select(this)
+                .transition()
+                .duration(buttonDurr)
+                .attr("fill", "#cf8217")
+              d3.select("#centText_" + d + "_" + grouping)
+                .transition()
+                .duration(buttonDurr)
+                .attr("fill", "white") //'#3C1900'
               clickLocks[gtCents.indexOf(d)] = false
-              centClicked = ''
+              centClicked = ""
             }
           }
           // console.log(clickLocks)s
         })
-        .classed("centRect"+grouping, true)
+        .classed("centRect" + grouping, true)
         .attr("id", (d, i) => "centRect_" + d + "_" + grouping)
       const text = groupChord
         .append("text")
@@ -1076,40 +1144,37 @@
           return String(Number(d) / 100 + 1)
         })
         .classed("centText", true)
-        .attr("id", (d, i) => "centText_" + d + '_' + grouping)
+        .attr("id", (d, i) => "centText_" + d + "_" + grouping)
         .on("mouseover", function (e, d) {
-                      // Selecting groups of arcs, not just individual one
-                      let groupsSelected = []
-            let mainGroupsSelected = []
-            let centSelected = Number(d) / 100 - 10
-            for (let k = 0; k < groupedData.length; k++) {
-              if (groupedData[k].groups[centSelected] > 0) {
-                groupsSelected.push(groupedData[k].slice)
-              }
-              if(groupedData[k].groups[gtCents.indexOf(centClicked)] > 0)
-              {
-                mainGroupsSelected.push(groupedData[k].slice)
-              }
+          // Selecting groups of arcs, not just individual one
+          let groupsSelected = []
+          let mainGroupsSelected = []
+          let centSelected = Number(d) / 100 - 10
+          for (let k = 0; k < groupedData.length; k++) {
+            if (groupedData[k].groups[centSelected] > 0) {
+              groupsSelected.push(groupedData[k].slice)
             }
-          if(!clickLocks[gtCents.indexOf(d)])
-          {
+            if (groupedData[k].groups[gtCents.indexOf(centClicked)] > 0) {
+              mainGroupsSelected.push(groupedData[k].slice)
+            }
+          }
+          if (!clickLocks[gtCents.indexOf(d)]) {
             let checkStat = centStatus[gtCents.indexOf(d)]
 
             // console.log(gtCents.indexOf(d))
-            d3.select('#centRect_'+d+'_'+grouping)
+            d3.select("#centRect_" + d + "_" + grouping)
               .transition()
               .duration(buttonDurr)
               .attr("fill", checkStat ? "#cf8217" : "#00005C")
             // Highlighting connecting ribbons
-            d3.selectAll(".ribbonPaths"+grouping)
+            d3.selectAll(".ribbonPaths" + grouping)
               .transition()
               .duration(buttonDurr)
-              .style("opacity", function(d, i){
-
+              .style("opacity", function (d, i) {
                 return clickLocks[d.cent] ? 0.95 : 0.1
-            })
+              })
 
-            d3.selectAll(".ribbonPaths_" + d + '_' +grouping)
+            d3.selectAll(".ribbonPaths_" + d + "_" + grouping)
               .transition()
               .duration(buttonDurr)
               .style("opacity", 0.95)
@@ -1122,29 +1187,29 @@
             //     return clickLocks[d.cent] ? 1.0 : 0.4
             // })
             // for (let k = 0; k < groupsSelected.length; k++) {
-              d3.selectAll(".arcPaths" + grouping)
-                .transition()
-                .duration(buttonDurr)
-                .style("opacity", function(d, i){
-                  if(groupsSelected.includes(d.slice) || mainGroupsSelected.includes(d.slice))
-                  {
-                    return 1.0 
-                  } 
-                  else if(clickedArcs[selectedG.indexOf(d.slice)] == true)
-                  {
-                    return 1.0
-                  }
-                  else{
-                    return 0.4
-                  }
-                })
-                .style("stroke", (d, i) => clickedArcs[selectedG.indexOf(d.slice)] == false ? 'white' : "#cf8217")
+            d3.selectAll(".arcPaths" + grouping)
+              .transition()
+              .duration(buttonDurr)
+              .style("opacity", function (d, i) {
+                if (
+                  groupsSelected.includes(d.slice) ||
+                  mainGroupsSelected.includes(d.slice)
+                ) {
+                  return 1.0
+                } else if (clickedArcs[selectedG.indexOf(d.slice)] == true) {
+                  return 1.0
+                } else {
+                  return 0.4
+                }
+              })
+              .style("stroke", (d, i) =>
+                clickedArcs[selectedG.indexOf(d.slice)] == false
+                  ? "white"
+                  : "#cf8217"
+              )
             // }
             OnMouseOverButtons(d, groupsSelected)
-          }
-          else if(centClicked == d)
-          {
-
+          } else if (centClicked == d) {
             // let groupsSelected = []
             // let centSelected = Number(d) / 100 - 10
             // for (let k = 0; k < groupedData.length; k++) {
@@ -1156,25 +1221,22 @@
           }
         })
         .on("mouseout", function (e, d) {
-          if(!clickLocks[gtCents.indexOf(d)])
-          {
+          if (!clickLocks[gtCents.indexOf(d)]) {
             // console.log("hmmmmmmmmmmmmmmmm")
-            d3.select('#centRect_'+d+'_'+grouping)
-            .transition()
-            .duration(buttonDurr)
-            .attr("fill", "#00005C")
+            d3.select("#centRect_" + d + "_" + grouping)
+              .transition()
+              .duration(buttonDurr)
+              .attr("fill", "#00005C")
             // Highlighting connecting ribbons
-            d3.selectAll(".ribbonPaths"+grouping)
-            .transition()
-            .duration(buttonDurr)
-            .style("opacity", function(d, i){
-
-                if(clickLocks.includes(true))
-                {
+            d3.selectAll(".ribbonPaths" + grouping)
+              .transition()
+              .duration(buttonDurr)
+              .style("opacity", function (d, i) {
+                if (clickLocks.includes(true)) {
                   return clickLocks[d.cent] ? 0.95 : 0.1
                 }
                 return 0.5
-            })
+              })
             // Focusing for Arcs
             // d3.selectAll(".arcPaths"+grouping)
             // .transition()
@@ -1189,91 +1251,94 @@
             }
 
             // for (let k = 0; k < groupsSelected.length; k++) {
-            if(clickLocks.includes(true))
-            {
+            if (clickLocks.includes(true)) {
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => (groupsSelected.indexOf(d.slice) == -1 && clickedArcs[selectedG.indexOf(d.slice)] == false) ? 0.4 : 1.0 )
-            }
-            else{
+                .style("opacity", (d, i) =>
+                  groupsSelected.indexOf(d.slice) == -1 &&
+                  clickedArcs[selectedG.indexOf(d.slice)] == false
+                    ? 0.4
+                    : 1.0
+                )
+            } else {
               d3.selectAll(".arcPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", (d, i) => 1.0 )
+                .style("opacity", (d, i) => 1.0)
             }
             // }
             OnMouseLeaveButtons(d)
-          }
-          else if(centClicked == d)
-          {
+          } else if (centClicked == d) {
             OnMouseLeaveButtons(d)
-          } 
+          }
         })
-       .on('click', function(e, d) {
-        if(centStatus[gtCents.indexOf(d)])
-          {
+        .on("click", function (e, d) {
+          if (centStatus[gtCents.indexOf(d)]) {
             let groupsSelected = []
             let centSelected = Number(d) / 100 - 10
-           for (let k = 0; k < groupedData.length; k++) {
+            for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
               }
             }
             OnClickButtons(d, groupsSelected)
-            if(!clickLocks[gtCents.indexOf(d)])
-            {
-              d3.select('#centRect_'+d+'_'+grouping).transition()
-              .duration(buttonDurr).attr("fill", '#3C1900')
-              d3.select(this).transition()
-              .duration(buttonDurr).attr("fill", "#cf8217")//'#3C1900'
-              if(clickLocks.includes(true))
-              {
-                d3.select('#centRect_'+centClicked+'_'+grouping).transition()
-                .duration(buttonDurr).attr("fill", '#00005C')
-                d3.select('#centText_'+centClicked+'_'+grouping).transition()
-                .duration(buttonDurr).attr("fill", "white")//'#3C1900'
+            if (!clickLocks[gtCents.indexOf(d)]) {
+              d3.select("#centRect_" + d + "_" + grouping)
+                .transition()
+                .duration(buttonDurr)
+                .attr("fill", "#3C1900")
+              d3.select(this)
+                .transition()
+                .duration(buttonDurr)
+                .attr("fill", "#cf8217") //'#3C1900'
+              if (clickLocks.includes(true)) {
+                d3.select("#centRect_" + centClicked + "_" + grouping)
+                  .transition()
+                  .duration(buttonDurr)
+                  .attr("fill", "#00005C")
+                d3.select("#centText_" + centClicked + "_" + grouping)
+                  .transition()
+                  .duration(buttonDurr)
+                  .attr("fill", "white") //'#3C1900'
               }
-              
+
               // console.log(chordCentScale.invert(d))
-              if(centClicked != '')
-              {
+              if (centClicked != "") {
                 clickLocks[gtCents.indexOf(centClicked)] = false
               }
               clickLocks[gtCents.indexOf(d)] = true
 
               centClicked = d
-              d3.selectAll(".ribbonPaths"+grouping)
-              .transition()
-              .duration(buttonDurr)
-              .style("opacity", function(d, i){
-
-                return clickLocks[d.cent] ? 0.95 : 0.1
-            })
-            d3.selectAll(".arcPaths" + grouping)
+              d3.selectAll(".ribbonPaths" + grouping)
                 .transition()
                 .duration(buttonDurr)
-                .style("opacity", function(d, i){
-                  if(groupsSelected.includes(d.slice)){
+                .style("opacity", function (d, i) {
+                  return clickLocks[d.cent] ? 0.95 : 0.1
+                })
+              d3.selectAll(".arcPaths" + grouping)
+                .transition()
+                .duration(buttonDurr)
+                .style("opacity", function (d, i) {
+                  if (groupsSelected.includes(d.slice)) {
                     return 1.0
-                   } 
-                   else if(clickedArcs[selectedG.indexOf(d.slice)] == true)
-                   {
+                  } else if (clickedArcs[selectedG.indexOf(d.slice)] == true) {
                     return 1.0
-                   }
-                   else{
+                  } else {
                     return 0.4
                   }
                 })
-            }
-            else{
-
-              d3.select(this).transition()
-              .duration(buttonDurr).attr("fill", "white")
-              d3.select('#centRect_'+d+'_'+grouping).transition()
-              .duration(buttonDurr).attr("fill", "#cf8217")//'#3C1900'
+            } else {
+              d3.select(this)
+                .transition()
+                .duration(buttonDurr)
+                .attr("fill", "white")
+              d3.select("#centRect_" + d + "_" + grouping)
+                .transition()
+                .duration(buttonDurr)
+                .attr("fill", "#cf8217") //'#3C1900'
               clickLocks[gtCents.indexOf(d)] = false
-              centClicked = ''
+              centClicked = ""
             }
           }
           // console.log(clickLocks)
@@ -1282,14 +1347,13 @@
         .append("tspan")
         .attr("baseline-shift", "super")
         .attr("font-size", attrFontSize * 0.6)
-        .text(function(d, i) {
-          if(d == '2000')
-          {
+        .text(function (d, i) {
+          if (d == "2000") {
             return "ST"
           }
           return "TH"
         })
-      
+
       // Group for title text that only gets written once
       let onceGroupChord = d3
         .select(chordViz)
@@ -1301,6 +1365,7 @@
         .attr("y", (chordCHeight / 270) * -270 + 5)
         .style("text-anchor", "middle")
         .style("font-size", titleFontSize > 20 ? 20 : titleFontSize)
+        .attr("font-weight", 700)
         .text("Distribution of Artists by " + grouping + " Over Centuries")
     } else {
       console.error("Unable to load Artist Locations!")
@@ -1311,7 +1376,9 @@
 <div
   id="container"
   class="inline-block relative align-top overflow-hidden"
-  style="width: {width}px; height: {height}px; top: {(topOffset) > 50 ? 50 : topOffset * 0.9}px;"
+  style="width: {width}px; height: {height}px; top: {topOffset > 50
+    ? 50
+    : topOffset * 0.9}px;"
 >
   <svg
     class="inline-block absolute top-0 left-0"

@@ -22,23 +22,29 @@ export const ColorSchemeMediums = [
 ]
 
 export const ColorSchemeDeaths = [
+  "rgb(222, 182, 254)", // Light Purple, Suicide
+  "rgb(252, 179, 75)", // Light Orange, NOT YET USED
+  "#ff69b4", // Pink, Heart Attack
+
+
   "#00cc66", // Bright Green, Illness
   "rgb(163, 0, 48)", // Brither Red, Still Alive
-  "rgb(222, 182, 254)", // Light Purple, Suicide
+
+
+  "#0074B7", // Light Blue, Natural Causes
   "#7624C2", // Purple, No Mention
-  "#ff69b4", // Pink, Heart Attack
-  "#00008B", // Dark Blue, overdose
-  "#1e90ff", // Light Blue, Natural Causes
-  "rgb(20, 57, 59)", // Dark Green, Accident
+  "#8096B4", // Very light beige, NOT YET USED
+
   "#3C1900", // Dark Brown, Murder
   "rgb(252, 179, 75)", // Light Orange, ""
 
+  "#00008B", // Dark Blue, overdose
+  "rgb(20, 57, 59)", // Dark Green, Accident
   "rgb(195, 72, 54)", // Redish Orange, NOT YET USED
   "rgb(52, 25, 58)", // Dark purple, NOT YET USED
   "rgb(252, 179, 75)", // Light Orange, NOT YET USED
-  "#ffe4c4", // Very light beige, NOT YET USED
   "rgb(211, 157, 69)", // Dark Orange, NOT YET USED
-  "#84011B", // Maroon, NOT YET USED
+
 ]
 
 export const ArtistName = (datum: Types.ArtistData) => {
