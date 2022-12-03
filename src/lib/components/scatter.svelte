@@ -41,7 +41,6 @@
     "natural",
     "accident",
     "murder",
-    "",
   ] //Change to programmatic way here
 
   let deathTypeLocks = new Array(gtDeaths.length).fill(false)

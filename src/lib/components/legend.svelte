@@ -44,7 +44,6 @@
     "natural",
     "accident",
     "murder",
-    "",
   ]
 
   let selectedG = []
