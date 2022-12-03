@@ -62,6 +62,8 @@
   let chordColorScale
   let gtMediums = []
 
+  let xAxisGroup
+
   let manualColors = []
   for(let i = (Helpers.ColorSchemeMediums.length - 1); i >= 0; i--)
   {
@@ -616,6 +618,7 @@
       })
       .ticks((youngestYear! - oldestYear!) / tickEvery)
     d3.select('#x-axis')
+    .transition().duration(1000)
     .attr('transform', `translate(${PADDING.left}, ${chart_height + PADDING.top})`)
     .call(tl_x_axis)
 
@@ -744,7 +747,7 @@
     // IndividualAreaChart('painter')
 
     // Change to show all categories of aea chart 
-    oldestYear = 1400
+    oldestYear = 1051
     // youngestYear = 1800
     SetYears(youngestYear, oldestYear)
     // TODO: onClick, selecting the medium should display only that category
