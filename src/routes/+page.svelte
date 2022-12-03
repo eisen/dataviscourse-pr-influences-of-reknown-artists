@@ -335,6 +335,7 @@
   const ArcClick_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
     chord_mediums.ClickGrouping(selectedGrouping)
+    area.chordArcMedButtonClick(selectedGrouping)
     //...
   }
 
