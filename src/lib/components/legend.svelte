@@ -93,25 +93,18 @@
     let rolledUpG
     if (grouping == "Medium") {
       // selectedG = gtMediums
-      colorScale = d3
-        .scaleOrdinal()
-        .domain(selectedG)
-        .range(Helpers.ColorSchemeMediums)
+      colorScale = d3.scaleOrdinal().domain(selectedG).range(d3.schemePaired)
       spacingVarH = 0.67
       spacingVarV = 0.5
       rolledUpG = d3.groups(groupLocs, (d) => d.medium)
     } else {
       // selectedG = gtDeaths
-      colorScale = d3
-        .scaleOrdinal()
-        .domain(selectedG)
-        .range(Helpers.ColorSchemeDeaths)
+      colorScale = d3.scaleOrdinal().domain(selectedG).range(d3.schemePaired)
       spacingVarH = 1.1
       spacingVarV = 0.5
       rolledUpG = d3.groups(groupLocs, (d) => d.death_type)
     }
-    for(let i = 0; i < rolledUpG.length; i++)
-    {
+    for (let i = 0; i < rolledUpG.length; i++) {
       selectedG.push(rolledUpG[i][0])
     }
     selectedG.sort(d3.ascending)

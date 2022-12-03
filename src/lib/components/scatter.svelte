@@ -219,7 +219,8 @@
       // d3.selectAll('.allPoints').transition().duration(fastTransitionDur).style('opacity', '0.15')
       // Huge help with zoom: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6
       newMinYear = Number(chordTime)
-      newMaxYear = chordTime == "2000" ? Number(chordTime) + 22 : Number(chordTime) + 100
+      newMaxYear =
+        chordTime == "2000" ? Number(chordTime) + 22 : Number(chordTime) + 100
       let updatedHorizYearScale = d3
         .scaleLinear()
         .domain(
@@ -228,7 +229,7 @@
             : [Number(chordTime), Number(chordTime) + 100]
         )
         .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
-      console.log('updating to: ', scatterWidth)
+      console.log("updating to: ", scatterWidth)
       scatterXAxisG
         .transition()
         .duration(1000)
@@ -331,8 +332,7 @@
       allLocations = d3.groups(locs, (d) => d.artist)
       allDeaths = d3.groups(deathLocs, (d) => d.artist)
       let allDeathsRoll = d3.groups(deathLocs, (d) => d.death_type)
-      for(let i = 0; i < allDeathsRoll.length; i++)
-      {
+      for (let i = 0; i < allDeathsRoll.length; i++) {
         gtDeaths.push(allDeathsRoll[i][0])
       }
       gtDeaths.sort(d3.ascending)
@@ -405,7 +405,7 @@
       scatterColorScale = d3
         .scaleOrdinal()
         .domain(gtDeaths)
-        .range(Helpers.ColorSchemeDeaths)
+        .range(d3.schemePaired)
 
       // Creating our axes:
       scatterXAxis = d3.axisBottom(horizYearScale)
@@ -420,11 +420,7 @@
         .data(scatterData)
         .enter()
         .append("g")
-        .attr(
-          "transform",
-          (d) =>
-            `translate(0, 0)`
-        )
+        .attr("transform", (d) => `translate(0, 0)`)
       // // Defining tooltip/appending it
       // pointGroup.append("")
       // Adding actual points:
@@ -451,7 +447,7 @@
         .classed("allPoints", true)
         .on("mouseover", function (e, d, boolL = dbBusy) {
           if (!boolL) {
-            console.log('oh yeah oh yeah mario oh yeah')
+            console.log("oh yeah oh yeah mario oh yeah")
             d3.selectAll(".allPoints")
               .transition()
               .duration(fastTransitionDur)
@@ -505,7 +501,7 @@
               .attr("opacity", 0.0)
               .attr(
                 "x",
-                (((d.finalYear - newMinYear) / (newMaxYear - newMinYear)) >= 0.8
+                ((d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
                   ? e.offsetX - scatterWidth * 0.1
                   : e.offsetX) -
                   (Helpers.MaxTextWidth(
@@ -534,7 +530,9 @@
               .append("text")
               .attr(
                 "x",
-                ((d.finalYear - newMinYear) / (newMaxYear - newMinYear)) >= 0.8 ? e.offsetX - scatterWidth * 0.1 : e.offsetX
+                (d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
+                  ? e.offsetX - scatterWidth * 0.1
+                  : e.offsetX
               )
               .attr(
                 "y",
@@ -552,7 +550,8 @@
               .attr("id", () => Helpers.ArtistID(d.name) + "-name")
               .style(
                 "font-size",
-                d.name.length >= 15 && (((d.finalYear - newMinYear) / (newMaxYear - newMinYear)) >= 0.8)
+                d.name.length >= 15 &&
+                  (d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
                   ? attrFontSize * 0.52
                   : attrFontSize * 0.6
               )
@@ -562,7 +561,9 @@
               .append("text")
               .attr(
                 "x",
-                ((d.finalYear - newMinYear) / (newMaxYear - newMinYear)) >= 0.8 ? e.offsetX - scatterWidth * 0.1 : e.offsetX
+                (d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
+                  ? e.offsetX - scatterWidth * 0.1
+                  : e.offsetX
               )
               .attr(
                 "y",
@@ -586,7 +587,9 @@
               .append("text")
               .attr(
                 "x",
-                ((d.finalYear - newMinYear) / (newMaxYear - newMinYear)) >= 0.8 ? e.offsetX - scatterWidth * 0.1 : e.offsetX
+                (d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
+                  ? e.offsetX - scatterWidth * 0.1
+                  : e.offsetX
               )
               .attr(
                 "y",
@@ -688,10 +691,10 @@
       d3.select(scatterViz)
         .append("text")
         .attr("x", scatterWidth / 2)
-        .attr("y", scatterHeight * 0.95)
+        .attr("y", scatterHeight * 0.9)
         .attr("fill", "black")
         .style("text-anchor", "middle")
-        .attr('font-weight', 700)
+        .attr("font-weight", 700)
         .classed("axesBigLabel", true)
         .style("font-size", attrFontSize * 0.65)
         .text("Latest Year Alive")
@@ -701,13 +704,13 @@
         .attr("x", -scatterHeight / 2)
         .attr("y", 15)
         .attr("fill", "black")
-        .attr('font-weight', 700)
+        .attr("font-weight", 700)
         .style("text-anchor", "middle")
         .classed("axesBigLabel", true)
         .style("font-size", attrFontSize * 0.65)
         .text("Most Recent Age")
         .style("opacity", 1.0)
-        .attr('transform', 'rotate(-90)')
+        .attr("transform", "rotate(-90)")
       // .attr('font-weight', d3.min([scatterHeight, scatterWidth]) * 0.6 )
     } else {
       console.error("Unable to load Artist Locations!")
