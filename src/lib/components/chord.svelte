@@ -595,7 +595,7 @@
         selectedG.push(rolledUp[i][0])
       }
       selectedG.sort(d3.ascending)
-
+      console.log('mediums over here for chord: ', selectedG)
       allGroupings = d3.groups(groupLocs, (d) => d.artist)
 
       allLocations = d3.groups(locs, (d) => d.artist)

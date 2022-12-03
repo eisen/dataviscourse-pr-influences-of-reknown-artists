@@ -59,18 +59,14 @@
   let highlight_medium:boolean
   $: highlight_medium = false
 
-  let category_names = ['painter', 'watercolourist', 'oilpainter', 'sculptor', 'printmaker', 'draughtsman', 'muralist',
-'photography', 'film', 'illustrator', 'architect', 'ink', 'ceramicist', 'calligrapher', 'engraving']
+  let chordColorScale
+  let gtMediums = []
 
-  // let chordColorScale = d3
-  //   .scaleOrdinal()
-  //   .domain(d3.range(Helpers.ColorScheme.length))
-  //   .range(Helpers.ColorScheme)
-
-  let chordColorScale = d3
-    .scaleOrdinal()
-    .domain(d3.range(10))
-    .range(d3.schemePaired)
+  let manualColors = []
+  for(let i = (Helpers.ColorSchemeMediums.length - 1); i >= 0; i--)
+  {
+    manualColors.push(Helpers.ColorSchemeMediums[i])
+  }
 
 
   const DataForAreaChartLine = (category:string) => {
@@ -106,7 +102,7 @@
     let num=0
     area_lines = []
     area_lines_percentage = []
-    for(var category of category_names){
+    for(var category of gtMediums){
       let area_values = new Array<number>(size_years!)
       let i=0
 
@@ -140,7 +136,7 @@
     area_lines_percentage = {...area_lines}
 
     // Calculate percentage 
-    for(var n=0; n<category_names.length-1; n++){
+    for(var n=0; n<gtMediums.length-1; n++){
       for(var y=0; y<years.length; y++){
         // area_lines[n+1][y] = area_lines[n][y] + area_lines[n+1][y]
         area_lines_percentage[n+1][y] = area_lines[n][y] + area_lines[n+1][y]
@@ -174,12 +170,13 @@
 
     // Draw all in category
     let num = 0
-    for(var category of category_names){
-      // console.log(category_names.length - 1 - num)
-      let area_line_values = area_lines_percentage[category_names.length - 1 - num]
+    for(var category of gtMediums){
+      console.log("whiich category we on? " + category)
+      // console.log(gtMediums.length - 1 - num)
+      let area_line_values = area_lines_percentage[gtMediums.length - 1 - num]
       let area_line_values_prev:any = []
-      if(num < (category_names.length - 1)){
-        area_line_values_prev = area_lines_percentage[category_names.length - 1 - num - 1]
+      if(num < (gtMediums.length - 1)){
+        area_line_values_prev = area_lines_percentage[gtMediums.length - 1 - num - 1]
       }
       else{
         for(var j=0; j<size_years!; j++)
@@ -195,22 +192,24 @@
         }
         each_area_line.push(each_pair)
       }
-      let area_id = 'area-chart-' + (category_names.length - num ).toString()
+      let area_id = 'area-chart-' + (gtMediums.length - num ).toString()
       // console.log(area_id)
       d3.select('#all-area-chart')
       .append('path')
       .attr('id', area_id)
       .datum(each_area_line)
       .attr("d", areaGenerator1)
-      .style('fill', ColourFunc(num))
+      .style('fill', manualColors[(num - 1)])
       .attr('opacity', '1.0')
+      console.log("heyoooo which num tell me please " + (num - 1))
+
 
     }
     
   }
   
   const IndividualAreaChart = (category:string) => {
-    let idx = category_names.indexOf(category)
+    let idx = gtMediums.indexOf(category)
     console.log(idx)
     // Make all category area chart transparent 
     // d3.select('#all-area-chart')
@@ -257,7 +256,7 @@
 
   const HighlightCategory = (category:string) => {
     highlight_medium = true
-    let idx = category_names.indexOf(category)
+    let idx = gtMediums.indexOf(category)
     // idx = 5
     console.log('idx', idx)
     
@@ -356,7 +355,7 @@
     .attr('opacity', '0.0')
 
     let i = 0
-    for(var category of category_names){
+    for(var category of gtMediums){
       // Make everyone opacity = 0.2
       let select_area_id = '#area-chart-' + i
       d3.select(select_area_id)
@@ -410,11 +409,11 @@
           .selectAll('rect')
           .data((d) => {
 
-            for(var category of category_names){
-              let idx = category_names.indexOf(category)
+            for(var category of gtMediums){
+              let idx = gtMediums.indexOf(category)
             }
-            let non_zero_categories = category_names.filter(d => {
-              let idx_cat = category_names.indexOf(d)
+            let non_zero_categories = gtMediums.filter(d => {
+              let idx_cat = gtMediums.indexOf(d)
               let val = 0
               if(idx_cat!==0){
                 val = area_lines_percentage[idx_cat][year_hover_idx] - area_lines_percentage[idx_cat-1][year_hover_idx]
@@ -449,11 +448,11 @@
           .selectAll('text')
           .data((d) => {
 
-            for(var category of category_names){
-              let idx = category_names.indexOf(category)
+            for(var category of gtMediums){
+              let idx = gtMediums.indexOf(category)
             }
-            let non_zero_categories = category_names.filter(d => {
-              let idx_cat = category_names.indexOf(d)
+            let non_zero_categories = gtMediums.filter(d => {
+              let idx_cat = gtMediums.indexOf(d)
               let val = 0
               if(idx_cat!==0){
                 val = area_lines_percentage[idx_cat][year_hover_idx] - area_lines_percentage[idx_cat-1][year_hover_idx]
@@ -469,8 +468,53 @@
           })
           .join('text')
           .text( (d) => {
+            let updatedWording = d
+            if(d == 'architect')
+            {
+              updatedWording = 'Architecture'
+            }
+            else if(d == 'calligrapher')
+            {
+              updatedWording = 'Calligraphy'
+            }
+            else if(d == 'ceramicist')
+            {
+              updatedWording = 'ceramics'
+            }
+            else if(d == 'draughtsman')
+            {
+              updatedWording = 'Blueprints'
+            }
+            else if(d == 'illustrator')
+            {
+              updatedWording = 'Illustrations'
+            }
+            else if(d == 'muralist')
+            {
+              updatedWording = 'Murals'
+            }
+            else if(d == 'oilpainter')
+            {
+              updatedWording = 'Oil Paints'
+            }
+            else if(d == 'painter')
+            {
+              updatedWording = 'Paints'
+            }
+            else if(d == 'printmaker')
+            {
+              updatedWording = 'Prints'
+            }
+            else if(d == 'sculptor')
+            {
+              updatedWording = 'Sculptures'
+            }
+            else if(d == 'watercolourist')
+            {
+              updatedWording = 'Water Colors'
+            }
             let str = ''
-            let idx_cat = category_names.indexOf(d)
+            let idx_cat = gtMediums.indexOf(d)
             let val = 0
             if(idx_cat!==0){
               val = area_lines_percentage[idx_cat][year_hover_idx] - area_lines_percentage[idx_cat-1][year_hover_idx]
@@ -478,7 +522,7 @@
             else{
               val = area_lines_percentage[0][year_hover_idx]
             }
-            str = str + `${d3.format(".3s")(val)}` + '% ' + d.charAt(0).toUpperCase() + d.slice(1) 
+            str = str + `${d3.format(".3s")(val)}` + '% ' + updatedWording.charAt(0).toUpperCase() + updatedWording.slice(1) 
             return str
             // return d
           })
@@ -489,13 +533,13 @@
             return ev.offsetX - 200
           })
           .attr('y', (d,i) => {
-            // let idx_cat = category_names.indexOf(d)
+            // let idx_cat = gtMediums.indexOf(d)
             // return yScale(area_lines_percentage[idx_cat][year_hover_idx]) + font_size + PADDING.top
             return font_size * i + font_size + PADDING.top
           })
           .attr('fill', (d, i) => {
-            let idx_cat = category_names.indexOf(d)
-            return ColourFunc(category_names.length - idx_cat) 
+            let idx_cat = gtMediums.indexOf(d)
+            return ColourFunc(gtMediums.indexOf(d)) // This fixed it
           })
           .style('text-shadow', '1px 0 0 black,0 1px 0 black,-1px 0 0 black,0 -1px 0 black')
           .style('font-family', 'sansserif')
@@ -547,7 +591,7 @@
 
   const ColourFunc = (num: number):string => {
     if(num){
-      return chordColorScale(num.toString()) as string
+      return chordColorScale(gtMediums[num]) as string
     }
     else{
       return 'black'
@@ -671,10 +715,22 @@
     PADDING.left = width * 0.15
     PADDING.right = width * 0.05
     group_artists = d3.groups(artists, d => d.artist)
-    num_categories = d3.range(category_names.length).reverse()
+    num_categories = d3.range(gtMediums.length).reverse()
 
     oldestYear = +d3.min(location_data, (d) => d.year)! // TODO: Change this
     youngestYear = +d3.max(location_data, (d) => d.year)!
+
+    let mediumRoll = d3.groups(medium_data, (d) => d.medium)
+    for(let l = 0; l < mediumRoll.length; l++)
+    {
+      gtMediums.push(mediumRoll[l][0])
+    }
+    gtMediums.sort(d3.ascending)
+    console.log('mediums over here: ', gtMediums)
+    chordColorScale = d3
+    .scaleOrdinal()
+    .domain(gtMediums)
+    .range(Helpers.ColorSchemeMediums)
 
     // TODO: change this when clicking on century button to show only that century
 
