@@ -666,7 +666,7 @@
   }
 
   const DrawRectangleCentury = (century: string) => {
-    console.log(century)
+    // console.log(century)
 
     // X scale
     var xScale = d3
@@ -684,6 +684,15 @@
       .attr("stroke", "black")
       .attr("stroke-width", "4")
       .attr("fill", "none")
+      .attr('opacity', '1.0')
+  }
+
+  const ClearRectangleCentury = () => {
+    console.log('im here')
+    d3.select("#hover-rect-century")
+      .attr("stroke", "transparent")
+      // .selectAll('rect')
+      // .remove()
   }
 
   // Receiving sign from chord that a medium arc was highlighted/is no longer highlighted
@@ -743,10 +752,12 @@
     //    and this: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6 for help.
     console.log("Chord says to zoom to this century: ", chordCentury)
 
+
     oldestYear = +chordCentury
     youngestYear = +chordCentury + 100
     SetYears(youngestYear, oldestYear)
     ClearAreaChart()
+    ClearRectangleCentury()
     DrawAxesSingle()
     DataForAllAreaChartLine()
     AllAreaChart()
@@ -780,6 +791,7 @@
   export const chordMedButtonReFocus = () => {
     // Will implement logic to get rid of some indication of the century's time span
     console.log("User is no longer highlighting century button...")
+    ClearRectangleCentury()
   }
 
   const SetYears = (young: number, old: number) => {
@@ -788,6 +800,10 @@
     for (let i = 0; i < size_years; i++) {
       years[i] = old + i
     }
+  }
+
+  const Reset = () => {
+    console.log('clicked!')
   }
 
   export const Initialize = (
@@ -835,6 +851,9 @@
     viewBox="0, 0, {width}, {height}"
     preserveAspectRatio="xMidYMid meet"
   >
+    <g on:click={(ev) => Reset()}>
+      <rect x='0' y='0' {width} {height} fill="transparent"></rect>
+    </g>
     <!-- #each for all years, call function for each year calc mediums % , #each give line generater -->
     <g id="axes-titles">
       <text
