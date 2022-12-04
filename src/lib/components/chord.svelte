@@ -30,7 +30,7 @@
   let allGroupings: [string, Types.ArtistMedium[]][]
   $: allGroupings = []
 
-  let gtCentsMedium = ["1300", "1400", "1500", "1600", "1700", "1800", "1900"]
+  let gtCentsMedium = ["1400", "1500", "1600", "1700", "1800", "1900", "2000"]
 
   let gtCentsDeath = [
     "1300",
@@ -648,7 +648,7 @@
                   groupedData[k].groups[
                     gtCents.indexOf(
                       String(
-                        Math.floor(Number(allLocations[i][1][0].year) / 100) *
+                        Math.floor(Number(allLocations[i][1][1].year) / 100) *
                           100
                       )
                     )
@@ -656,7 +656,7 @@
                   centStatus[
                     gtCents.indexOf(
                       String(
-                        Math.floor(Number(allLocations[i][1][0].year) / 100) *
+                        Math.floor(Number(allLocations[i][1][1].year) / 100) *
                           100
                       )
                     )

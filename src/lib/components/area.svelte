@@ -24,8 +24,8 @@
   $: oldestYear = 0
   let youngestYear: number
   $: youngestYear = 2100
-  $: year = 0
-  const tickEvery = 50 // TODO: hardcoded right now
+  $: max_year = 0
+  let tickEvery = 50
   const yearEvery = 100
   const yearEverySingle = 10
   const title_length = 80
@@ -61,11 +61,13 @@
 
   let centuryScale: d3.ScaleLinear<number, number, never>
   $: centuryScale
+  $: current_century = 0
+  $: passed_century = "0"
 
   let chordColorScale
   let gtMediums: any = []
 
-  let selected_century: boolean
+  let selected_century: boolean = false
   let selected_medium: boolean
   let selected_medium_category: string
 
@@ -766,12 +768,21 @@
     // You can check out the scatter plot's click handle function (chordButtonClick)
     //    and this: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6 for help.
     console.log("Chord says to zoom to this century: ", chordCentury)
-    selected_century = !selected_century
+    if (selected_century) {
+      if (chordCentury === passed_century) {
+        selected_century = !selected_century
+      }
+    } else {
+      selected_century = true
+    }
+    passed_century = chordCentury
     //gtMediums.indexOf(chordCentury)
 
     if (selected_century) {
       oldestYear = +chordCentury
       youngestYear = +chordCentury + 100
+      if (youngestYear > max_year) youngestYear = max_year
+      tickEvery = 10
       SetYears(youngestYear, oldestYear)
       ClearAreaChart()
       ClearRectangleCentury()
@@ -779,6 +790,7 @@
       DataForAllAreaChartLine()
       AllAreaChart()
     } else {
+      tickEvery = 50
       FirstLoad()
     }
 
@@ -862,6 +874,7 @@
     oldestYear = +d3.min(location_data, (d) => d.year)!
     oldestYear = 1378 // TODO: Fix
     youngestYear = +d3.max(location_data, (d) => d.year)!
+    max_year = youngestYear
 
     let mediumRoll = d3.groups(medium_data, (d) => d.medium)
     for (let l = 0; l < mediumRoll.length; l++) {
