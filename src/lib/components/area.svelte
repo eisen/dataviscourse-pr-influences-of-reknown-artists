@@ -704,14 +704,16 @@
   }
 
   const ShowBlurb = (category: string) => {
-    display_blurb = true
-    blurb_text = blurbs[category]
-    tick().then(() => {
-      const node = d3.select("#blurb_node").node()! as Element
-      const box = node!.getBoundingClientRect()!
-      blurb_x = (width - box.width) / 2
-      blurb_y = (height - box.height) / 2
-    })
+    if (category in blurbs) {
+      display_blurb = true
+      blurb_text = blurbs[category]
+      tick().then(() => {
+        const node = d3.select("#blurb_node").node()! as Element
+        const box = node!.getBoundingClientRect()!
+        blurb_x = (width - box.width) / 2
+        blurb_y = (height - box.height) / 2
+      })
+    }
   }
 
   const HideBlurb = () => (display_blurb = false)
