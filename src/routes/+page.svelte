@@ -689,7 +689,6 @@
           bind:this={area}
           width={area_width}
           height={area_height}
-          topOffset={legend_height}
           on:reset_mediums={ResetMediums}
         />
       </div>

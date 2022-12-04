@@ -528,22 +528,6 @@
         "lon": 2.3488
     },
     {
-        "artist": "Jeong Seon",
-        "year": "1676",
-        "city": "Seoul",
-        "country": "South Korea",
-        "lat": 37.566,
-        "lon": 126.9784
-    },
-    {
-        "artist": "Jeong Seon",
-        "year": "1759",
-        "city": "Seoul",
-        "country": "South Korea",
-        "lat": 37.566,
-        "lon": 126.9784
-    },
-    {
         "artist": "John Baldessari",
         "year": "1931",
         "city": "National City",
@@ -782,22 +766,6 @@
         "country": "France",
         "lat": 48.85341,
         "lon": 2.3488
-    },
-    {
-        "artist": "Mi Fu",
-        "year": "1051",
-        "city": "Taiyuan",
-        "country": "China",
-        "lat": 37.86944,
-        "lon": 112.56028
-    },
-    {
-        "artist": "Mi Fu",
-        "year": "1107",
-        "city": "Wuhan",
-        "country": "China",
-        "lat": 30.58333,
-        "lon": 114.26667
     },
     {
         "artist": "Michelangelo",

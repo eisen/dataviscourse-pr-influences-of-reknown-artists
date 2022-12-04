@@ -8,7 +8,6 @@
 
   export let width: number = 0
   export let height: number = 0
-  export let topOffset: number = 0
 
   const PADDING = { left: 0.05, right: 0.05, top: 0.05, bottom: 0.05 }
 
@@ -799,7 +798,6 @@
 
   // Clicking on medium in arc
   export const chordArcMedButtonClick = (chordMedium: string) => {
-
     if (selected_medium) {
       if (selected_medium_category === chordMedium) {
         selected_medium = !selected_medium

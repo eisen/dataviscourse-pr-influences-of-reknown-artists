@@ -190,11 +190,6 @@
         "thumbnail": "/thumbnails/jean-antoine_watteau.png"
     },
     {
-        "artist": "Jeong Seon",
-        "death_type": "no-mention",
-        "thumbnail": "/thumbnails/jeong_seon.png"
-    },
-    {
         "artist": "Joan Miró",
         "death_type": "heartattack",
         "thumbnail": "/thumbnails/joan_miro.png"
@@ -278,11 +273,6 @@
         "artist": "Max Jacob",
         "death_type": "illness",
         "thumbnail": "/thumbnails/max_jacob.png"
-    },
-    {
-        "artist": "Mi Fu",
-        "death_type": "no-mention",
-        "thumbnail": "/thumbnails/mi_fu.png"
     },
     {
         "artist": "Michelangelo",
