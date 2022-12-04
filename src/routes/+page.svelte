@@ -265,7 +265,7 @@
   // Will highlight corresponding medium's area on area chart
   const HighlightGrouping_Mediums = (ev: any) => {
     const selectedGrouping = ev.detail.chordGroup
-    const selectedCent = ev.detail.chordTimeNum
+    const selectedCent = ev.detail.chordTimeNum ? ev.detail.chordTimeNum : null
     chord_mediums.HighlightGrouping(selectedGrouping, selectedCent)
     area.chordMedGroupFocus(selectedGrouping)
     legend_mediums.singleGroupingFocus(selectedGrouping)
@@ -656,6 +656,8 @@
         height={legend_height}
         grouping={"Death"}
         topOffset={header_height}
+        on:highlight_element={HighlightGrouping_Deaths}
+        on:restore_elements={RestoreGrouping_Deaths}
       />
     </div>
     <div
@@ -699,6 +701,8 @@
         grouping={"Medium"}
         topOffset={header_height}
         on:reset_mediums={ResetMediums}
+        on:highlight_element={HighlightGrouping_Mediums}
+        on:restore_elements={RestoreGrouping_Mediums}
       />
     </div>
   </div>
