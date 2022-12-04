@@ -60,10 +60,10 @@
     return datum.replace(/[\s\.]/g, "")
   }
 
-  const CreateAdjacencyMatrix = (init:boolean = true) => {
+  const CreateAdjacencyMatrix = (init: boolean = true) => {
     // console.log("artist_data: ", artist_data)
     // adjMatrix = []
-    if(init){
+    if (init) {
       matrix_size = artists!.length
       // console.log('matrix_size', matrix_size)
 
@@ -82,7 +82,9 @@
           // console.log('row', index, 'artist_influencer', artist, 'list_influencer', list_influencer)
           influencers.push(artist)
         }
-        const list_influencee = influences.filter((d) => d.influenced === artist)
+        const list_influencee = influences.filter(
+          (d) => d.influenced === artist
+        )
 
         if (list_influencee.length > 0) {
           // console.log('col', index, 'artist_influencee', artist, 'list_influencee', list_influencee)
@@ -118,31 +120,31 @@
     // return artists // MIGHT not be needed
   }
 
-  const PopulateAdjacencyMatrix = (
+  const PopulateAdjacencyMatrix = () =>
     //artist_data_with_index: Types.ArtistData[]
-  ) => {
-    // console.log('influence_data: ', influences)
-    // console.log('artist_data_with_index', artist_data_with_index)
+    {
+      // console.log('influence_data: ', influences)
+      // console.log('artist_data_with_index', artist_data_with_index)
 
-    const matrixRow = influencers.length //adjMatrix.length
-    const matrixCol = influencees.length //adjMatrix[0].length
+      const matrixRow = influencers.length //adjMatrix.length
+      const matrixCol = influencees.length //adjMatrix[0].length
 
-    for (let row = 0; row < matrixRow; row++) {
-      for (let col = 0; col < matrixCol; col++) {
-        let influencer_name = influencers[row] //adjMatrix[row][col].influencer
-        let influencee_name = influencees[col] //adjMatrix[row][col].influencee
+      for (let row = 0; row < matrixRow; row++) {
+        for (let col = 0; col < matrixCol; col++) {
+          let influencer_name = influencers[row] //adjMatrix[row][col].influencer
+          let influencee_name = influencees[col] //adjMatrix[row][col].influencee
 
-        const list_influencee = influences.filter(
-          (d) =>
-            d.artist === influencer_name && d.influenced === influencee_name
-        )
-        if (list_influencee.length > 0) {
-          adjMatrix[row][col].z = 1
+          const list_influencee = influences.filter(
+            (d) =>
+              d.artist === influencer_name && d.influenced === influencee_name
+          )
+          if (list_influencee.length > 0) {
+            adjMatrix[row][col].z = 1
+          }
         }
       }
+      // console.log('final adjMatrix', adjMatrix)
     }
-    // console.log('final adjMatrix', adjMatrix)
-  }
 
   const DisplayInfluencers = (
     all_influencers: Types.ArtistInfluence[],
@@ -596,10 +598,10 @@
   }
 
   const OnMouseClickDescSortInfluencer = () => {
-    influencers = influencers.sort((a,b) => {
-      let influencer_num_a = influences.filter(d => d.artist===a)
-      let influencer_num_b = influences.filter(d => d.artist===b)
-      return influencer_num_a.length <= influencer_num_b.length? 1 : -1
+    influencers = influencers.sort((a, b) => {
+      let influencer_num_a = influences.filter((d) => d.artist === a)
+      let influencer_num_b = influences.filter((d) => d.artist === b)
+      return influencer_num_a.length <= influencer_num_b.length ? 1 : -1
     })
     influencees = influencees
     CreateAdjacencyMatrix(false)
@@ -607,10 +609,10 @@
   }
 
   const OnMouseClickAsceSortInfluencer = () => {
-    influencers = influencers.sort((a,b) => {
-      let influencer_num_a = influences.filter(d => d.artist===a)
-      let influencer_num_b = influences.filter(d => d.artist===b)
-      return influencer_num_a.length <= influencer_num_b.length? -1 : 1
+    influencers = influencers.sort((a, b) => {
+      let influencer_num_a = influences.filter((d) => d.artist === a)
+      let influencer_num_b = influences.filter((d) => d.artist === b)
+      return influencer_num_a.length <= influencer_num_b.length ? -1 : 1
     })
     influencees = influencees
     CreateAdjacencyMatrix(false)
@@ -625,10 +627,10 @@
   }
 
   const OnMouseClickDescSortInfluencee = () => {
-    influencees = influencees.sort((a,b) => {
-      let influencee_num_a = influences.filter(d => d.influenced===a)
-      let influencee_num_b = influences.filter(d => d.influenced===b)
-      return influencee_num_a.length <= influencee_num_b.length? 1 : -1
+    influencees = influencees.sort((a, b) => {
+      let influencee_num_a = influences.filter((d) => d.influenced === a)
+      let influencee_num_b = influences.filter((d) => d.influenced === b)
+      return influencee_num_a.length <= influencee_num_b.length ? 1 : -1
     })
     influencers = influencers
     CreateAdjacencyMatrix(false)
@@ -636,10 +638,10 @@
   }
 
   const OnMouseClickAsceSortInfluencee = () => {
-    influencees = influencees.sort((a,b) => {
-      let influencee_num_a = influences.filter(d => d.influenced===a)
-      let influencee_num_b = influences.filter(d => d.influenced===b)
-      return influencee_num_a.length <= influencee_num_b.length? -1 : 1
+    influencees = influencees.sort((a, b) => {
+      let influencee_num_a = influences.filter((d) => d.influenced === a)
+      let influencee_num_b = influences.filter((d) => d.influenced === b)
+      return influencee_num_a.length <= influencee_num_b.length ? -1 : 1
     })
     influencers = influencers
     CreateAdjacencyMatrix(false)
@@ -709,62 +711,61 @@
       <g id="rect-hover" />
       {#each influencers as i, row}
         {#each influencees as j, col}
-
           {#if adjMatrix.length > 0}
-          <!-- TODO: check the x and y, I changed them as the boxes were diff -->
-          <rect
-            on:mouseover={(ev) =>
-              OnMouseOverRect(
-                adjMatrix[row][col].influencer,
-                adjMatrix[row][col].influencee,
-                row,
-                col
+            <!-- TODO: check the x and y, I changed them as the boxes were diff -->
+            <rect
+              on:mouseover={(ev) =>
+                OnMouseOverRect(
+                  adjMatrix[row][col].influencer,
+                  adjMatrix[row][col].influencee,
+                  row,
+                  col
+                )}
+              on:focus={(ev) =>
+                OnMouseOverRect(
+                  adjMatrix[row][col].influencer,
+                  adjMatrix[row][col].influencee,
+                  row,
+                  col
+                )}
+              on:mouseout={(ev) =>
+                OnMouseOutRect(
+                  adjMatrix[row][col].influencer,
+                  adjMatrix[row][col].influencee,
+                  row,
+                  col
+                )}
+              on:blur={(ev) =>
+                OnMouseOutRect(
+                  adjMatrix[row][col].influencer,
+                  adjMatrix[row][col].influencee,
+                  row,
+                  col
+                )}
+              on:click={(ev) =>
+                adjMatrix[row][col].z === 1
+                  ? OnMouseClickPair(
+                      adjMatrix[row][col].influencer,
+                      adjMatrix[row][col].influencee
+                    )
+                  : null}
+              id={ArtistName(
+                adjMatrix[row][col].influencer +
+                  "_" +
+                  adjMatrix[row][col].influencee
               )}
-            on:focus={(ev) =>
-              OnMouseOverRect(
-                adjMatrix[row][col].influencer,
-                adjMatrix[row][col].influencee,
-                row,
-                col
-              )}
-            on:mouseout={(ev) =>
-              OnMouseOutRect(
-                adjMatrix[row][col].influencer,
-                adjMatrix[row][col].influencee,
-                row,
-                col
-              )}
-            on:blur={(ev) =>
-              OnMouseOutRect(
-                adjMatrix[row][col].influencer,
-                adjMatrix[row][col].influencee,
-                row,
-                col
-              )}
-            on:click={(ev) =>
-              adjMatrix[row][col].z === 1
-                ? OnMouseClickPair(
-                    adjMatrix[row][col].influencer,
-                    adjMatrix[row][col].influencee
-                  )
-                : null}
-            id={ArtistName(
-              adjMatrix[row][col].influencer +
-                "_" +
-                adjMatrix[row][col].influencee
-            )}
-            style="outline: none;"
-            x={matrixScale(adjMatrix[row][col].y) + offset_x}
-            y={matrixScale(adjMatrix[row][col].x) + offset_y}
-            on:click={() =>
-              adjMatrix[row][col].z === 1 ? null : OnMouseClickReset()}
-            width={matrixScale.bandwidth()}
-            height={matrixScale.bandwidth()}
-            class={adjMatrix[row][col].z === 1 ? "used" : "empty"}
-            fill={adjMatrix[row][col].z === 1
-              ? colourRelation
-              : colourNoRelation}
-          />
+              style="outline: none;"
+              x={matrixScale(adjMatrix[row][col].y) + offset_x}
+              y={matrixScale(adjMatrix[row][col].x) + offset_y}
+              on:click={() =>
+                adjMatrix[row][col].z === 1 ? null : OnMouseClickReset()}
+              width={matrixScale.bandwidth()}
+              height={matrixScale.bandwidth()}
+              class={adjMatrix[row][col].z === 1 ? "used" : "empty"}
+              fill={adjMatrix[row][col].z === 1
+                ? colourRelation
+                : colourNoRelation}
+            />
           {/if}
         {/each}
       {/each}
@@ -883,13 +884,13 @@
   </svg>
   <span
     class="absolute isolate inline-flex flex-col rounded-md shadow-sm"
-    style={`left:${offset_x - 60}px; top: ${offset_y}px;`}
+    style={`left:${width * 0.24}px; top: ${offset_y}px;`}
   >
     <button
       type="button"
       class="cursor-pointer relative inline-flex items-center rounded-t-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
       on:click={(ev) => OnMouseClickDescSortInfluencer()}
-      >
+    >
       <svg
         class="h-5 w-5"
         xmlns="http://www.w3.org/2000/svg"
@@ -907,7 +908,7 @@
       type="button"
       class="cursor-pointer relative -ml-px inline-flex items-center border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
       on:click={(ev) => OnMouseClickAlphabeticalSortInfluencer()}
-      >
+    >
       <svg
         class="h-5 w-5"
         xmlns="http://www.w3.org/2000/svg"
@@ -925,7 +926,7 @@
       type="button"
       class="cursor-pointer relative -ml-px inline-flex items-center rounded-b-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
       on:click={(ev) => OnMouseClickAsceSortInfluencer()}
-      >
+    >
       <svg
         class="h-5 w-5"
         xmlns="http://www.w3.org/2000/svg"
@@ -942,13 +943,13 @@
   </span>
   <span
     class="absolute isolate inline-flex rounded-md shadow-sm"
-    style={`left:${offset_x}px; top: ${offset_y - 60}px;`}
+    style={`left:${width * 0.3}px; top: ${offset_y - 60}px;`}
   >
     <button
       type="button"
       class="cursor-pointer relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
       on:click={(ev) => OnMouseClickDescSortInfluencee()}
-      >
+    >
       <svg
         class="h-5 w-5"
         xmlns="http://www.w3.org/2000/svg"
@@ -967,7 +968,7 @@
       type="button"
       class="cursor-pointer relative -ml-px inline-flex items-center border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
       on:click={(ev) => OnMouseClickAlphabeticalSortInfluencee()}
-      >
+    >
       <svg
         class="h-5 w-5"
         xmlns="http://www.w3.org/2000/svg"
@@ -986,7 +987,7 @@
       type="button"
       class="cursor-pointer relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
       on:click={(ev) => OnMouseClickAsceSortInfluencee()}
-      >
+    >
       <svg
         class="h-5 w-5"
         xmlns="http://www.w3.org/2000/svg"
