@@ -383,6 +383,11 @@
     legend_deaths.singleGroupingReFocus()
   }
 
+  const ResetMediums = (ev: any) => {
+    // No data passed
+    area.ResetAreaChart()
+  }
+
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
     const locs: Types.ArtistLocation[] | undefined = await d3.json(
@@ -436,10 +441,12 @@
 <svelte:window bind:innerWidth={width} bind:innerHeight={height} />
 
 <header
-  class="flex justify-between fixed top-4 left-4 w-full font-bold text-4xl z-20 p-4"
+  class="flex justify-between fixed top-4 left-4 w-full font-bold 3xl:text-4xl text-sm z-20 p-4"
   style="height: {header_height};"
 >
-  <span>Influences, Deaths, and Mediums of Renowned Artists</span>
+  <span class="pt-3 3xl:pt-0"
+    >Influences, Deaths, and Mediums of Renowned Artists</span
+  >
   <div class="ml-4 mt-1 cursor-pointer">
     <div class="block">
       <nav class="isolate flex divide-x divide-gray-200 rounded-lg shadow">
@@ -556,8 +563,7 @@
   </div>
   <div class="pr-4">
     <img
-      class="object-cover"
-      style="height: 40px;"
+      class="object-cover 3xl:h-10 h-6 3xl:mt-0 mt-3"
       src={Config.server_url + "/SofC_Logo.png"}
       alt="SofC Logo"
     />
@@ -677,12 +683,14 @@
           on:click_chord_by_century={CenturyClick_Mediums}
           on:highlight_chord_button={HighlightButton_Mediums}
           on:restore_chord_button={RestoreButton_Mediums}
+          on:reset_mediums={ResetMediums}
         />
         <Area
           bind:this={area}
           width={area_width}
           height={area_height}
           topOffset={legend_height}
+          on:reset_mediums={ResetMediums}
         />
       </div>
       <Legend
@@ -691,6 +699,7 @@
         height={legend_height}
         grouping={"Medium"}
         topOffset={header_height}
+        on:reset_mediums={ResetMediums}
       />
     </div>
   </div>

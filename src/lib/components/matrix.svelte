@@ -60,34 +60,43 @@
     return datum.replace(/[\s\.]/g, "")
   }
 
-  const CreateAdjacencyMatrix = () => {
+  const CreateAdjacencyMatrix = (init: boolean = true) => {
     // console.log("artist_data: ", artist_data)
+    // adjMatrix = []
+    if (init) {
+      matrix_size = artists!.length
+      // console.log('matrix_size', matrix_size)
 
-    matrix_size = artists!.length
-    // console.log('matrix_size', matrix_size)
-
-    // Create rows for the matrix
-    for (let [index] of artists!.entries()) {
-      artists![index].index = index
-    }
-
-    for (let index = 0; index < matrix_size!; index++) {
-      const artist = artists[index].artist
-      const list_influencer = influences.filter((d) => d.artist === artist)
-
-      if (list_influencer.length > 0) {
-        // console.log('row', index, 'artist_influencer', artist, 'list_influencer', list_influencer)
-        influencers.push(artist)
+      // Create rows for the matrix
+      for (let [index] of artists!.entries()) {
+        artists![index].index = index
       }
-      const list_influencee = influences.filter((d) => d.influenced === artist)
 
-      if (list_influencee.length > 0) {
-        // console.log('col', index, 'artist_influencee', artist, 'list_influencee', list_influencee)
-        influencees.push(artist)
+      influencers = []
+      influencees = []
+      for (let index = 0; index < matrix_size!; index++) {
+        const artist = artists[index].artist
+        const list_influencer = influences.filter((d) => d.artist === artist)
+
+        if (list_influencer.length > 0) {
+          // console.log('row', index, 'artist_influencer', artist, 'list_influencer', list_influencer)
+          influencers.push(artist)
+        }
+        const list_influencee = influences.filter(
+          (d) => d.influenced === artist
+        )
+
+        if (list_influencee.length > 0) {
+          // console.log('col', index, 'artist_influencee', artist, 'list_influencee', list_influencee)
+          influencees.push(artist)
+        }
       }
     }
     // console.log("Influencers", influencers)
     // console.log("Influencees", influencees)
+
+    // let temp_adj_mat:Types.AdjacencyData[][] = []
+    adjMatrix = []
 
     for (let row = 0; row < influencers.length!; row++) {
       const adjacencyRow: Types.AdjacencyData[] = []
@@ -105,35 +114,37 @@
       }
       adjMatrix.push(adjacencyRow)
     }
+
+    // adjMatrix = temp_adj_mat
     // console.log('initial adjMatrix', adjMatrix)
-    return artists // MIGHT not be needed
+    // return artists // MIGHT not be needed
   }
 
-  const PopulateAdjacencyMatrix = (
-    artist_data_with_index: Types.ArtistData[]
-  ) => {
-    // console.log('influence_data: ', influences)
-    // console.log('artist_data_with_index', artist_data_with_index)
+  const PopulateAdjacencyMatrix = () =>
+    //artist_data_with_index: Types.ArtistData[]
+    {
+      // console.log('influence_data: ', influences)
+      // console.log('artist_data_with_index', artist_data_with_index)
 
-    const matrixRow = influencers.length //adjMatrix.length
-    const matrixCol = influencees.length //adjMatrix[0].length
+      const matrixRow = influencers.length //adjMatrix.length
+      const matrixCol = influencees.length //adjMatrix[0].length
 
-    for (let row = 0; row < matrixRow; row++) {
-      for (let col = 0; col < matrixCol; col++) {
-        let influencer_name = influencers[row] //adjMatrix[row][col].influencer
-        let influencee_name = influencees[col] //adjMatrix[row][col].influencee
+      for (let row = 0; row < matrixRow; row++) {
+        for (let col = 0; col < matrixCol; col++) {
+          let influencer_name = influencers[row] //adjMatrix[row][col].influencer
+          let influencee_name = influencees[col] //adjMatrix[row][col].influencee
 
-        const list_influencee = influences.filter(
-          (d) =>
-            d.artist === influencer_name && d.influenced === influencee_name
-        )
-        if (list_influencee.length > 0) {
-          adjMatrix[row][col].z = 1
+          const list_influencee = influences.filter(
+            (d) =>
+              d.artist === influencer_name && d.influenced === influencee_name
+          )
+          if (list_influencee.length > 0) {
+            adjMatrix[row][col].z = 1
+          }
         }
       }
+      // console.log('final adjMatrix', adjMatrix)
     }
-    // console.log('final adjMatrix', adjMatrix)
-  }
 
   const DisplayInfluencers = (
     all_influencers: Types.ArtistInfluence[],
@@ -155,14 +166,14 @@
       " and " +
       all_influencers[i++].artist
 
-    d3.select("#text-display")
-      .append("text")
-      .attr("x", PADDING.left)
-      .attr("y", offset_y - 2.5 * tabPadding)
-      .text((d) => {
-        return col_name + " was influenced by " + string_influencers
-      })
-      .attr("opacity", 1)
+    // d3.select("#text-display")
+    //   .append("text")
+    //   .attr("x", PADDING.left)
+    //   .attr("y", offset_y - 2.5 * tabPadding)
+    //   .text((d) => {
+    //     return col_name + " was influenced by " + string_influencers
+    //   })
+    //   .attr("opacity", 1)
 
     for (let relation of all_influencers) {
       for (let row in influencers) {
@@ -205,14 +216,14 @@
       " and " +
       all_influencees[i++].artist
 
-    d3.select("#text-display")
-      .append("text")
-      .attr("x", PADDING.left)
-      .attr("y", offset_y - 2.5 * tabPadding)
-      .text((d) => {
-        return row_name + " influenced " + string_influencees
-      })
-      .attr("opacity", 1)
+    // d3.select("#text-display")
+    //   .append("text")
+    //   .attr("x", PADDING.left)
+    //   .attr("y", offset_y - 2.5 * tabPadding)
+    //   .text((d) => {
+    //     return row_name + " influenced " + string_influencees
+    //   })
+    //   .attr("opacity", 1)
 
     for (let relation of all_influencees) {
       for (let row in influencers) {
@@ -541,7 +552,7 @@
     d3.select("#adjacency_matrix")
       .selectAll("rect.used")
       .attr("fill", Helpers.SeaColor)
-    d3.select("#text-display").selectAll("text").attr("opacity", 0)
+    // d3.select("#text-display").selectAll("text").attr("opacity", 0)
     d3.selectAll(".highlight").attr("fill", "white").classed("highlight", false)
   }
 
@@ -586,6 +597,66 @@
     })
   }
 
+  const OnMouseClickDescSortInfluencer = () => {
+    influencers = influencers.sort((a, b) => {
+      let influencer_num_a = influences.filter((d) => d.artist === a)
+      let influencer_num_b = influences.filter((d) => d.artist === b)
+      return influencer_num_a.length <= influencer_num_b.length ? 1 : -1
+    })
+    influencees = influencees
+    CreateAdjacencyMatrix(false)
+    PopulateAdjacencyMatrix()
+  }
+
+  const OnMouseClickAsceSortInfluencer = () => {
+    influencers = influencers.sort((a, b) => {
+      let influencer_num_a = influences.filter((d) => d.artist === a)
+      let influencer_num_b = influences.filter((d) => d.artist === b)
+      return influencer_num_a.length <= influencer_num_b.length ? -1 : 1
+    })
+    influencees = influencees
+    CreateAdjacencyMatrix(false)
+    PopulateAdjacencyMatrix()
+  }
+
+  const OnMouseClickAlphabeticalSortInfluencer = () => {
+    influencers = influencers.sort((a, b) => (a < b ? -1 : 1))
+    influencees = influencees
+    CreateAdjacencyMatrix(false)
+    PopulateAdjacencyMatrix()
+  }
+
+  const OnMouseClickDescSortInfluencee = () => {
+    influencees = influencees.sort((a, b) => {
+      let influencee_num_a = influences.filter((d) => d.influenced === a)
+      let influencee_num_b = influences.filter((d) => d.influenced === b)
+      return influencee_num_a.length <= influencee_num_b.length ? 1 : -1
+    })
+    influencers = influencers
+    CreateAdjacencyMatrix(false)
+    PopulateAdjacencyMatrix()
+  }
+
+  const OnMouseClickAsceSortInfluencee = () => {
+    influencees = influencees.sort((a, b) => {
+      let influencee_num_a = influences.filter((d) => d.influenced === a)
+      let influencee_num_b = influences.filter((d) => d.influenced === b)
+      return influencee_num_a.length <= influencee_num_b.length ? -1 : 1
+    })
+    influencers = influencers
+    CreateAdjacencyMatrix(false)
+    PopulateAdjacencyMatrix()
+  }
+
+  const OnMouseClickAlphabeticalSortInfluencee = () => {
+    // console.log('here')
+    influencees = influencees.sort((a, b) => (a < b ? -1 : 1))
+    influencers = influencers
+    CreateAdjacencyMatrix(false)
+    PopulateAdjacencyMatrix()
+    // console.log(influencers)
+  }
+
   export const Initialize = (
     artist_data: Types.ArtistData[],
     influence_data: Types.ArtistInfluence[]
@@ -603,8 +674,8 @@
     offset_y = (height - CHART.side) / 2
 
     // sort artist data in ascending
-    const artist_data_with_index = CreateAdjacencyMatrix()
-    PopulateAdjacencyMatrix(artist_data_with_index)
+    CreateAdjacencyMatrix()
+    PopulateAdjacencyMatrix()
     lines = ArrayDomain(
       adjMatrix[0].length > adjMatrix.length
         ? adjMatrix[0].length
@@ -634,68 +705,68 @@
     viewBox="0, 0, {width}, {height}"
     preserveAspectRatio="xMidYMid meet"
   >
-    <g id="text-display" />
+    <!-- <g id="text-display" /> -->
     <g id="rect-hover" />
     <g id="adjacency_matrix">
       <g id="rect-hover" />
       {#each influencers as i, row}
         {#each influencees as j, col}
-          <!-- {#if adjMatrix[row][col].z === 1} -->
-          <!-- TODO: check the x and y, I changed them as the boxes were diff -->
-          <rect
-            on:mouseover={(ev) =>
-              OnMouseOverRect(
-                adjMatrix[row][col].influencer,
-                adjMatrix[row][col].influencee,
-                row,
-                col
+          {#if adjMatrix.length > 0}
+            <!-- TODO: check the x and y, I changed them as the boxes were diff -->
+            <rect
+              on:mouseover={(ev) =>
+                OnMouseOverRect(
+                  adjMatrix[row][col].influencer,
+                  adjMatrix[row][col].influencee,
+                  row,
+                  col
+                )}
+              on:focus={(ev) =>
+                OnMouseOverRect(
+                  adjMatrix[row][col].influencer,
+                  adjMatrix[row][col].influencee,
+                  row,
+                  col
+                )}
+              on:mouseout={(ev) =>
+                OnMouseOutRect(
+                  adjMatrix[row][col].influencer,
+                  adjMatrix[row][col].influencee,
+                  row,
+                  col
+                )}
+              on:blur={(ev) =>
+                OnMouseOutRect(
+                  adjMatrix[row][col].influencer,
+                  adjMatrix[row][col].influencee,
+                  row,
+                  col
+                )}
+              on:click={(ev) =>
+                adjMatrix[row][col].z === 1
+                  ? OnMouseClickPair(
+                      adjMatrix[row][col].influencer,
+                      adjMatrix[row][col].influencee
+                    )
+                  : null}
+              id={ArtistName(
+                adjMatrix[row][col].influencer +
+                  "_" +
+                  adjMatrix[row][col].influencee
               )}
-            on:focus={(ev) =>
-              OnMouseOverRect(
-                adjMatrix[row][col].influencer,
-                adjMatrix[row][col].influencee,
-                row,
-                col
-              )}
-            on:mouseout={(ev) =>
-              OnMouseOutRect(
-                adjMatrix[row][col].influencer,
-                adjMatrix[row][col].influencee,
-                row,
-                col
-              )}
-            on:blur={(ev) =>
-              OnMouseOutRect(
-                adjMatrix[row][col].influencer,
-                adjMatrix[row][col].influencee,
-                row,
-                col
-              )}
-            on:click={(ev) =>
-              adjMatrix[row][col].z === 1
-                ? OnMouseClickPair(
-                    adjMatrix[row][col].influencer,
-                    adjMatrix[row][col].influencee
-                  )
-                : null}
-            id={ArtistName(
-              adjMatrix[row][col].influencer +
-                "_" +
-                adjMatrix[row][col].influencee
-            )}
-            style="outline: none;"
-            x={matrixScale(adjMatrix[row][col].y) + offset_x}
-            y={matrixScale(adjMatrix[row][col].x) + offset_y}
-            on:click={() =>
-              adjMatrix[row][col].z === 1 ? null : OnMouseClickReset()}
-            width={matrixScale.bandwidth()}
-            height={matrixScale.bandwidth()}
-            class={adjMatrix[row][col].z === 1 ? "used" : "empty"}
-            fill={adjMatrix[row][col].z === 1
-              ? colourRelation
-              : colourNoRelation}
-          />
-          <!-- {/if} -->
+              style="outline: none;"
+              x={matrixScale(adjMatrix[row][col].y) + offset_x}
+              y={matrixScale(adjMatrix[row][col].x) + offset_y}
+              on:click={() =>
+                adjMatrix[row][col].z === 1 ? null : OnMouseClickReset()}
+              width={matrixScale.bandwidth()}
+              height={matrixScale.bandwidth()}
+              class={adjMatrix[row][col].z === 1 ? "used" : "empty"}
+              fill={adjMatrix[row][col].z === 1
+                ? colourRelation
+                : colourNoRelation}
+            />
+          {/if}
         {/each}
       {/each}
     </g>
@@ -813,11 +884,12 @@
   </svg>
   <span
     class="absolute isolate inline-flex flex-col rounded-md shadow-sm"
-    style={`left:${offset_x - 60}px; top: ${offset_y}px;`}
+    style={`left:${width * 0.24}px; top: ${offset_y}px;`}
   >
     <button
       type="button"
-      class="cursor-pointer relative inline-flex items-center rounded-t-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+      class="cursor-pointer relative inline-flex items-center rounded-t-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
+      on:click={(ev) => OnMouseClickDescSortInfluencer()}
     >
       <svg
         class="h-5 w-5"
@@ -834,7 +906,8 @@
     </button>
     <button
       type="button"
-      class="cursor-pointer relative -ml-px inline-flex items-center border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+      class="cursor-pointer relative -ml-px inline-flex items-center border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
+      on:click={(ev) => OnMouseClickAlphabeticalSortInfluencer()}
     >
       <svg
         class="h-5 w-5"
@@ -851,7 +924,8 @@
     </button>
     <button
       type="button"
-      class="cursor-pointer relative -ml-px inline-flex items-center rounded-b-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+      class="cursor-pointer relative -ml-px inline-flex items-center rounded-b-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
+      on:click={(ev) => OnMouseClickAsceSortInfluencer()}
     >
       <svg
         class="h-5 w-5"
@@ -869,11 +943,12 @@
   </span>
   <span
     class="absolute isolate inline-flex rounded-md shadow-sm"
-    style={`left:${offset_x}px; top: ${offset_y - 60}px;`}
+    style={`left:${width * 0.3}px; top: ${offset_y - 60}px;`}
   >
     <button
       type="button"
-      class="cursor-pointer relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+      class="cursor-pointer relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
+      on:click={(ev) => OnMouseClickDescSortInfluencee()}
     >
       <svg
         class="h-5 w-5"
@@ -891,7 +966,8 @@
     </button>
     <button
       type="button"
-      class="cursor-pointer relative -ml-px inline-flex items-center border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+      class="cursor-pointer relative -ml-px inline-flex items-center border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
+      on:click={(ev) => OnMouseClickAlphabeticalSortInfluencee()}
     >
       <svg
         class="h-5 w-5"
@@ -909,7 +985,8 @@
     </button>
     <button
       type="button"
-      class="cursor-pointer relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+      class="cursor-pointer relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-utah-red focus:outline-none focus:ring-1 focus:ring-utah-red"
+      on:click={(ev) => OnMouseClickAsceSortInfluencee()}
     >
       <svg
         class="h-5 w-5"
