@@ -1,0 +1,1 @@
+var n=(r=>(r[r.Influencer=0]="Influencer",r[r.Influencee=1]="Influencee",r[r.Both=2]="Both",r))(n||{}),a=(r=>(r[r.SortDescending=0]="SortDescending",r[r.SortAlpha=1]="SortAlpha",r[r.SortAscending=2]="SortAscending",r))(a||{});export{n as I,a as S};
