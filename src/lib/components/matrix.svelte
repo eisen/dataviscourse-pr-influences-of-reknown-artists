@@ -650,7 +650,7 @@
 
   const OnMouseClickAlphabeticalSortInfluencee = () => {
     // console.log('here')
-    influencers = influencers.sort((a, b) => (a < b ? -1 : 1))
+    influencees = influencees.sort((a, b) => (a < b ? -1 : 1))
     influencers = influencers
     CreateAdjacencyMatrix(false)
     PopulateAdjacencyMatrix()
