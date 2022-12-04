@@ -124,7 +124,6 @@
       selectedG.push(rolledUpG[i][0])
     }
     selectedG.sort(d3.ascending)
-    console.log("alright. here we are again.")
     // Append Legend Rect:
     d3.select(legendViz)
       .append("rect")
@@ -162,8 +161,6 @@
       .data(selectedG)
       .enter()
       .append("g")
-      .on("mouseover", (el, d) => OnMouseOverElement(d))
-      .on("mouseleave", (el, d) => OnMouseLeaveElement(d))
 
     colorGroup
       .append("rect")
