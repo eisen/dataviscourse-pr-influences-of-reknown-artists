@@ -87,6 +87,10 @@
       .style("opacity", 1.0)
   }
 
+  const Reset = () => {
+    dispatch("reset_mediums", {})
+  }
+
   export const Initialize = (
     groupLocs: Types.ArtistMedium[] | Types.ArtistData[]
   ) => {
@@ -249,6 +253,9 @@
     preserveAspectRatio="xMidYMid meet"
     transform="translate(0, 0)"
   >
+    <g on:click={(ev) => Reset()}>
+      <rect x="0" y="0" {width} {height} fill="transparent" />
+    </g>
     <g id="legendViz" bind:this={legendViz} transform="translate(0, 0)" />
   </svg>
 </div>

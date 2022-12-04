@@ -30,15 +30,7 @@
   let allGroupings: [string, Types.ArtistMedium[]][]
   $: allGroupings = []
 
-  let gtCentsMedium = [
-    "1300",
-    "1400",
-    "1500",
-    "1600",
-    "1700",
-    "1800",
-    "1900",
-  ]
+  let gtCentsMedium = ["1400", "1500", "1600", "1700", "1800", "1900", "2000"]
 
   let gtCentsDeath = [
     "1300",
@@ -76,7 +68,7 @@
   //   .range(Helpers.ColorScheme)
 
   function ribbonBasket(d) {
-    console.log('Here we are. Subspace.')
+    console.log("Here we are. Subspace.")
     var buffer,
       sr = chartRad * 0.9125, // source radius
       sa0 = (d.startAngle * 180) / Math.PI - 90, // start angle source
@@ -239,7 +231,9 @@
     chordTimeNum: number
   ) => {
     let groupsSelected = []
-    let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
+    let centSelected = gtCents.indexOf(
+      String(Math.floor(Number(centClicked) / 100) * 100)
+    )
     for (let k = 0; k < groupedData.length; k++) {
       if (groupedData[k].groups[centSelected] > 0) {
         groupsSelected.push(groupedData[k].slice)
@@ -323,7 +317,9 @@
   export const RestoreGrouping = (chordGroup: string, chordTimeNum: number) => {
     // Changing Arc Opacity
     let groupsSelected = []
-    let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
+    let centSelected = gtCents.indexOf(
+      String(Math.floor(Number(centClicked) / 100) * 100)
+    )
     for (let k = 0; k < groupedData.length; k++) {
       if (groupedData[k].groups[centSelected] > 0) {
         groupsSelected.push(groupedData[k].slice)
@@ -408,7 +404,9 @@
   export const HighlightRibbon = (chordGroup: string, chordIdx: number) => {
     // Keeping bold those ribbons connected to the clicked button:
     let groupsSelected = []
-    let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
+    let centSelected = gtCents.indexOf(
+      String(Math.floor(Number(centClicked) / 100) * 100)
+    )
     for (let k = 0; k < groupedData.length; k++) {
       if (groupedData[k].groups[centSelected] > 0) {
         groupsSelected.push(groupedData[k].slice)
@@ -469,7 +467,9 @@
     chordTimeNum: number
   ) => {
     let groupsSelected = []
-    let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
+    let centSelected = gtCents.indexOf(
+      String(Math.floor(Number(centClicked) / 100) * 100)
+    )
     for (let k = 0; k < groupedData.length; k++) {
       if (groupedData[k].groups[centSelected] > 0) {
         groupsSelected.push(groupedData[k].slice)
@@ -562,6 +562,10 @@
     // console.log('Button hover-leave for: ' + chordTime)
   }
 
+  const Reset = () => {
+    dispatch("reset_mediums", {})
+  }
+
   export const Initialize = (
     locs: Types.ArtistLocation[],
     groupLocs: Types.ArtistMedium[] | Types.ArtistData[]
@@ -642,10 +646,20 @@
               if (grouping == "Medium") {
                 if (groupedData[k].slice == currGroup[j].medium) {
                   groupedData[k].groups[
-                    gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][0].year) / 100) * 100))
+                    gtCents.indexOf(
+                      String(
+                        Math.floor(Number(allLocations[i][1][1].year) / 100) *
+                          100
+                      )
+                    )
                   ] += 1
                   centStatus[
-                    gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][0].year) / 100) * 100))
+                    gtCents.indexOf(
+                      String(
+                        Math.floor(Number(allLocations[i][1][1].year) / 100) *
+                          100
+                      )
+                    )
                   ] = true
                   break
                 }
@@ -653,18 +667,38 @@
                 if (groupedData[k].slice == currGroup[j].death_type) {
                   if (allLocations[i][1].length > 1) {
                     groupedData[k].groups[
-                      gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][1].year) / 100) * 100))
+                      gtCents.indexOf(
+                        String(
+                          Math.floor(Number(allLocations[i][1][1].year) / 100) *
+                            100
+                        )
+                      )
                     ] += 1
                     centStatus[
-                      gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][1].year) / 100) * 100))
+                      gtCents.indexOf(
+                        String(
+                          Math.floor(Number(allLocations[i][1][1].year) / 100) *
+                            100
+                        )
+                      )
                     ] = true
                     break
                   } else {
                     groupedData[k].groups[
-                      gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][0].year) / 100) * 100))
+                      gtCents.indexOf(
+                        String(
+                          Math.floor(Number(allLocations[i][1][0].year) / 100) *
+                            100
+                        )
+                      )
                     ] += 1
                     centStatus[
-                      gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][0].year) / 100) * 100))
+                      gtCents.indexOf(
+                        String(
+                          Math.floor(Number(allLocations[i][1][0].year) / 100) *
+                            100
+                        )
+                      )
                     ] = true
                     break
                   }
@@ -689,7 +723,7 @@
         .outerRadius(chartRad)
         .cornerRadius(3)
 
-      console.log('aight. So far so good whats good?')
+      console.log("aight. So far so good whats good?")
 
       d3.select(chordViz).datum(function (d, i) {
         let sortedGroupedArr = groupedData.sort(function (a, b) {
@@ -820,7 +854,7 @@
         console.log(retArr)
         return retArr
       })
-      console.log('Whatsaaauuuup?')
+      console.log("Whatsaaauuuup?")
       let deathArr = [
         "Natural Causes",
         "Unknown",
@@ -874,7 +908,7 @@
           OnMouseLeaveRibbons(d.slice, d.defIndex, d.cent)
         )
         .on("click", (e, d) => OnClickRibbons(d.slice, chordCentScale(d.cent)))
-        console.log('Ribbons are....epiiiiic?')
+      console.log("Ribbons are....epiiiiic?")
 
       // Group for everything but the ribbons
       let groupChord = d3
@@ -924,7 +958,9 @@
           // Selecting groups of arcs, not just individual one
           let groupsSelected = []
           let mainGroupsSelected = []
-          let centSelected = gtCents.indexOf(String(Math.floor(Number(d) / 100) * 100))
+          let centSelected = gtCents.indexOf(
+            String(Math.floor(Number(d) / 100) * 100)
+          )
           for (let k = 0; k < groupedData.length; k++) {
             if (groupedData[k].groups[centSelected] > 0) {
               groupsSelected.push(groupedData[k].slice)
@@ -1018,7 +1054,9 @@
             // .duration(buttonDurr)
             // .style("opacity", 1.0)
             let groupsSelected = []
-            let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
+            let centSelected = gtCents.indexOf(
+              String(Math.floor(Number(centClicked) / 100) * 100)
+            )
             for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
@@ -1061,7 +1099,9 @@
         .on("click", function (e, d) {
           if (centStatus[gtCents.indexOf(d)]) {
             let groupsSelected = []
-            let centSelected = gtCents.indexOf(String(Math.floor(Number(d) / 100) * 100))
+            let centSelected = gtCents.indexOf(
+              String(Math.floor(Number(d) / 100) * 100)
+            )
             for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
@@ -1151,7 +1191,9 @@
           // Selecting groups of arcs, not just individual one
           let groupsSelected = []
           let mainGroupsSelected = []
-          let centSelected = gtCents.indexOf(String(Math.floor(Number(d) / 100) * 100))
+          let centSelected = gtCents.indexOf(
+            String(Math.floor(Number(d) / 100) * 100)
+          )
           for (let k = 0; k < groupedData.length; k++) {
             if (groupedData[k].groups[centSelected] > 0) {
               groupsSelected.push(groupedData[k].slice)
@@ -1245,7 +1287,9 @@
             // .duration(buttonDurr)
             // .style("opacity", 1.0)
             let groupsSelected = []
-            let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
+            let centSelected = gtCents.indexOf(
+              String(Math.floor(Number(centClicked) / 100) * 100)
+            )
             for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
@@ -1278,7 +1322,9 @@
         .on("click", function (e, d) {
           if (centStatus[gtCents.indexOf(d)]) {
             let groupsSelected = []
-            let centSelected = gtCents.indexOf(String(Math.floor(Number(d) / 100) * 100))
+            let centSelected = gtCents.indexOf(
+              String(Math.floor(Number(d) / 100) * 100)
+            )
             for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
@@ -1387,6 +1433,9 @@
     viewBox="0, 0, {width}, {height}"
     preserveAspectRatio="xMidYMid meet"
   >
+    <g on:click={(ev) => Reset()}>
+      <rect x="0" y="0" {width} {height} fill="transparent" />
+    </g>
     <g
       id="chordViz"
       bind:this={chordViz}

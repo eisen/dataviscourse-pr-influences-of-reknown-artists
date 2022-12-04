@@ -383,6 +383,11 @@
     legend_deaths.singleGroupingReFocus()
   }
 
+  const ResetMediums = (ev: any) => {
+    // No data passed
+    area.ResetAreaChart()
+  }
+
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
     const locs: Types.ArtistLocation[] | undefined = await d3.json(
@@ -678,12 +683,14 @@
           on:click_chord_by_century={CenturyClick_Mediums}
           on:highlight_chord_button={HighlightButton_Mediums}
           on:restore_chord_button={RestoreButton_Mediums}
+          on:reset_mediums={ResetMediums}
         />
         <Area
           bind:this={area}
           width={area_width}
           height={area_height}
           topOffset={legend_height}
+          on:reset_mediums={ResetMediums}
         />
       </div>
       <Legend
@@ -692,6 +699,7 @@
         height={legend_height}
         grouping={"Medium"}
         topOffset={header_height}
+        on:reset_mediums={ResetMediums}
       />
     </div>
   </div>
