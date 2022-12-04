@@ -684,15 +684,14 @@
       .attr("stroke", "black")
       .attr("stroke-width", "4")
       .attr("fill", "none")
-      .attr('opacity', '1.0')
+      .attr("opacity", "1.0")
   }
 
   const ClearRectangleCentury = () => {
-    console.log('im here')
-    d3.select("#hover-rect-century")
-      .attr("stroke", "transparent")
-      // .selectAll('rect')
-      // .remove()
+    console.log("im here")
+    d3.select("#hover-rect-century").attr("stroke", "transparent")
+    // .selectAll('rect')
+    // .remove()
   }
 
   // Receiving sign from chord that a medium arc was highlighted/is no longer highlighted
@@ -752,7 +751,6 @@
     //    and this: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6 for help.
     console.log("Chord says to zoom to this century: ", chordCentury)
 
-
     oldestYear = +chordCentury
     youngestYear = +chordCentury + 100
     SetYears(youngestYear, oldestYear)
@@ -803,7 +801,11 @@
   }
 
   const Reset = () => {
-    console.log('clicked!')
+    dispatch("reset_mediums", {})
+  }
+
+  export const ResetAreaChart = () => {
+    console.log("Reset")
   }
 
   export const Initialize = (
@@ -852,7 +854,7 @@
     preserveAspectRatio="xMidYMid meet"
   >
     <g on:click={(ev) => Reset()}>
-      <rect x='0' y='0' {width} {height} fill="transparent"></rect>
+      <rect x="0" y="0" {width} {height} fill="transparent" />
     </g>
     <!-- #each for all years, call function for each year calc mediums % , #each give line generater -->
     <g id="axes-titles">
