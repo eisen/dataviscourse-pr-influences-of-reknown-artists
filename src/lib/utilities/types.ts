@@ -85,3 +85,9 @@ export enum InfluenceType {
   Influencee,
   Both,
 }
+
+export enum SortType {
+  SortDescending = 0,
+  SortAlpha,
+  SortAscending,
+}
