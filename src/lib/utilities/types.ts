@@ -55,6 +55,7 @@ export type ArtistData = {
   index?: number
   x?: number
   y?: number
+  blurb?: string
 }
 
 export type ArtistMedium = {
