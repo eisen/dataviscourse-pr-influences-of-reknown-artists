@@ -643,7 +643,8 @@
   }
 
   const ClearAreaChart = () => {
-    d3.select("#all-area-chart").selectAll("*").attr("opacity", "0.0")
+    // d3.select("#all-area-chart").selectAll("*").attr("opacity", "0.0")
+    d3.select("#all-area-chart").selectAll("*").remove()
   }
 
   const ClearHover = () => {
@@ -704,7 +705,7 @@
     // Will implement logic for highlighting area in this component that corresponds to chordMedium
     console.log("Chord medium was highlighted on chord: ", chordMedium)
     show_artifacts = false
-    if (!selected_medium) {
+    if (!selected_medium && !selected_century) {
       HighlightCategoryOnHover(chordMedium)
     }
   }
@@ -714,7 +715,7 @@
     show_artifacts = true
     console.log("Chord medium is no longer highlighted on chord.")
 
-    if (!selected_medium) {
+    if (!selected_medium && !selected_century) {
       ClearHover()
       RestoreAfterHover()
     }
@@ -739,7 +740,7 @@
       chordCentury
     )
     show_artifacts = false
-    if (!selected_medium) {
+    if (!selected_medium && !selected_century) {
       HighlightCategoryOnHover(chordMedium)
     }
   }
@@ -748,7 +749,7 @@
     // Will implement logic for removing highlights from medium area and indication of century time frame on x axis
     console.log("That ribbon is no longer highlighted...")
     show_artifacts = true
-    if (!selected_medium) {
+    if (!selected_medium && !selected_century) {
       ClearHover()
       RestoreAfterHover()
     }
@@ -785,12 +786,14 @@
       tickEvery = 10
       SetYears(youngestYear, oldestYear)
       ClearAreaChart()
+      ClearHover()
       ClearRectangleCentury()
       DrawAxesSingle()
       DataForAllAreaChartLine()
       AllAreaChart()
     } else {
       tickEvery = 50
+      ClearAreaChart()
       FirstLoad()
     }
 
@@ -800,7 +803,14 @@
 
   // Clicking on medium in arc
   export const chordArcMedButtonClick = (chordMedium: string) => {
-    selected_medium = !selected_medium
+
+    if (selected_medium) {
+      if (selected_medium_category === chordMedium) {
+        selected_medium = !selected_medium
+      }
+    } else {
+      selected_medium = true
+    }
     selected_medium_category = chordMedium
 
     if (selected_medium) {
