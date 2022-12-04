@@ -180,8 +180,6 @@
     // Draw all in category
     let num = 0
     for (var category of gtMediums) {
-      console.log("whiich category we on? " + category)
-      // console.log(gtMediums.length - 1 - num)
       let area_line_values = area_lines_percentage[gtMediums.length - 1 - num]
       let area_line_values_prev: any = []
       if (num < gtMediums.length - 1) {
@@ -201,7 +199,6 @@
         each_area_line.push(each_pair)
       }
       let area_id = "area-chart-" + (gtMediums.length - num).toString()
-      // console.log(area_id)
       d3.select("#all-area-chart")
         .append("path")
         .attr("id", area_id)
@@ -209,13 +206,11 @@
         .attr("d", areaGenerator1)
         .style("fill", manualColors[num - 1])
         .attr("opacity", "1.0")
-      console.log("heyoooo which num tell me please " + (num - 1))
     }
   }
 
   const IndividualAreaChart = (category: string) => {
     let idx = gtMediums.indexOf(category)
-    console.log(idx)
     // Make all category area chart transparent
     // d3.select('#all-area-chart')
     // .attr('opacity', '0.0')
@@ -591,7 +586,6 @@
   const OnMouseOutAreaChart = (ev:any) => {
     // console.log('out')
     if(ev.offsetX < PADDING.left || (PADDING.left+chart_width) < ev.offsetX){
-      console.log('outttt')
       
     }
     // d3.select('#hover-overlay')
@@ -796,7 +790,6 @@
       gtMediums.push(mediumRoll[l][0])
     }
     gtMediums.sort(d3.ascending)
-    console.log("mediums over here: ", gtMediums)
     chordColorScale = d3.scaleOrdinal().domain(gtMediums).range(d3.schemePaired)
 
     // TODO: change this when clicking on century button to show only that century
