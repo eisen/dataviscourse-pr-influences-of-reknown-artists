@@ -161,6 +161,8 @@
       .data(selectedG)
       .enter()
       .append("g")
+      .on("mouseover", (el, d) => OnMouseOverElement(d))
+      .on("mouseleave", (el, d) => OnMouseLeaveElement(d))
 
     colorGroup
       .append("rect")
