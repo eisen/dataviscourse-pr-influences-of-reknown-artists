@@ -58,9 +58,14 @@
   $: highlight_medium = false
 
   $: show_artifacts = true
+  $: show_century = false
 
   let chordColorScale
   let gtMediums: any = []
+
+  let selected_century:boolean
+  let selected_medium:boolean
+  let selected_medium_category:string
 
   let xAxisGroup
 
@@ -367,7 +372,7 @@
       .attr("opacity", "1.0")
 
     // Make everything else opacity = 0.0
-    d3.select("#individual-area-chart").attr("opacity", "0.0")
+    // d3.select("#individual-area-chart").attr("opacity", "0.0")
 
     let i = 0
     for (var category of gtMediums) {
@@ -395,7 +400,6 @@
 
   const OnMouseMoveAreaChart = (ev: any) => {
     show_artifacts = true
-    // console.log("move")
     // console.log(ev.offsetX, ev.offsetY)
 
     // X SCALE
@@ -438,24 +442,29 @@
     d3.select("#hover-overlay-rect")
       .selectAll("rect")
       .data((d) => {
-        for (var category of gtMediums) {
-          let idx = gtMediums.indexOf(category)
+        if(!selected_medium){
+          for (var category of gtMediums) {
+            let idx = gtMediums.indexOf(category)
+          }
+          let non_zero_categories = gtMediums.filter((d) => {
+            let idx_cat = gtMediums.indexOf(d)
+            let val = 0
+            if (idx_cat !== 0) {
+              val =
+                area_lines_percentage[idx_cat][year_hover_idx] -
+                area_lines_percentage[idx_cat - 1][year_hover_idx]
+            } else {
+              val = area_lines_percentage[0][year_hover_idx]
+            }
+            if (val) {
+              return d
+            }
+          })
+          return non_zero_categories.reverse()
         }
-        let non_zero_categories = gtMediums.filter((d) => {
-          let idx_cat = gtMediums.indexOf(d)
-          let val = 0
-          if (idx_cat !== 0) {
-            val =
-              area_lines_percentage[idx_cat][year_hover_idx] -
-              area_lines_percentage[idx_cat - 1][year_hover_idx]
-          } else {
-            val = area_lines_percentage[0][year_hover_idx]
-          }
-          if (val) {
-            return d
-          }
-        })
-        return non_zero_categories.reverse()
+        else{
+          return [selected_medium_category]
+        }
       })
       .join("rect")
       .attr("x", (d) => {
@@ -477,24 +486,29 @@
     d3.select("#hover-overlay-text")
       .selectAll("text")
       .data((d) => {
-        for (var category of gtMediums) {
-          let idx = gtMediums.indexOf(category)
+        if(!selected_medium){
+          for (var category of gtMediums) {
+            let idx = gtMediums.indexOf(category)
+          }
+          let non_zero_categories = gtMediums.filter((d) => {
+            let idx_cat = gtMediums.indexOf(d)
+            let val = 0
+            if (idx_cat !== 0) {
+              val =
+                area_lines_percentage[idx_cat][year_hover_idx] -
+                area_lines_percentage[idx_cat - 1][year_hover_idx]
+            } else {
+              val = area_lines_percentage[0][year_hover_idx]
+            }
+            if (val) {
+              return d
+            }
+          })
+          return non_zero_categories.reverse()
         }
-        let non_zero_categories = gtMediums.filter((d) => {
-          let idx_cat = gtMediums.indexOf(d)
-          let val = 0
-          if (idx_cat !== 0) {
-            val =
-              area_lines_percentage[idx_cat][year_hover_idx] -
-              area_lines_percentage[idx_cat - 1][year_hover_idx]
-          } else {
-            val = area_lines_percentage[0][year_hover_idx]
-          }
-          if (val) {
-            return d
-          }
-        })
-        return non_zero_categories.reverse()
+        else{
+          return [selected_medium_category]
+        }
       })
       .join("text")
       .text((d) => {
@@ -593,7 +607,7 @@
 
     if (
       ev.offsetX <= 0.05 * width ||
-      ev.offsetX > 0.9 * width ||
+      ev.offsetX > 0.95 * width ||
       ev.offsetY > height * 0.9 ||
       ev.offsetY < height * 0.05
     ) {
@@ -667,6 +681,7 @@
 
   const DrawRectangleCentury = (century: string) => {
     // console.log(century)
+    show_century = true
 
     // X scale
     var xScale = d3
@@ -689,25 +704,36 @@
 
   const ClearRectangleCentury = () => {
     console.log("im here")
-    d3.select("#hover-rect-century").attr("stroke", "transparent")
+    show_century = false
+    // d3.select("#hover-rect-century").attr("stroke", "transparent")
     // .selectAll('rect')
     // .remove()
   }
+
+
+
+
 
   // Receiving sign from chord that a medium arc was highlighted/is no longer highlighted
   export const chordMedGroupFocus = (chordMedium: string) => {
     // Will implement logic for highlighting area in this component that corresponds to chordMedium
     console.log("Chord medium was highlighted on chord: ", chordMedium)
     show_artifacts = false
-    HighlightCategoryOnHover(chordMedium)
+    if(!selected_medium){
+      HighlightCategoryOnHover(chordMedium)
+    }
   }
 
   export const chordMedGroupReFocus = () => {
     // Will implement logic for making all areas equal in focus again
     show_artifacts = true
     console.log("Chord medium is no longer highlighted on chord.")
-    ClearHover()
-    RestoreAfterHover()
+
+    if(!selected_medium){
+      ClearHover()
+      RestoreAfterHover()
+    }
+    
 
     // SetYears(youngestYear, oldestYear)
     // DrawAxesSingle()
@@ -729,15 +755,19 @@
       chordCentury
     )
     show_artifacts = false
-    HighlightCategoryOnHover(chordMedium)
+    if(!selected_medium){
+      HighlightCategoryOnHover(chordMedium)
+    }
   }
 
   export const chordMedRibbonReFocus = () => {
     // Will implement logic for removing highlights from medium area and indication of century time frame on x axis
     console.log("That ribbon is no longer highlighted...")
     show_artifacts = true
-    ClearHover()
-    RestoreAfterHover()
+    if(!selected_medium){
+      ClearHover()
+      RestoreAfterHover()
+    }
   }
 
   // Receiving sign from chord that a button got clicked in any way
@@ -754,15 +784,22 @@
     // You can check out the scatter plot's click handle function (chordButtonClick)
     //    and this: https://bl.ocks.org/guilhermesimoes/15ed216d14175d8165e6 for help.
     console.log("Chord says to zoom to this century: ", chordCentury)
+    selected_century = !selected_century
+    //gtMediums.indexOf(chordCentury)
 
-    oldestYear = +chordCentury
-    youngestYear = +chordCentury + 100
-    SetYears(youngestYear, oldestYear)
-    ClearAreaChart()
-    ClearRectangleCentury()
-    DrawAxesSingle()
-    DataForAllAreaChartLine()
-    AllAreaChart()
+    if(selected_century){
+      oldestYear = +chordCentury
+      youngestYear = +chordCentury + 100
+      SetYears(youngestYear, oldestYear)
+      ClearAreaChart()
+      ClearRectangleCentury()
+      DrawAxesSingle()
+      DataForAllAreaChartLine()
+      AllAreaChart()
+    }
+    else{
+      FirstLoad()
+    }
 
     // You should probably create an array of booleans of length = centuries.length and then
     // update accordingly with this function!
@@ -770,15 +807,22 @@
 
   // Clicking on medium in arc
   export const chordArcMedButtonClick = (chordMedium: string) => {
-    console.log("here", chordMedium)
-    ClearAreaChart()
-    ClearHover()
-    oldestYear = +d3.min(artists, (d) => d.year)!
-    youngestYear = +d3.max(artists, (d) => d.year)!
-    oldestYear = 1378 // TODO: Fix
-    SetYears(youngestYear, oldestYear)
-    DrawAxesSingle()
-    IndividualAreaChart(chordMedium)
+    selected_medium = !selected_medium
+    selected_medium_category = chordMedium
+
+    if(selected_medium){
+      ClearAreaChart()
+      ClearHover()
+      // oldestYear = +d3.min(artists, (d) => d.year)!
+      youngestYear = +d3.max(artists, (d) => d.year)!
+      oldestYear = 1378 // TODO: Fix
+      SetYears(youngestYear, oldestYear)
+      DrawAxesSingle()
+      IndividualAreaChart(chordMedium)
+    }
+    else{
+      FirstLoad()
+    }
 
     // TODO: stay until clicked outside
   }
@@ -788,6 +832,7 @@
     // Will implement logic for some indication of the century's time span (like a rectangle or something)
     console.log("User highlighted button for century: ", chordCentury)
     show_artifacts = false
+    
     DrawRectangleCentury(chordCentury)
   }
 
@@ -797,6 +842,11 @@
     show_artifacts = true
     ClearRectangleCentury()
   }
+
+
+
+
+
 
   const SetYears = (young: number, old: number) => {
     size_years = young - old
@@ -810,8 +860,18 @@
     dispatch("reset_mediums", {})
   }
 
+  const FirstLoad = () => {
+    oldestYear = 1378
+    youngestYear = 2022
+    SetYears(youngestYear, oldestYear)
+    DrawAxesSingle() //TODO: call again when selecting a century to change x axis
+    DataForAllAreaChartLine()
+    AllAreaChart()
+  }
+
   export const ResetAreaChart = () => {
     console.log("Reset")
+    // FirstLoad()
   }
 
   export const Initialize = (
@@ -903,10 +963,12 @@
       />
 
       <g id="highlight-area" />
-      {#if show_artifacts}
         <g id="hover-century">
+          {#if show_century}
           <rect id="hover-rect-century" />
+          {/if}
         </g>
+        {#if show_artifacts}
         <g id="hover-overlay">
           <line />
           <g id="hover-overlay-year" />
