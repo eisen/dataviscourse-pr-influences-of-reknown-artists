@@ -500,10 +500,17 @@
               .attr("stroke", "black")
               .attr("opacity", 0.0)
               .attr(
-                "x",
-                ((d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
-                  ? e.offsetX - scatterWidth * 0.1
-                  : e.offsetX) -
+                "x", function(){
+                let horizontalOffsetQ = 0
+                if((d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8)
+                {
+                  horizontalOffsetQ = -scatterWidth * 0.1
+                }
+                else if((d.finalYear - newMinYear) / (newMaxYear - newMinYear) <= 0.2)
+                {
+                  horizontalOffsetQ = scatterWidth * 0.1
+                }
+                return  (e.offsetX + horizontalOffsetQ) -
                   (Helpers.MaxTextWidth(
                     [
                       "#" + Helpers.ArtistID(d.name) + "-name",
@@ -514,7 +521,7 @@
                   ) +
                     PADDING) *
                     0.5
-              )
+                })
               .attr(
                 "y",
                 e.offsetY -
@@ -529,10 +536,18 @@
             d3.select(scatterViz)
               .append("text")
               .attr(
-                "x",
-                (d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
-                  ? e.offsetX - scatterWidth * 0.1
-                  : e.offsetX
+                "x", function(){
+                  let horizontalOffsetQ = 0
+                  if((d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8)
+                  {
+                    horizontalOffsetQ = -scatterWidth * 0.1
+                  }
+                  else if((d.finalYear - newMinYear) / (newMaxYear - newMinYear) <= 0.2)
+                  {
+                    horizontalOffsetQ = scatterWidth * 0.1
+                  }
+                  return e.offsetX + horizontalOffsetQ
+                }
               )
               .attr(
                 "y",
@@ -560,10 +575,18 @@
             d3.select(scatterViz)
               .append("text")
               .attr(
-                "x",
-                (d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
-                  ? e.offsetX - scatterWidth * 0.1
-                  : e.offsetX
+                "x", function(){
+                  let horizontalOffsetQ = 0
+                  if((d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8)
+                  {
+                    horizontalOffsetQ = -scatterWidth * 0.1
+                  }
+                  else if((d.finalYear - newMinYear) / (newMaxYear - newMinYear) <= 0.2)
+                  {
+                    horizontalOffsetQ = scatterWidth * 0.1
+                  }
+                  return e.offsetX + horizontalOffsetQ
+                }
               )
               .attr(
                 "y",
@@ -586,10 +609,18 @@
             d3.select(scatterViz)
               .append("text")
               .attr(
-                "x",
-                (d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
-                  ? e.offsetX - scatterWidth * 0.1
-                  : e.offsetX
+                "x",function(){
+                  let horizontalOffsetQ = 0
+                  if((d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8)
+                  {
+                    horizontalOffsetQ = -scatterWidth * 0.1
+                  }
+                  else if((d.finalYear - newMinYear) / (newMaxYear - newMinYear) <= 0.2)
+                  {
+                    horizontalOffsetQ = scatterWidth * 0.1
+                  }
+                  return e.offsetX + horizontalOffsetQ
+                }
               )
               .attr(
                 "y",
@@ -691,7 +722,7 @@
       d3.select(scatterViz)
         .append("text")
         .attr("x", scatterWidth / 2)
-        .attr("y", scatterHeight * 0.9)
+        .attr("y", scatterHeight * 0.93)
         .attr("fill", "black")
         .style("text-anchor", "middle")
         .attr("font-weight", 700)

@@ -31,9 +31,6 @@
   $: allGroupings = []
 
   let gtCentsMedium = [
-    "1000",
-    "1100",
-    "1200",
     "1300",
     "1400",
     "1500",
@@ -44,9 +41,6 @@
   ]
 
   let gtCentsDeath = [
-    "1000",
-    "1100",
-    "1200",
     "1300",
     "1400",
     "1500",
@@ -82,6 +76,7 @@
   //   .range(Helpers.ColorScheme)
 
   function ribbonBasket(d) {
+    console.log('Here we are. Subspace.')
     var buffer,
       sr = chartRad * 0.9125, // source radius
       sa0 = (d.startAngle * 180) / Math.PI - 90, // start angle source
@@ -244,7 +239,7 @@
     chordTimeNum: number
   ) => {
     let groupsSelected = []
-    let centSelected = Number(centClicked) / 100 - 10
+    let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
     for (let k = 0; k < groupedData.length; k++) {
       if (groupedData[k].groups[centSelected] > 0) {
         groupsSelected.push(groupedData[k].slice)
@@ -271,14 +266,14 @@
             : 1.0
         )
         .style("stroke", (d, i) =>
-          clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217"
+          clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#3C1900"
         )
         .style("stroke-width", 1)
       d3.selectAll("#arc_" + chordGroup)
         .transition()
         .duration(fastTransitionDur)
         .style("opacity", 1.0)
-        .style("stroke", "#cf8217")
+        .style("stroke", "#3C1900")
       // .style("stroke-width", 3)
     } else {
       // Changing Arc Opacity
@@ -292,14 +287,14 @@
             : 1.0
         )
         .style("stroke", (d, i) =>
-          clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217"
+          clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#3C1900"
         )
         .style("stroke-width", 1)
       d3.selectAll("#arc_" + chordGroup)
         .transition()
         .duration(fastTransitionDur)
         .style("opacity", 1.0)
-        .style("stroke", "#cf8217")
+        .style("stroke", "#3C1900")
       // .style("stroke-width", 3)
 
       // Chaning Ribbon Opacity
@@ -328,7 +323,7 @@
   export const RestoreGrouping = (chordGroup: string, chordTimeNum: number) => {
     // Changing Arc Opacity
     let groupsSelected = []
-    let centSelected = Number(centClicked) / 100 - 10
+    let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
     for (let k = 0; k < groupedData.length; k++) {
       if (groupedData[k].groups[centSelected] > 0) {
         groupsSelected.push(groupedData[k].slice)
@@ -360,7 +355,7 @@
           .style("stroke", (d, i) =>
             clickedArcs[selectedG.indexOf(d.slice)] == false
               ? "white"
-              : "#cf8217"
+              : "#3C1900"
           )
           .style("stroke-width", 1)
       } else {
@@ -371,7 +366,7 @@
           .style("stroke", (d, i) =>
             clickedArcs[selectedG.indexOf(d.slice)] == false
               ? "white"
-              : "#cf8217"
+              : "#3C1900"
           )
           .style("stroke-width", 1)
       }
@@ -394,7 +389,7 @@
             : 1.0
         )
         .style("stroke", (d, i) =>
-          clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217"
+          clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#3C1900"
         )
         .style("stroke-width", 1)
     }
@@ -413,7 +408,7 @@
   export const HighlightRibbon = (chordGroup: string, chordIdx: number) => {
     // Keeping bold those ribbons connected to the clicked button:
     let groupsSelected = []
-    let centSelected = Number(centClicked) / 100 - 10
+    let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
     for (let k = 0; k < groupedData.length; k++) {
       if (groupedData[k].groups[centSelected] > 0) {
         groupsSelected.push(groupedData[k].slice)
@@ -439,7 +434,7 @@
           .style("stroke", (d, i) =>
             clickedArcs[selectedG.indexOf(d.slice)] == false
               ? "white"
-              : "#cf8217"
+              : "#3C1900"
           )
           .style("stroke-width", 1)
       }
@@ -463,7 +458,7 @@
       .duration(fastTransitionDur)
       .style("opacity", 1.0)
       .style("stroke", (d, i) =>
-        clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#cf8217"
+        clickedArcs[selectedG.indexOf(d.slice)] == false ? "white" : "#3C1900"
       )
       .style("stroke-width", 1)
   }
@@ -474,7 +469,7 @@
     chordTimeNum: number
   ) => {
     let groupsSelected = []
-    let centSelected = Number(centClicked) / 100 - 10
+    let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
     for (let k = 0; k < groupedData.length; k++) {
       if (groupedData[k].groups[centSelected] > 0) {
         groupsSelected.push(groupedData[k].slice)
@@ -505,7 +500,7 @@
           .style("stroke", (d, i) =>
             clickedArcs[selectedG.indexOf(d.slice)] == false
               ? "white"
-              : "#cf8217"
+              : "#3C1900"
           )
           .style("stroke-width", 1)
       } else {
@@ -523,7 +518,7 @@
           .style("stroke", (d, i) =>
             clickedArcs[selectedG.indexOf(d.slice)] == false
               ? "white"
-              : "#cf8217"
+              : "#3C1900"
           )
           .style("stroke-width", 1)
       }
@@ -549,7 +544,7 @@
             .style("stroke", (d, i) =>
               clickedArcs[selectedG.indexOf(d.slice)] == false
                 ? "white"
-                : "#cf8217"
+                : "#3C1900"
             )
             .style("stroke-width", 1)
         }
@@ -647,10 +642,10 @@
               if (grouping == "Medium") {
                 if (groupedData[k].slice == currGroup[j].medium) {
                   groupedData[k].groups[
-                    Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
+                    gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][0].year) / 100) * 100))
                   ] += 1
                   centStatus[
-                    Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
+                    gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][0].year) / 100) * 100))
                   ] = true
                   break
                 }
@@ -658,18 +653,18 @@
                 if (groupedData[k].slice == currGroup[j].death_type) {
                   if (allLocations[i][1].length > 1) {
                     groupedData[k].groups[
-                      Math.floor(Number(allLocations[i][1][1].year) / 100) - 10
+                      gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][1].year) / 100) * 100))
                     ] += 1
                     centStatus[
-                      Math.floor(Number(allLocations[i][1][1].year) / 100) - 10
+                      gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][1].year) / 100) * 100))
                     ] = true
                     break
                   } else {
                     groupedData[k].groups[
-                      Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
+                      gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][0].year) / 100) * 100))
                     ] += 1
                     centStatus[
-                      Math.floor(Number(allLocations[i][1][0].year) / 100) - 10
+                      gtCents.indexOf(String(Math.floor(Number(allLocations[i][1][0].year) / 100) * 100))
                     ] = true
                     break
                   }
@@ -694,6 +689,8 @@
         .outerRadius(chartRad)
         .cornerRadius(3)
 
+      console.log('aight. So far so good whats good?')
+
       d3.select(chordViz).datum(function (d, i) {
         let sortedGroupedArr = groupedData.sort(function (a, b) {
           let totA = 0
@@ -714,6 +711,8 @@
 
         let retArr = []
         let n = groupedData.length
+        console.log("Bir!")
+        console.log(groupedData)
 
         let angleR = (angleD * Math.PI) / 180
         let totalAngle = 2 * angleD
@@ -818,8 +817,10 @@
             }
           }
         }
+        console.log(retArr)
         return retArr
       })
+      console.log('Whatsaaauuuup?')
       let deathArr = [
         "Natural Causes",
         "Unknown",
@@ -873,6 +874,7 @@
           OnMouseLeaveRibbons(d.slice, d.defIndex, d.cent)
         )
         .on("click", (e, d) => OnClickRibbons(d.slice, chordCentScale(d.cent)))
+        console.log('Ribbons are....epiiiiic?')
 
       // Group for everything but the ribbons
       let groupChord = d3
@@ -922,7 +924,7 @@
           // Selecting groups of arcs, not just individual one
           let groupsSelected = []
           let mainGroupsSelected = []
-          let centSelected = Number(d) / 100 - 10
+          let centSelected = gtCents.indexOf(String(Math.floor(Number(d) / 100) * 100))
           for (let k = 0; k < groupedData.length; k++) {
             if (groupedData[k].groups[centSelected] > 0) {
               groupsSelected.push(groupedData[k].slice)
@@ -978,7 +980,7 @@
               .style("stroke", (d, i) =>
                 clickedArcs[selectedG.indexOf(d.slice)] == false
                   ? "white"
-                  : "#cf8217"
+                  : "#3C1900"
               )
             // }
             OnMouseOverButtons(d, groupsSelected)
@@ -1016,7 +1018,7 @@
             // .duration(buttonDurr)
             // .style("opacity", 1.0)
             let groupsSelected = []
-            let centSelected = Number(centClicked) / 100 - 10
+            let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
             for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
@@ -1037,7 +1039,7 @@
                 .style("stroke", (d, i) =>
                   clickedArcs[selectedG.indexOf(d.slice)] == false
                     ? "white"
-                    : "#cf8217"
+                    : "#3C1900"
                 )
             } else {
               d3.selectAll(".arcPaths" + grouping)
@@ -1047,7 +1049,7 @@
                 .style("stroke", (d, i) =>
                   clickedArcs[selectedG.indexOf(d.slice)] == false
                     ? "white"
-                    : "#cf8217"
+                    : "#3C1900"
                 )
             }
             // }
@@ -1059,7 +1061,7 @@
         .on("click", function (e, d) {
           if (centStatus[gtCents.indexOf(d)]) {
             let groupsSelected = []
-            let centSelected = Number(d) / 100 - 10
+            let centSelected = gtCents.indexOf(String(Math.floor(Number(d) / 100) * 100))
             for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
@@ -1149,7 +1151,7 @@
           // Selecting groups of arcs, not just individual one
           let groupsSelected = []
           let mainGroupsSelected = []
-          let centSelected = Number(d) / 100 - 10
+          let centSelected = gtCents.indexOf(String(Math.floor(Number(d) / 100) * 100))
           for (let k = 0; k < groupedData.length; k++) {
             if (groupedData[k].groups[centSelected] > 0) {
               groupsSelected.push(groupedData[k].slice)
@@ -1205,7 +1207,7 @@
               .style("stroke", (d, i) =>
                 clickedArcs[selectedG.indexOf(d.slice)] == false
                   ? "white"
-                  : "#cf8217"
+                  : "#3C1900"
               )
             // }
             OnMouseOverButtons(d, groupsSelected)
@@ -1243,7 +1245,7 @@
             // .duration(buttonDurr)
             // .style("opacity", 1.0)
             let groupsSelected = []
-            let centSelected = Number(centClicked) / 100 - 10
+            let centSelected = gtCents.indexOf(String(Math.floor(Number(centClicked) / 100) * 100))
             for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
@@ -1276,7 +1278,7 @@
         .on("click", function (e, d) {
           if (centStatus[gtCents.indexOf(d)]) {
             let groupsSelected = []
-            let centSelected = Number(d) / 100 - 10
+            let centSelected = gtCents.indexOf(String(Math.floor(Number(d) / 100) * 100))
             for (let k = 0; k < groupedData.length; k++) {
               if (groupedData[k].groups[centSelected] > 0) {
                 groupsSelected.push(groupedData[k].slice)
