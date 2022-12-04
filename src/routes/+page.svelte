@@ -90,6 +90,10 @@
     )
   }
 
+  const OpenInNewTab = (url: string) => {
+    window.open(url, "_blank")!.focus()
+  }
+
   const DisplayInfluences = (ev: any) => {
     ScrollCharts(ev.target, 0)
   }
@@ -435,7 +439,7 @@
   class="flex justify-between fixed top-4 left-4 w-full font-bold text-4xl z-20 p-4"
   style="height: {header_height};"
 >
-  <span>Influences, Deaths, and Mediums of Renown Artists</span>
+  <span>Influences, Deaths, and Mediums of Renowned Artists</span>
   <div class="ml-4 mt-1 cursor-pointer">
     <div class="block">
       <nav class="isolate flex divide-x divide-gray-200 rounded-lg shadow">
@@ -444,7 +448,18 @@
           class="text-gray-900 rounded-l-lg group relative min-w-0 overflow-hidden bg-white py-2 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
           on:click={DisplayInfluences}
         >
-          <span class="pointer-events-none">Influences</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 640 512"
+            class="h-6 inline-block"
+            ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+              fill="#c00"
+              d="M288 64C288 80.85 281.5 96.18 270.8 107.6L297.7 165.2C309.9 161.8 322.7 160 336 160C374.1 160 410.4 175.5 436.3 200.7L513.9 143.7C512.7 138.7 512 133.4 512 128C512 92.65 540.7 64 576 64C611.3 64 640 92.65 640 128C640 163.3 611.3 192 576 192C563.7 192 552.1 188.5 542.3 182.4L464.7 239.4C474.5 258.8 480 280.8 480 304C480 322.5 476.5 340.2 470.1 356.5L537.5 396.9C548.2 388.8 561.5 384 576 384C611.3 384 640 412.7 640 448C640 483.3 611.3 512 576 512C540.7 512 512 483.3 512 448C512 444.6 512.3 441.3 512.8 438.1L445.4 397.6C418.1 428.5 379.8 448 336 448C264.6 448 205.4 396.1 193.1 328H123.3C113.9 351.5 90.86 368 64 368C28.65 368 0 339.3 0 304C0 268.7 28.65 240 64 240C90.86 240 113.9 256.5 123.3 280H193.1C200.6 240.9 222.9 207.1 254.2 185.5L227.3 127.9C226.2 127.1 225.1 128 224 128C188.7 128 160 99.35 160 64C160 28.65 188.7 0 224 0C259.3 0 288 28.65 288 64V64zM336 400C389 400 432 357 432 304C432 250.1 389 208 336 208C282.1 208 240 250.1 240 304C240 357 282.1 400 336 400z"
+            /></svg
+          >
+          <span class="pointer-events-none ml-2 hidden 3xl:inline-block"
+            >Influences</span
+          >
           <span
             class="highlight-button bg-utah-red absolute inset-x-0 bottom-0 h-0.5"
           />
@@ -454,7 +469,18 @@
           class="text-gray-500 hover:text-gray-700 group relative min-w-0 overflow-hidden bg-white py-2 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
           on:click={DisplayDeaths}
         >
-          <span class="pointer-events-none">Deaths</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            class="h-6 inline-block"
+            ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+              fill="#c00"
+              d="M32 192C32 86 118 0 224 0S416 86 416 192V416H32V192zM0 480c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM248 120c0-13.3-10.7-24-24-24s-24 10.7-24 24v40H152c-13.3 0-24 10.7-24 24s10.7 24 24 24h48V328c0 13.3 10.7 24 24 24s24-10.7 24-24V208h48c13.3 0 24-10.7 24-24s-10.7-24-24-24H248V120z"
+            /></svg
+          >
+          <span class="pointer-events-none ml-2 hidden 3xl:inline-block"
+            >Deaths</span
+          >
           <span
             class="highlight-button bg-transparent absolute inset-x-0 bottom-0 h-0.5"
           />
@@ -464,7 +490,18 @@
           class="text-gray-500 hover:text-gray-700 group relative min-w-0 overflow-hidden bg-white py-2 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
           on:click={DisplayMediums}
         >
-          <span class="pointer-events-none">Mediums</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            class="h-6 inline-block"
+            ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+              fill="#c00"
+              d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288c0-17.7-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32s32-14.3 32-32zm0-96c17.7 0 32-14.3 32-32s-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32zM288 96c0-17.7-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32s32-14.3 32-32zm96 96c17.7 0 32-14.3 32-32s-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32z"
+            /></svg
+          >
+          <span class="pointer-events-none ml-2 hidden 3xl:inline-block"
+            >Mediums</span
+          >
           <span
             class="highlight-button bg-transparent absolute inset-x-0 bottom-0 h-0.5"
           />
@@ -472,8 +509,54 @@
       </nav>
     </div>
   </div>
+  <div class="ml-4 mt-1 cursor-pointer">
+    <div class="block">
+      <nav class="isolate flex divide-x divide-gray-200 rounded-lg shadow">
+        <!-- Current: "text-gray-900", Default: "text-gray-500 hover:text-gray-700" -->
+        <div
+          class="text-gray-500 hover:text-gray-700 rounded-l-lg group relative min-w-0 overflow-hidden bg-white py-2 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+          on:click={() =>
+            OpenInNewTab(
+              Config.server_url +
+                "/Influences_of_Renowned_Artists_Process_Book.pdf"
+            )}
+        >
+          <span class="pointer-events-none"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              class="h-6 inline-block"
+              ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+                fill="#c00"
+                d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+              /></svg
+            ><span class="ml-2 hidden 3xl:inline-block">Process Book</span
+            ></span
+          >
+        </div>
+
+        <div
+          class="text-gray-500 hover:text-gray-700 group relative min-w-0 overflow-hidden bg-white py-2 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+          on:click={() => OpenInNewTab("https://www.youtube.com")}
+        >
+          <span class="pointer-events-none"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 576 512"
+              class="h-6 inline-block"
+              ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+                fill="#c00"
+                d="M512 96H64v99c-13-2-26.4-3-40-3H0V96C0 60.7 28.7 32 64 32H512c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H288V456c0-13.6-1-27-3-40H512V96zM24 224c128.1 0 232 103.9 232 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 256c-17.7 0-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32zM0 344c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24z"
+              /></svg
+            ><span class="ml-2 hidden 3xl:inline-block">Screen-Cast</span></span
+          >
+        </div>
+      </nav>
+    </div>
+  </div>
   <div class="pr-4">
     <img
+      class="object-cover"
       style="height: 40px;"
       src={Config.server_url + "/SofC_Logo.png"}
       alt="SofC Logo"

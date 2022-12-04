@@ -1,11 +1,6 @@
 <script lang="ts">
   import { Types, Helpers } from "$lib/utilities"
-  import type {
-    ArtistData,
-    ArtistInfluence,
-    ArtistLocation,
-    ArtistMedium,
-  } from "$lib/utilities/types"
+  import type { ArtistLocation, ArtistMedium } from "$lib/utilities/types"
   import * as d3 from "d3"
   import { createEventDispatcher } from "svelte"
 
@@ -15,10 +10,8 @@
   export let height: number = 0
   export let topOffset: number = 0
 
-  const PADDING = { left: 50, right: 50, top: 50, bottom: 50 }
+  const PADDING = { left: 0.05, right: 0.05, top: 0.05, bottom: 0.05 }
 
-  let chart_height: number
-  $: chart_height = 0
   let chart_width: number
   $: chart_width = 0
 
@@ -64,12 +57,14 @@
   let highlight_medium: boolean
   $: highlight_medium = false
 
+  $: show_artifacts = true
+
   let chordColorScale
-  let gtMediums:any = []
+  let gtMediums: any = []
 
   let xAxisGroup
 
-  let manualColors = []
+  let manualColors: any = []
   for (let i = d3.schemePaired.length - 1; i >= 0; i--) {
     manualColors.push(d3.schemePaired[i])
   }
@@ -94,7 +89,7 @@
           if (medium.medium === category) {
             area_values[i] = area_values[i] + 1
           }
-          total_mediums_one_year = total_mediums_one_year + 1 //TODO: check logic, should check if its there in the category_names
+          total_mediums_one_year = total_mediums_one_year + 1
         }
       }
       area_values[i] = (area_values[i] / total_mediums_one_year) * 100
@@ -163,19 +158,22 @@
     var xScale = d3
       .scaleLinear()
       .domain([0, size_years!])
-      .range([0, chart_width])
+      .range([0.05 * width, width * 0.95])
 
     // Y SCALE
-    var yScale = d3.scaleLinear().domain([0, 100]).range([chart_height, 0])
+    var yScale = d3
+      .scaleLinear()
+      .domain([0, 100])
+      .range([height * 0.9, 0.1 * height])
 
     const areaGenerator1 = d3
       .area()
-      .x((d) => xScale(d.x - oldestYear!) + PADDING.left)
-      .y1(d => yScale(d.y) + PADDING.top)
-      .y0(d => yScale(d.prev) + PADDING.top)
+      .x((d) => xScale(d.x - oldestYear!))
+      .y1((d) => yScale(d.y))
+      .y0((d) => yScale(d.prev))
       // .curve(d3.curveCatmullRom.alpha(0.6))
       .curve(d3.curveStep)
-      .context(null);
+      .context(null)
 
     // Draw all in category
     let num = 0
@@ -211,107 +209,109 @@
 
   const IndividualAreaChart = (category: string) => {
     let idx = gtMediums.indexOf(category)
-    // Make all category area chart transparent
-    // d3.select('#all-area-chart')
-    // .attr('opacity', '0.0')
+    console.log(idx)
 
-    // let area_line_values = DataForAreaChartLine(category)
-    let area_line_values = area_lines[idx]
-    let area_line_values_prev:any = []
-    if(idx !== 0){
-      area_line_values_prev = area_lines_percentage[idx - 1]
-    }
-    else{
-      for(var j=0; j<size_years!; j++)
-      area_line_values_prev[j] = 0
-    }
+    let area_line_values = DataForAreaChartLine(category)
     // console.log('area_line_values', area_line_values)
 
     // X SCALE
     var xScale = d3
       .scaleLinear()
       .domain([0, size_years!])
-      .range([0, chart_width])
+      .range([0.05 * width, width * 0.95])
 
     // Y SCALE
-    var yScale = d3.scaleLinear().domain([0, 100]).range([chart_height, 0])
+    var yScale = d3
+      .scaleLinear()
+      .domain([0, 100])
+      .range([height * 0.9, 0.1 * height])
 
     const areaGenerator = d3
       .area()
-      .x((d) => xScale(d.x - oldestYear!) + PADDING.left)
-      .y1(d => yScale(d.y) + PADDING.top)
-      .y0(d => yScale(d.prev) + PADDING.top)
-      // .y0(chart_height + PADDING.top)
+      .x((d) => xScale(d.x - oldestYear!))
+      .y1((d) => yScale(d.y))
+      // .y0(d => yScale(d.prev) + PADDING.top)
+      .y0(height * 0.9)
       .curve(d3.curveStep)
-      .context(null);
+      .context(null)
 
     each_area_line = []
     for (let i = 0; i < years.length; i++) {
       const each_pair: any = {
         x: years[i],
         y: area_line_values[i],
-        prev: area_line_values_prev[i]
+        // prev: area_line_values_prev[i]
       }
       each_area_line.push(each_pair)
     }
-    
+
     ClearAreaChart()
 
-    d3.select('#individual-area-chart') // It is a path in svg
-    .datum(each_area_line)
-    .attr("d", areaGenerator)
-    .style('fill', '#ee7722') // TODO: change this colour selection 
-    .attr('opacity', '1.0')
-    
+    d3.select("#individual-area-chart") // It is a path in svg
+      .datum(each_area_line)
+      .attr("d", areaGenerator)
+      .transition()
+      .duration(1000)
+      .attr("fill", (d) => {
+        return ColourFunc(gtMediums.indexOf(category)) // This fixed it
+      })
+      .attr("opacity", "1.0")
   }
 
-  const HighlightCategory = (category: string) => {
+  const HighlightCategoryOnHover = (category: string) => {
     highlight_medium = true
     let idx = gtMediums.indexOf(category)
     // idx = 5
-    console.log('idx', idx)
+    console.log("idx", idx)
 
     // X SCALE
     var xScale = d3
       .scaleLinear()
       .domain([0, size_years!])
-      .range([0, chart_width])
+      .range([0.05 * width, width * 0.95])
 
     // Y SCALE
-    var yScale = d3.scaleLinear().domain([0, 100]).range([chart_height, 0])
+    var yScale = d3
+      .scaleLinear()
+      .domain([0, 100])
+      .range([height * 0.9, 0.1 * height])
 
-    const lineGenerator = d3.line()
-    .x((d,i) => xScale(d.x - oldestYear!) + PADDING.left)
-    .y(d => yScale(d.y) + PADDING.top)
-    // .curve(d3.curveCatmullRom.alpha(0.6))
-    .curve(d3.curveStep)
-    .context(null);
+    const lineGenerator = d3
+      .line()
+      .x((d, i) => xScale(d.x - oldestYear!))
+      .y((d) => yScale(d.y))
+      // .curve(d3.curveCatmullRom.alpha(0.6))
+      .curve(d3.curveStep)
+      .context(null)
 
     // Draw left line
-    d3.select('#highlight-area')  // selects the components 
-    .append('line')
-    .attr('id', '#highlight-border-left')
-    .attr('x1', xScale(0) + PADDING.left)
-    .attr('y1', yScale(area_lines[idx][0]) + PADDING.top)
-    .attr('x2', xScale(0) + PADDING.left) 
-    .attr('y2', (!idx)? chart_height + PADDING.top: yScale(area_lines[idx-1][0]) + PADDING.top)
-    .attr("fill", "none")
-    .style('stroke', 'black')
-    .style('stroke-width', '1')
-    .attr('opacity', '1.0')
+    d3.select("#highlight-area") // selects the components
+      .append("line")
+      .attr("id", "#highlight-border-left")
+      .attr("x1", xScale(0))
+      .attr("y1", yScale(area_lines[idx][0]))
+      .attr("x2", xScale(0))
+      .attr("y2", !idx ? height * 0.05 : yScale(area_lines[idx - 1][0]))
+      .attr("fill", "none")
+      .style("stroke", "black")
+      .style("stroke-width", "1")
+      .attr("opacity", "1.0")
 
-    // Draw right line 
-    d3.select('#highlight-area')  // selects the components 
-    .append('line')
-    .attr('id', '#highlight-border-right')
-    .attr('x1', xScale(size_years!-1) + PADDING.left) // why -1 needed? some issue in area 
-    .attr('y1', yScale(area_lines[idx][size_years!-1]) + PADDING.top)
-    .attr('x2', xScale(size_years!-1) + PADDING.left)
-    .attr('y2', (!idx)? chart_height + PADDING.top: yScale(area_lines[idx-1][size_years!-1]) + PADDING.top)
-    .attr("fill", "none")
-    .style('stroke', 'black')
-    .style('stroke-width', '1')
-    .attr('opacity', '1.0')
+    // Draw right line
+    d3.select("#highlight-area") // selects the components
+      .append("line")
+      .attr("id", "#highlight-border-right")
+      .attr("x1", xScale(size_years! - 1)) // why -1 needed? some issue in area
+      .attr("y1", yScale(area_lines[idx][size_years! - 1]))
+      .attr("x2", xScale(size_years! - 1))
+      .attr(
+        "y2",
+        !idx ? height * 0.05 : yScale(area_lines[idx - 1][size_years! - 1])
+      )
+      .attr("fill", "none")
+      .style("stroke", "black")
+      .style("stroke-width", "1")
+      .attr("opacity", "1.0")
 
     // Draw upper line
     let area_line_values = area_lines_percentage[idx]
@@ -324,22 +324,21 @@
       each_area_line.push(each_pair)
     }
 
-    d3.select('#highlight-area')  // selects the components 
-    .append('path')
-    .attr('id', '#highlight-border-up')
-    .datum(each_area_line)
-    .attr("d", lineGenerator)
-    .attr("fill", "none")
-    .style('stroke', 'black')
-    .style('stroke-width', '1')
-    .attr('opacity', '1.0')
+    d3.select("#highlight-area") // selects the components
+      .append("path")
+      .attr("id", "#highlight-border-up")
+      .datum(each_area_line)
+      .attr("d", lineGenerator)
+      .attr("fill", "none")
+      .style("stroke", "black")
+      .style("stroke-width", "1")
+      .attr("opacity", "1.0")
 
     // Draw lower line
-    if(idx!==0){
-      area_line_values = area_lines_percentage[idx-1]
-    }
-    else{
-      for(var j=0; j<area_line_values.length; j++){
+    if (idx !== 0) {
+      area_line_values = area_lines_percentage[idx - 1]
+    } else {
+      for (var j = 0; j < area_line_values.length; j++) {
         area_line_values[j] = 0
       }
     }
@@ -353,15 +352,15 @@
       each_area_line.push(each_pair)
     }
 
-    d3.select('#highlight-area')  // selects the components 
-    .append('path')
-    .attr('id', '#highlight-border-bottom')
-    .datum(each_area_line)
-    .attr("d", lineGenerator)
-    .attr("fill", "none")
-    .style('stroke', 'black')
-    .style('stroke-width', '1')
-    .attr('opacity', '1.0')
+    d3.select("#highlight-area") // selects the components
+      .append("path")
+      .attr("id", "#highlight-border-bottom")
+      .datum(each_area_line)
+      .attr("d", lineGenerator)
+      .attr("fill", "none")
+      .style("stroke", "black")
+      .style("stroke-width", "1")
+      .attr("opacity", "1.0")
 
     // Make everything else opacity = 0.0
     d3.select("#individual-area-chart").attr("opacity", "0.0")
@@ -382,52 +381,54 @@
 
   const RestoreAfterHover = () => {
     let i = 0
-    for(var category of gtMediums){
+    for (var category of gtMediums) {
       // Make everyone opacity = 0.2
-      let select_area_id = '#area-chart-' + i
-      d3.select(select_area_id)
-        .attr('opacity', '1.0')
+      let select_area_id = "#area-chart-" + i
+      d3.select(select_area_id).attr("opacity", "1.0")
       i = i + 1
     }
   }
 
-  const OnMouseMoveAreaChart = (ev:any) => {
-    // console.log('move')
+  const OnMouseMoveAreaChart = (ev: any) => {
+    show_artifacts = true
+    // console.log("move")
     // console.log(ev.offsetX, ev.offsetY)
 
     // X SCALE
     var xScale = d3
       .scaleLinear()
       .domain([0, size_years!])
-      .range([0, chart_width])
+      .range([0.05 * width, width * 0.95])
 
     // Y SCALE
-    var yScale = d3.scaleLinear().domain([0, 100]).range([chart_height, 0])
+    var yScale = d3
+      .scaleLinear()
+      .domain([0, 100])
+      .range([0.9 * height, 0.1 * height])
 
-    let year_hover_idx = Math.floor(xScale.invert(ev.offsetX - PADDING.left))
+    let year_hover_idx = Math.floor(xScale.invert(ev.offsetX))
 
     if (
-      ev.offsetX > PADDING.left &&
-      ev.offsetX < PADDING.left + chart_width &&
+      ev.offsetX > 0.05 * width &&
+      ev.offsetX < 0.9 * width &&
       !highlight_medium
     ) {
-      d3.select("#hover-overlay").attr("opacity", "1.0")
+      // d3.select("#hover-overlay").attr("opacity", "1.0")
 
       // d3.select('#hover-overlay')
       //   .selectAll('*')
       //   .attr('opacity', '1.0')
-      
 
-      // Vertical line on hover 
-      d3.select('#hover-overlay')
-          .select('line')
-          .attr("x1", ev.offsetX)
-          .attr("x2", ev.offsetX)
-          .attr("y1", PADDING.top)
-          .attr("y2", chart_height + PADDING.top)
-          .attr("stroke", "black")
-          .attr('stroke-width', '2')
-          .attr('opacity', '1.0')
+      // Vertical line on hover
+      d3.select("#hover-overlay")
+        .select("line")
+        .attr("x1", ev.offsetX)
+        .attr("x2", ev.offsetX)
+        .attr("y1", height * 0.1)
+        .attr("y2", height * 0.9)
+        .attr("stroke", "black")
+        .attr("stroke-width", "2")
+      //.attr("opacity", "1.0")
 
       // Put rectangles
       d3.select("#hover-overlay-rect")
@@ -454,13 +455,13 @@
         })
         .join("rect")
         .attr("x", (d) => {
-          if (ev.offsetX < chart_width - 200) {
+          if (ev.offsetX < width / 2) {
             return ev.offsetX + font_size - 10
           }
           return ev.offsetX - 210
         })
         .attr("y", (d, i) => {
-          return font_size * i + font_size / 3 + PADDING.top
+          return font_size * i + font_size / 3 + height * 0.1
         })
         .attr("width", 200)
         .attr("height", font_size)
@@ -535,7 +536,7 @@
           // return d
         })
         .attr("x", (d) => {
-          if (ev.offsetX < chart_width - 200) {
+          if (ev.offsetX < width / 2) {
             return ev.offsetX + font_size
           }
           return ev.offsetX - 200
@@ -543,7 +544,7 @@
         .attr("y", (d, i) => {
           // let idx_cat = gtMediums.indexOf(d)
           // return yScale(area_lines_percentage[idx_cat][year_hover_idx]) + font_size + PADDING.top
-          return font_size * i + font_size + PADDING.top
+          return font_size * i + font_size + height * 0.1
         })
         .attr("fill", (d, i) => {
           let idx_cat = gtMediums.indexOf(d)
@@ -567,26 +568,34 @@
       .join("text")
       .text((d) => `Exact Year: ${year_hover_idx + oldestYear}`)
       .attr("x", (d) => {
-        if (ev.offsetX < chart_width - 200) {
+        if (ev.offsetX < width / 2) {
           return ev.offsetX + font_size
         }
         return ev.offsetX - 200
       })
       .attr("y", (d) => {
-        return PADDING.top - font_size / 3
+        return height * 0.1 - font_size / 3
       })
       .attr("fill", (d, i) => {
         return "black"
       })
-      .style('font-family', 'sans-serif')
-      .style('font-size','1.3em')
-      .attr('opacity', '1.0')
+      .style("font-family", "sans-serif")
+      .style("font-size", "1.3em")
+    //.attr("opacity", "1.0")
   }
 
-  const OnMouseOutAreaChart = (ev:any) => {
-    // console.log('out')
-    if(ev.offsetX < PADDING.left || (PADDING.left+chart_width) < ev.offsetX){
-      
+  const OnMouseOutAreaChart = (ev: any) => {
+    //console.log("out")
+
+    if (
+      ev.offsetX <= 0.05 * width ||
+      ev.offsetX > 0.9 * width ||
+      ev.offsetY > height * 0.9 ||
+      ev.offsetY < height * 0.05
+    ) {
+      console.log("outttt")
+      console.log(ev.offsetX, ev.offsetY)
+      show_artifacts = false
     }
     // d3.select('#hover-overlay')
     // .selectAll('*')
@@ -618,16 +627,14 @@
   }
 
   const ClearHover = () => {
-    d3.select('#highlight-area')
-      .selectAll('*')
-      .attr('opacity', '0.0')
+    d3.select("#highlight-area").selectAll("*").attr("opacity", "0.0")
   }
 
   const DrawAxesSingle = () => {
     tl_x_scale = d3
       .scaleLinear()
       .domain([oldestYear!, youngestYear!])
-      .range([0, chart_width])
+      .range([0, width * 0.9])
     tl_x_axis = d3
       .axisBottom(tl_x_scale)
       .tickFormat((d) => {
@@ -635,59 +642,63 @@
       })
       .ticks((youngestYear! - oldestYear!) / tickEvery)
     d3.select("#x-axis")
-      .transition()
-      .duration(1000)
-      .attr(
-        "transform",
-        `translate(${PADDING.left}, ${chart_height + PADDING.top})`
-      )
+      //   .transition()
+      //   .duration(1000)
+      //   .attr(
+      //     "transform",
+      //     `translate(${PADDING.left}, ${chart_height + PADDING.top})`
+      //   )
       .call(tl_x_axis)
 
     // percentage
-    tl_y_scale = d3.scaleLinear().domain([0, 100]).range([chart_height, 0])
+    tl_y_scale = d3
+      .scaleLinear()
+      .domain([0, 100])
+      .range([height * 0.85, height * 0.05])
     tl_y_axis = d3.axisLeft(tl_y_scale)
     d3.select("#y-axis")
-      .attr("transform", `translate(${PADDING.left}, ${PADDING.top})`)
+      //.attr("transform", `translate(${PADDING.left}, ${PADDING.top})`)
       .call(tl_y_axis)
   }
 
-  const DrawRectangleCentury = (century:string) => {
+  const DrawRectangleCentury = (century: string) => {
     console.log(century)
 
     // X scale
-    var xScale = d3.scaleLinear()
-    .domain([0, size_years!])
-    .range([0, chart_width]);
+    var xScale = d3
+      .scaleLinear()
+      .domain([0, size_years!])
+      .range([0.05 * width, 0.95 * width])
 
-    d3.select('#hover-rect-century')
-      .attr('x',xScale(+century - oldestYear) + PADDING.left)
-      .attr('y',PADDING.top)
-      .attr('width',xScale(100))
-      .attr('height',chart_height)
-      .attr('stroke', 'black')
-      .attr('stroke-width', '4')
-      .attr('fill', 'none')
-
+    d3.select("#hover-rect-century")
+      .transition()
+      .duration(700)
+      .attr("x", xScale(+century - oldestYear))
+      .attr("y", 0.1 * height)
+      .attr("width", xScale(+century + 100) - xScale(+century))
+      .attr("height", height * 0.8)
+      .attr("stroke", "black")
+      .attr("stroke-width", "4")
+      .attr("fill", "none")
   }
-
-
-
-
-
 
   // Receiving sign from chord that a medium arc was highlighted/is no longer highlighted
   export const chordMedGroupFocus = (chordMedium: string) => {
     // Will implement logic for highlighting area in this component that corresponds to chordMedium
-    console.log('Chord medium was highlighted on chord: ', chordMedium)
-    // IndividualAreaChart(chordMedium) // TODO: for click medium 
-    HighlightCategory(chordMedium)
+    console.log("Chord medium was highlighted on chord: ", chordMedium)
+    HighlightCategoryOnHover(chordMedium)
   }
 
   export const chordMedGroupReFocus = () => {
     // Will implement logic for making all areas equal in focus again
-    console.log('Chord medium is no longer highlighted on chord.')
+    console.log("Chord medium is no longer highlighted on chord.")
     ClearHover()
     RestoreAfterHover()
+
+    // SetYears(youngestYear, oldestYear)
+    // DrawAxesSingle()
+    // DataForAllAreaChartLine()
+    // AllAreaChart()
   }
 
   // Receiving sign from chord that a ribbon got highlighted/is no longer highlighted
@@ -697,13 +708,18 @@
   ) => {
     // Will implement logic for highlighting area in this component that corresponds to chordMedium and chordCentury
     // We also gotta put some indication of the century's time frame on the chart when this happens for focus
-    console.log('Chord ribbon was highlighted on chord for medium: ', chordMedium, ' and century: ', chordCentury)
-    HighlightCategory(chordMedium)
+    console.log(
+      "Chord ribbon was highlighted on chord for medium: ",
+      chordMedium,
+      " and century: ",
+      chordCentury
+    )
+    HighlightCategoryOnHover(chordMedium)
   }
 
   export const chordMedRibbonReFocus = () => {
     // Will implement logic for removing highlights from medium area and indication of century time frame on x axis
-    console.log('That ribbon is no longer highlighted...')
+    console.log("That ribbon is no longer highlighted...")
     ClearHover()
     RestoreAfterHover()
   }
@@ -737,29 +753,33 @@
 
   // Clicking on medium in arc
   export const chordArcMedButtonClick = (chordMedium: string) => {
-    console.log('here', chordMedium)
+    console.log("here", chordMedium)
+    ClearAreaChart()
+    ClearHover()
+    oldestYear = +d3.min(artists, (d) => d.year)!
+    youngestYear = +d3.max(artists, (d) => d.year)!
+    oldestYear = 1378 // TODO: Fix
+    SetYears(youngestYear, oldestYear)
+    DrawAxesSingle()
     IndividualAreaChart(chordMedium)
+
+    // TODO: stay until clicked outside
   }
 
   // Receiving sign from chord a century button is highlighted/not anymore
   export const chordMedButtonFocus = (chordCentury: string) => {
     // Will implement logic for some indication of the century's time span (like a rectangle or something)
-    console.log('User highlighted button for century: ', chordCentury)
+    console.log("User highlighted button for century: ", chordCentury)
     DrawRectangleCentury(chordCentury)
   }
 
   export const chordMedButtonReFocus = () => {
     // Will implement logic to get rid of some indication of the century's time span
-    console.log('User is no longer highlighting century button...')
-    
+    console.log("User is no longer highlighting century button...")
   }
 
-
-
-
-
   const SetYears = (young: number, old: number) => {
-    size_years = young - old // TODO: change this when clicking on century button to show only that century
+    size_years = young - old
     years = []
     for (let i = 0; i < size_years; i++) {
       years[i] = old + i
@@ -773,16 +793,11 @@
     artists = location_data
     mediums = medium_data
 
-    chart_width = width * 0.8
-    chart_height = height * 0.7
-    PADDING.top = height * 0.05
-    PADDING.bottom = height * 0.25
-    PADDING.left = width * 0.15
-    PADDING.right = width * 0.05
     group_artists = d3.groups(artists, (d) => d.artist)
     num_categories = d3.range(gtMediums.length).reverse()
 
-    oldestYear = +d3.min(location_data, (d) => d.year)! // TODO: Change this
+    oldestYear = +d3.min(location_data, (d) => d.year)!
+    oldestYear = 1378 // TODO: Fix
     youngestYear = +d3.max(location_data, (d) => d.year)!
 
     let mediumRoll = d3.groups(medium_data, (d) => d.medium)
@@ -792,36 +807,23 @@
     gtMediums.sort(d3.ascending)
     chordColorScale = d3.scaleOrdinal().domain(gtMediums).range(d3.schemePaired)
 
-    // TODO: change this when clicking on century button to show only that century
-
-    // // Change to individual area chart
-    // oldestYear = 1600
-    // youngestYear = 1700
-    // SetYears(youngestYear, oldestYear)
-    // DrawAxesSingle()
-    // DataForAllAreaChartLine()
-    // IndividualAreaChart('painter')
-
-    // Change to show all categories of aea chart
-    oldestYear = 1400
+    // Change to show all categories of area chart
+    // oldestYear = 1400
     // youngestYear = 1800
     SetYears(youngestYear, oldestYear)
-    // TODO: onClick, selecting the medium should display only that category
     DrawAxesSingle() //TODO: call again when selecting a century to change x axis
     DataForAllAreaChartLine()
     AllAreaChart()
 
     // To highlight selected category
-    // HighlightCategory('painter')
+    // HighlightCategoryOnHover('painter')
   }
 </script>
 
 <div
   id="container"
   class="inline-block relative align-top overflow-hidden"
-  style="width: {width}px; height: {height}px; top: {topOffset > 50
-    ? 50
-    : topOffset * 0.9}px;"
+  style="width: {width}px; height: {height}px;"
 >
   <svg
     class="inline-block absolute top-0 left-0"
@@ -831,37 +833,46 @@
     <!-- #each for all years, call function for each year calc mediums % , #each give line generater -->
     <g id="axes-titles">
       <text
-        transform="translate({PADDING.left +
-          chart_width / 2 -
-          title_length / 2}, 
-        {PADDING.top + chart_height + font_size + PADDING.bottom / 3})"
+        transform="translate({width / 2}, 
+        {height * 0.95})"
         font-weight="700"
+        text-anchor="middle"
         >Years
       </text>
       <text
-        transform="translate({PADDING.left - font_size - 5}, 
-        {PADDING.top + chart_height / 2 + title_length / 2}) rotate(-90)"
+        transform="translate({width * 0.0125}, 
+        {height / 2}) rotate(-90)"
         font-weight="700"
+        text-anchor="middle"
         >Percentage
       </text>
     </g>
     <g id="area-chart">
-      <g id="x-axis" />
-      <g id="y-axis" />
+      <g
+        id="x-axis"
+        transform={`translate(${width * 0.05}, ${height * 0.9})`}
+      />
+      <g
+        id="y-axis"
+        transform={`translate(${width * 0.05}, ${height * 0.05})`}
+      />
 
       <g id="single-area">
         <path id="individual-area-chart" />
       </g>
 
-      <g id='all-area-chart'
-          on:mousemove={(ev) => OnMouseMoveAreaChart(ev)}
-          on:focus={(ev) => OnMouseMoveAreaChart(ev)}
-          on:mouseout={(ev) => OnMouseOutAreaChart(ev)}
-          on:blur={(ev) => OnMouseOutAreaChart(ev)}>
-      </g>
-      <g id="highlight-area"></g>
+      <g
+        id="all-area-chart"
+        transform={`translate(0, 0)`}
+        on:mousemove={(ev) => OnMouseMoveAreaChart(ev)}
+        on:focus={(ev) => OnMouseMoveAreaChart(ev)}
+        on:mouseout={(ev) => OnMouseOutAreaChart(ev)}
+        on:blur={(ev) => OnMouseOutAreaChart(ev)}
+      />
+
+      <g id="highlight-area" />
       <g id="hover-century">
-        <rect id="hover-rect-century"></rect>
+        <rect id="hover-rect-century" />
       </g>
       <g id="hover-overlay">
         <line />
