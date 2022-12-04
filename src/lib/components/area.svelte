@@ -58,14 +58,16 @@
   $: highlight_medium = false
 
   $: show_artifacts = true
-  $: show_century = false
+
+  let centuryScale: d3.ScaleLinear<number, number, never>
+  $: centuryScale
 
   let chordColorScale
   let gtMediums: any = []
 
-  let selected_century:boolean
-  let selected_medium:boolean
-  let selected_medium_category:string
+  let selected_century: boolean
+  let selected_medium: boolean
+  let selected_medium_category: string
 
   let xAxisGroup
 
@@ -442,7 +444,7 @@
     d3.select("#hover-overlay-rect")
       .selectAll("rect")
       .data((d) => {
-        if(!selected_medium){
+        if (!selected_medium) {
           for (var category of gtMediums) {
             let idx = gtMediums.indexOf(category)
           }
@@ -461,8 +463,7 @@
             }
           })
           return non_zero_categories.reverse()
-        }
-        else{
+        } else {
           return [selected_medium_category]
         }
       })
@@ -486,7 +487,7 @@
     d3.select("#hover-overlay-text")
       .selectAll("text")
       .data((d) => {
-        if(!selected_medium){
+        if (!selected_medium) {
           for (var category of gtMediums) {
             let idx = gtMediums.indexOf(category)
           }
@@ -505,8 +506,7 @@
             }
           })
           return non_zero_categories.reverse()
-        }
-        else{
+        } else {
           return [selected_medium_category]
         }
       })
@@ -680,46 +680,29 @@
   }
 
   const DrawRectangleCentury = (century: string) => {
-    // console.log(century)
-    show_century = true
-
     // X scale
-    var xScale = d3
+    centuryScale = d3
       .scaleLinear()
       .domain([0, size_years!])
       .range([0.05 * width, 0.95 * width])
 
     d3.select("#hover-rect-century")
+      .attr("opacity", "1")
       .transition()
-      .duration(700)
-      .attr("x", xScale(+century - oldestYear))
-      .attr("y", 0.1 * height)
-      .attr("width", xScale(+century + 100) - xScale(+century))
-      .attr("height", height * 0.8)
-      .attr("stroke", "black")
-      .attr("stroke-width", "4")
-      .attr("fill", "none")
-      .attr("opacity", "1.0")
+      .duration(1000)
+      .attr("x", centuryScale(+century - oldestYear))
   }
 
   const ClearRectangleCentury = () => {
-    console.log("im here")
-    show_century = false
-    // d3.select("#hover-rect-century").attr("stroke", "transparent")
-    // .selectAll('rect')
-    // .remove()
+    d3.select("#hover-rect-century").attr("opacity", "0")
   }
-
-
-
-
 
   // Receiving sign from chord that a medium arc was highlighted/is no longer highlighted
   export const chordMedGroupFocus = (chordMedium: string) => {
     // Will implement logic for highlighting area in this component that corresponds to chordMedium
     console.log("Chord medium was highlighted on chord: ", chordMedium)
     show_artifacts = false
-    if(!selected_medium){
+    if (!selected_medium) {
       HighlightCategoryOnHover(chordMedium)
     }
   }
@@ -729,11 +712,10 @@
     show_artifacts = true
     console.log("Chord medium is no longer highlighted on chord.")
 
-    if(!selected_medium){
+    if (!selected_medium) {
       ClearHover()
       RestoreAfterHover()
     }
-    
 
     // SetYears(youngestYear, oldestYear)
     // DrawAxesSingle()
@@ -755,7 +737,7 @@
       chordCentury
     )
     show_artifacts = false
-    if(!selected_medium){
+    if (!selected_medium) {
       HighlightCategoryOnHover(chordMedium)
     }
   }
@@ -764,7 +746,7 @@
     // Will implement logic for removing highlights from medium area and indication of century time frame on x axis
     console.log("That ribbon is no longer highlighted...")
     show_artifacts = true
-    if(!selected_medium){
+    if (!selected_medium) {
       ClearHover()
       RestoreAfterHover()
     }
@@ -787,7 +769,7 @@
     selected_century = !selected_century
     //gtMediums.indexOf(chordCentury)
 
-    if(selected_century){
+    if (selected_century) {
       oldestYear = +chordCentury
       youngestYear = +chordCentury + 100
       SetYears(youngestYear, oldestYear)
@@ -796,8 +778,7 @@
       DrawAxesSingle()
       DataForAllAreaChartLine()
       AllAreaChart()
-    }
-    else{
+    } else {
       FirstLoad()
     }
 
@@ -810,7 +791,7 @@
     selected_medium = !selected_medium
     selected_medium_category = chordMedium
 
-    if(selected_medium){
+    if (selected_medium) {
       ClearAreaChart()
       ClearHover()
       // oldestYear = +d3.min(artists, (d) => d.year)!
@@ -819,8 +800,7 @@
       SetYears(youngestYear, oldestYear)
       DrawAxesSingle()
       IndividualAreaChart(chordMedium)
-    }
-    else{
+    } else {
       FirstLoad()
     }
 
@@ -832,7 +812,7 @@
     // Will implement logic for some indication of the century's time span (like a rectangle or something)
     console.log("User highlighted button for century: ", chordCentury)
     show_artifacts = false
-    
+
     DrawRectangleCentury(chordCentury)
   }
 
@@ -842,11 +822,6 @@
     show_artifacts = true
     ClearRectangleCentury()
   }
-
-
-
-
-
 
   const SetYears = (young: number, old: number) => {
     size_years = young - old
@@ -963,12 +938,23 @@
       />
 
       <g id="highlight-area" />
-        <g id="hover-century">
-          {#if show_century}
-          <rect id="hover-rect-century" />
-          {/if}
-        </g>
-        {#if show_artifacts}
+      <g id="hover-century">
+        <rect
+          id="hover-rect-century"
+          x={centuryScale ? centuryScale(current_century - oldestYear) : null}
+          y={0.1 * height}
+          width={centuryScale
+            ? centuryScale(current_century + 100) -
+              centuryScale(current_century)
+            : null}
+          height={height * 0.8}
+          stroke="black"
+          stroke-width="4"
+          fill="none"
+          opacity="0"
+        />
+      </g>
+      {#if show_artifacts}
         <g id="hover-overlay">
           <line />
           <g id="hover-overlay-year" />
