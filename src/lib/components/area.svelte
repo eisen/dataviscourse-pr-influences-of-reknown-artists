@@ -412,115 +412,36 @@
 
     let year_hover_idx = Math.floor(xScale.invert(ev.offsetX))
 
-    if (
-      ev.offsetX > 0.05 * width &&
-      ev.offsetX < 0.9 * width &&
-      !highlight_medium
-    ) {
-      // d3.select("#hover-overlay").attr("opacity", "1.0")
+    // if (
+    //   ev.offsetX > 0.05 * width &&
+    //   ev.offsetX < 0.9 * width &&
+    //   !highlight_medium
+    // ) {
+    // d3.select("#hover-overlay").attr("opacity", "1.0")
 
-      // d3.select('#hover-overlay')
-      //   .selectAll('*')
-      //   .attr('opacity', '1.0')
+    // d3.select('#hover-overlay')
+    //   .selectAll('*')
+    //   .attr('opacity', '1.0')
 
-      // Vertical line on hover
-      d3.select("#hover-overlay")
-        .select("line")
-        .attr("x1", ev.offsetX)
-        .attr("x2", ev.offsetX)
-        .attr("y1", height * 0.1)
-        .attr("y2", height * 0.9)
-        .attr("stroke", "black")
-        .attr("stroke-width", "2")
-      //.attr("opacity", "1.0")
+    // Vertical line on hover
+    d3.select("#hover-overlay")
+      .select("line")
+      .attr("x1", ev.offsetX)
+      .attr("x2", ev.offsetX)
+      .attr("y1", height * 0.1)
+      .attr("y2", height * 0.9)
+      .attr("stroke", "black")
+      .attr("stroke-width", "2")
+    //.attr("opacity", "1.0")
 
-      // Put rectangles
-      d3.select("#hover-overlay-rect")
-        .selectAll("rect")
-        .data((d) => {
-          for (var category of gtMediums) {
-            let idx = gtMediums.indexOf(category)
-          }
-          let non_zero_categories = gtMediums.filter((d) => {
-            let idx_cat = gtMediums.indexOf(d)
-            let val = 0
-            if (idx_cat !== 0) {
-              val =
-                area_lines_percentage[idx_cat][year_hover_idx] -
-                area_lines_percentage[idx_cat - 1][year_hover_idx]
-            } else {
-              val = area_lines_percentage[0][year_hover_idx]
-            }
-            if (val) {
-              return d
-            }
-          })
-          return non_zero_categories.reverse()
-        })
-        .join("rect")
-        .attr("x", (d) => {
-          if (ev.offsetX < width / 2) {
-            return ev.offsetX + font_size - 10
-          }
-          return ev.offsetX - 210
-        })
-        .attr("y", (d, i) => {
-          return font_size * i + font_size / 3 + height * 0.1
-        })
-        .attr("width", 200)
-        .attr("height", font_size)
-        .attr("rx", "10")
-        .style("fill", "white")
-        .style("opacity", "0.8")
-
-      // Put text
-      d3.select("#hover-overlay-text")
-        .selectAll("text")
-        .data((d) => {
-          for (var category of gtMediums) {
-            let idx = gtMediums.indexOf(category)
-          }
-          let non_zero_categories = gtMediums.filter((d) => {
-            let idx_cat = gtMediums.indexOf(d)
-            let val = 0
-            if (idx_cat !== 0) {
-              val =
-                area_lines_percentage[idx_cat][year_hover_idx] -
-                area_lines_percentage[idx_cat - 1][year_hover_idx]
-            } else {
-              val = area_lines_percentage[0][year_hover_idx]
-            }
-            if (val) {
-              return d
-            }
-          })
-          return non_zero_categories.reverse()
-        })
-        .join("text")
-        .text((d) => {
-          let updatedWording = d
-          if (d == "architect") {
-            updatedWording = "Architecture"
-          } else if (d == "calligrapher") {
-            updatedWording = "Calligraphy"
-          } else if (d == "ceramicist") {
-            updatedWording = "ceramics"
-          } else if (d == "draughtsman") {
-            updatedWording = "Blueprints"
-          } else if (d == "illustrator") {
-            updatedWording = "Illustrations"
-          } else if (d == "muralist") {
-            updatedWording = "Murals"
-          } else if (d == "painter") {
-            updatedWording = "Paintings"
-          } else if (d == "printmaker") {
-            updatedWording = "Prints"
-          } else if (d == "sculptor") {
-            updatedWording = "Sculptures"
-          } else if (d == "photography-film") {
-            updatedWording = "Photos & Film"
-          }
-          let str = ""
+    // Put rectangles
+    d3.select("#hover-overlay-rect")
+      .selectAll("rect")
+      .data((d) => {
+        for (var category of gtMediums) {
+          let idx = gtMediums.indexOf(category)
+        }
+        let non_zero_categories = gtMediums.filter((d) => {
           let idx_cat = gtMediums.indexOf(d)
           let val = 0
           if (idx_cat !== 0) {
@@ -530,37 +451,116 @@
           } else {
             val = area_lines_percentage[0][year_hover_idx]
           }
-          str =
-            str +
-            `${d3.format(".3s")(val)}` +
-            "% " +
-            updatedWording.charAt(0).toUpperCase() +
-            updatedWording.slice(1)
-          return str
-          // return d
-        })
-        .attr("x", (d) => {
-          if (ev.offsetX < width / 2) {
-            return ev.offsetX + font_size
+          if (val) {
+            return d
           }
-          return ev.offsetX - 200
         })
-        .attr("y", (d, i) => {
-          // let idx_cat = gtMediums.indexOf(d)
-          // return yScale(area_lines_percentage[idx_cat][year_hover_idx]) + font_size + PADDING.top
-          return font_size * i + font_size + height * 0.1
-        })
-        .attr("fill", (d, i) => {
+        return non_zero_categories.reverse()
+      })
+      .join("rect")
+      .attr("x", (d) => {
+        if (ev.offsetX < width / 2) {
+          return ev.offsetX + font_size - 10
+        }
+        return ev.offsetX - 210
+      })
+      .attr("y", (d, i) => {
+        return font_size * i + font_size / 3 + height * 0.1
+      })
+      .attr("width", 200)
+      .attr("height", font_size)
+      .attr("rx", "10")
+      .style("fill", "white")
+      .style("opacity", "0.8")
+
+    // Put text
+    d3.select("#hover-overlay-text")
+      .selectAll("text")
+      .data((d) => {
+        for (var category of gtMediums) {
+          let idx = gtMediums.indexOf(category)
+        }
+        let non_zero_categories = gtMediums.filter((d) => {
           let idx_cat = gtMediums.indexOf(d)
-          return ColourFunc(gtMediums.indexOf(d)) // This fixed it
+          let val = 0
+          if (idx_cat !== 0) {
+            val =
+              area_lines_percentage[idx_cat][year_hover_idx] -
+              area_lines_percentage[idx_cat - 1][year_hover_idx]
+          } else {
+            val = area_lines_percentage[0][year_hover_idx]
+          }
+          if (val) {
+            return d
+          }
         })
-        .style(
-          "text-shadow",
-          "1px 0 0 black,0 1px 0 black,-1px 0 0 black,0 -1px 0 black"
-        )
-        .style("font-family", "sans-serif")
-        .style("font-size", "1.2em")
-    }
+        return non_zero_categories.reverse()
+      })
+      .join("text")
+      .text((d) => {
+        let updatedWording = d
+        if (d == "architect") {
+          updatedWording = "Architecture"
+        } else if (d == "calligrapher") {
+          updatedWording = "Calligraphy"
+        } else if (d == "ceramicist") {
+          updatedWording = "ceramics"
+        } else if (d == "draughtsman") {
+          updatedWording = "Blueprints"
+        } else if (d == "illustrator") {
+          updatedWording = "Illustrations"
+        } else if (d == "muralist") {
+          updatedWording = "Murals"
+        } else if (d == "painter") {
+          updatedWording = "Paintings"
+        } else if (d == "printmaker") {
+          updatedWording = "Prints"
+        } else if (d == "sculptor") {
+          updatedWording = "Sculptures"
+        } else if (d == "photography-film") {
+          updatedWording = "Photos & Film"
+        }
+        let str = ""
+        let idx_cat = gtMediums.indexOf(d)
+        let val = 0
+        if (idx_cat !== 0) {
+          val =
+            area_lines_percentage[idx_cat][year_hover_idx] -
+            area_lines_percentage[idx_cat - 1][year_hover_idx]
+        } else {
+          val = area_lines_percentage[0][year_hover_idx]
+        }
+        str =
+          str +
+          `${d3.format(".3s")(val)}` +
+          "% " +
+          updatedWording.charAt(0).toUpperCase() +
+          updatedWording.slice(1)
+        return str
+        // return d
+      })
+      .attr("x", (d) => {
+        if (ev.offsetX < width / 2) {
+          return ev.offsetX + font_size
+        }
+        return ev.offsetX - 200
+      })
+      .attr("y", (d, i) => {
+        // let idx_cat = gtMediums.indexOf(d)
+        // return yScale(area_lines_percentage[idx_cat][year_hover_idx]) + font_size + PADDING.top
+        return font_size * i + font_size + height * 0.1
+      })
+      .attr("fill", (d, i) => {
+        let idx_cat = gtMediums.indexOf(d)
+        return ColourFunc(gtMediums.indexOf(d)) // This fixed it
+      })
+      .style(
+        "text-shadow",
+        "1px 0 0 black,0 1px 0 black,-1px 0 0 black,0 -1px 0 black"
+      )
+      .style("font-family", "sans-serif")
+      .style("font-size", "1.2em")
+    //}
     // else {
     //   d3.select('#hover-overlay').selectAll('*').remove(); // TODO: not working
     // }
@@ -698,11 +698,13 @@
   export const chordMedGroupFocus = (chordMedium: string) => {
     // Will implement logic for highlighting area in this component that corresponds to chordMedium
     console.log("Chord medium was highlighted on chord: ", chordMedium)
+    show_artifacts = false
     HighlightCategoryOnHover(chordMedium)
   }
 
   export const chordMedGroupReFocus = () => {
     // Will implement logic for making all areas equal in focus again
+    show_artifacts = true
     console.log("Chord medium is no longer highlighted on chord.")
     ClearHover()
     RestoreAfterHover()
@@ -726,12 +728,14 @@
       " and century: ",
       chordCentury
     )
+    show_artifacts = false
     HighlightCategoryOnHover(chordMedium)
   }
 
   export const chordMedRibbonReFocus = () => {
     // Will implement logic for removing highlights from medium area and indication of century time frame on x axis
     console.log("That ribbon is no longer highlighted...")
+    show_artifacts = true
     ClearHover()
     RestoreAfterHover()
   }
@@ -783,12 +787,14 @@
   export const chordMedButtonFocus = (chordCentury: string) => {
     // Will implement logic for some indication of the century's time span (like a rectangle or something)
     console.log("User highlighted button for century: ", chordCentury)
+    show_artifacts = false
     DrawRectangleCentury(chordCentury)
   }
 
   export const chordMedButtonReFocus = () => {
     // Will implement logic to get rid of some indication of the century's time span
     console.log("User is no longer highlighting century button...")
+    show_artifacts = true
     ClearRectangleCentury()
   }
 
@@ -897,15 +903,17 @@
       />
 
       <g id="highlight-area" />
-      <g id="hover-century">
-        <rect id="hover-rect-century" />
-      </g>
-      <g id="hover-overlay">
-        <line />
-        <g id="hover-overlay-year" />
-        <g id="hover-overlay-rect" />
-        <g id="hover-overlay-text" />
-      </g>
+      {#if show_artifacts}
+        <g id="hover-century">
+          <rect id="hover-rect-century" />
+        </g>
+        <g id="hover-overlay">
+          <line />
+          <g id="hover-overlay-year" />
+          <g id="hover-overlay-rect" />
+          <g id="hover-overlay-text" />
+        </g>
+      {/if}
     </g>
   </svg>
 </div>
