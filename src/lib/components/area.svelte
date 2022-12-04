@@ -688,14 +688,12 @@
 
   // Receiving sign from chord that a medium arc was highlighted/is no longer highlighted
   export const chordMedGroupFocus = (chordMedium: string) => {
-    show_artifacts = true
     // Will implement logic for highlighting area in this component that corresponds to chordMedium
     console.log("Chord medium was highlighted on chord: ", chordMedium)
     HighlightCategoryOnHover(chordMedium)
   }
 
   export const chordMedGroupReFocus = () => {
-    show_artifacts = false
     // Will implement logic for making all areas equal in focus again
     console.log("Chord medium is no longer highlighted on chord.")
     ClearHover()
@@ -712,7 +710,6 @@
     chordMedium: string,
     chordCentury: string
   ) => {
-    show_artifacts = true
     // Will implement logic for highlighting area in this component that corresponds to chordMedium and chordCentury
     // We also gotta put some indication of the century's time frame on the chart when this happens for focus
     console.log(
@@ -725,7 +722,6 @@
   }
 
   export const chordMedRibbonReFocus = () => {
-    show_artifacts = false
     // Will implement logic for removing highlights from medium area and indication of century time frame on x axis
     console.log("That ribbon is no longer highlighted...")
     ClearHover()
@@ -777,7 +773,6 @@
   // Receiving sign from chord a century button is highlighted/not anymore
   export const chordMedButtonFocus = (chordCentury: string) => {
     // Will implement logic for some indication of the century's time span (like a rectangle or something)
-    show_artifacts = true
     console.log("User highlighted button for century: ", chordCentury)
     DrawRectangleCentury(chordCentury)
   }
@@ -785,7 +780,6 @@
   export const chordMedButtonReFocus = () => {
     // Will implement logic to get rid of some indication of the century's time span
     console.log("User is no longer highlighting century button...")
-    show_artifacts = false
   }
 
   const SetYears = (young: number, old: number) => {
@@ -885,14 +879,12 @@
       <g id="hover-century">
         <rect id="hover-rect-century" />
       </g>
-      {#if show_artifacts}
-        <g id="hover-overlay">
-          <line />
-          <g id="hover-overlay-year" />
-          <g id="hover-overlay-rect" />
-          <g id="hover-overlay-text" />
-        </g>
-      {/if}
+      <g id="hover-overlay">
+        <line />
+        <g id="hover-overlay-year" />
+        <g id="hover-overlay-rect" />
+        <g id="hover-overlay-text" />
+      </g>
     </g>
   </svg>
 </div>
