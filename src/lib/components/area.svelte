@@ -69,7 +69,7 @@
 
   let xAxisGroup
 
-  let manualColors = []
+  let manualColors:any = []
   for (let i = d3.schemePaired.length - 1; i >= 0; i--) {
     manualColors.push(d3.schemePaired[i])
   }
@@ -94,7 +94,7 @@
           if (medium.medium === category) {
             area_values[i] = area_values[i] + 1
           }
-          total_mediums_one_year = total_mediums_one_year + 1 //TODO: check logic, should check if its there in the category_names
+          total_mediums_one_year = total_mediums_one_year + 1 
         }
       }
       area_values[i] = (area_values[i] / total_mediums_one_year) * 100
@@ -216,20 +216,8 @@
   const IndividualAreaChart = (category: string) => {
     let idx = gtMediums.indexOf(category)
     console.log(idx)
-    // Make all category area chart transparent
-    // d3.select('#all-area-chart')
-    // .attr('opacity', '0.0')
 
-    // let area_line_values = DataForAreaChartLine(category)
-    let area_line_values = area_lines[idx]
-    let area_line_values_prev:any = []
-    if(idx !== 0){
-      area_line_values_prev = area_lines_percentage[idx - 1]
-    }
-    else{
-      for(var j=0; j<size_years!; j++)
-      area_line_values_prev[j] = 0
-    }
+    let area_line_values = DataForAreaChartLine(category)
     // console.log('area_line_values', area_line_values)
 
     // X SCALE
@@ -245,8 +233,8 @@
       .area()
       .x((d) => xScale(d.x - oldestYear!) + PADDING.left)
       .y1(d => yScale(d.y) + PADDING.top)
-      .y0(d => yScale(d.prev) + PADDING.top)
-      // .y0(chart_height + PADDING.top)
+      // .y0(d => yScale(d.prev) + PADDING.top)
+      .y0(chart_height + PADDING.top)
       .curve(d3.curveStep)
       .context(null);
 
@@ -255,7 +243,7 @@
       const each_pair: any = {
         x: years[i],
         y: area_line_values[i],
-        prev: area_line_values_prev[i]
+        // prev: area_line_values_prev[i]
       }
       each_area_line.push(each_pair)
     }
@@ -265,12 +253,16 @@
     d3.select('#individual-area-chart') // It is a path in svg
     .datum(each_area_line)
     .attr("d", areaGenerator)
-    .style('fill', '#ee7722') // TODO: change this colour selection 
+    .transition()
+    .duration(1000)
+    .attr("fill", (d) => {
+      return ColourFunc(gtMediums.indexOf(category)) // This fixed it
+    })
     .attr('opacity', '1.0')
     
   }
 
-  const HighlightCategory = (category: string) => {
+  const HighlightCategoryOnHover = (category: string) => {
     highlight_medium = true
     let idx = gtMediums.indexOf(category)
     // idx = 5
@@ -666,6 +658,8 @@
     .range([0, chart_width]);
 
     d3.select('#hover-rect-century')
+      .transition()
+      .duration(700)
       .attr('x',xScale(+century - oldestYear) + PADDING.left)
       .attr('y',PADDING.top)
       .attr('width',xScale(100))
@@ -685,8 +679,7 @@
   export const chordMedGroupFocus = (chordMedium: string) => {
     // Will implement logic for highlighting area in this component that corresponds to chordMedium
     console.log('Chord medium was highlighted on chord: ', chordMedium)
-    // IndividualAreaChart(chordMedium) // TODO: for click medium 
-    HighlightCategory(chordMedium)
+    HighlightCategoryOnHover(chordMedium)
   }
 
   export const chordMedGroupReFocus = () => {
@@ -694,6 +687,11 @@
     console.log('Chord medium is no longer highlighted on chord.')
     ClearHover()
     RestoreAfterHover()
+
+    // SetYears(youngestYear, oldestYear)
+    // DrawAxesSingle() 
+    // DataForAllAreaChartLine()
+    // AllAreaChart()
   }
 
   // Receiving sign from chord that a ribbon got highlighted/is no longer highlighted
@@ -704,7 +702,7 @@
     // Will implement logic for highlighting area in this component that corresponds to chordMedium and chordCentury
     // We also gotta put some indication of the century's time frame on the chart when this happens for focus
     console.log('Chord ribbon was highlighted on chord for medium: ', chordMedium, ' and century: ', chordCentury)
-    HighlightCategory(chordMedium)
+    HighlightCategoryOnHover(chordMedium)
   }
 
   export const chordMedRibbonReFocus = () => {
@@ -744,7 +742,16 @@
   // Clicking on medium in arc
   export const chordArcMedButtonClick = (chordMedium: string) => {
     console.log('here', chordMedium)
+    ClearAreaChart()
+    ClearHover()
+    oldestYear = +d3.min(artists, (d) => d.year)! 
+    youngestYear = +d3.max(artists, (d) => d.year)!
+    oldestYear = 1378
+    SetYears(youngestYear, oldestYear)
+    DrawAxesSingle() 
     IndividualAreaChart(chordMedium)
+
+    // TODO: stay until clicked outside 
   }
 
   // Receiving sign from chord a century button is highlighted/not anymore
@@ -765,7 +772,7 @@
 
 
   const SetYears = (young: number, old: number) => {
-    size_years = young - old // TODO: change this when clicking on century button to show only that century
+    size_years = young - old 
     years = []
     for (let i = 0; i < size_years; i++) {
       years[i] = old + i
@@ -788,7 +795,7 @@
     group_artists = d3.groups(artists, (d) => d.artist)
     num_categories = d3.range(gtMediums.length).reverse()
 
-    oldestYear = +d3.min(location_data, (d) => d.year)! // TODO: Change this
+    oldestYear = +d3.min(location_data, (d) => d.year)! 
     youngestYear = +d3.max(location_data, (d) => d.year)!
 
     let mediumRoll = d3.groups(medium_data, (d) => d.medium)
@@ -799,27 +806,16 @@
     console.log("mediums over here: ", gtMediums)
     chordColorScale = d3.scaleOrdinal().domain(gtMediums).range(d3.schemePaired)
 
-    // TODO: change this when clicking on century button to show only that century
-
-    // // Change to individual area chart
-    // oldestYear = 1600
-    // youngestYear = 1700
-    // SetYears(youngestYear, oldestYear)
-    // DrawAxesSingle()
-    // DataForAllAreaChartLine()
-    // IndividualAreaChart('painter')
-
-    // Change to show all categories of aea chart
-    oldestYear = 1400
+    // Change to show all categories of area chart
+    // oldestYear = 1400
     // youngestYear = 1800
     SetYears(youngestYear, oldestYear)
-    // TODO: onClick, selecting the medium should display only that category
     DrawAxesSingle() //TODO: call again when selecting a century to change x axis
     DataForAllAreaChartLine()
     AllAreaChart()
 
     // To highlight selected category
-    // HighlightCategory('painter')
+    // HighlightCategoryOnHover('painter')
   }
 </script>
 
