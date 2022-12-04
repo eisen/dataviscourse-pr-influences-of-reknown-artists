@@ -218,8 +218,34 @@
 
   export const ClickGrouping = (chordGroup: string) => {
     // ...
-    clickedArcs[selectedG.indexOf(chordGroup)] =
+    if(grouping == 'Death')
+    {
+      clickedArcs[selectedG.indexOf(chordGroup)] =
       !clickedArcs[selectedG.indexOf(chordGroup)]
+    }
+    else{
+      for(let i = 0; i < clickedArcs.length; i++)
+      {
+        if(i == selectedG.indexOf(chordGroup))
+        {
+          clickedArcs[i] =
+          !clickedArcs[i]
+        }
+        else{
+          clickedArcs[i] = false
+        }
+      }
+      d3.selectAll(".arcPaths" + grouping)
+          .transition()
+          .duration(slowTransitionDur)
+          // .style("opacity", (d, i) => 1.0)
+          .style("stroke", (d, i) =>
+            clickedArcs[selectedG.indexOf(d.slice)] == false
+              ? "white"
+              : "#3C1900"
+          )
+          .style("stroke-width", 1)
+    }
   }
 
   export const ClickRibbon = (chordGroup: string, chordTime: string) => {
