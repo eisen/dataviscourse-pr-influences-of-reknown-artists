@@ -44,4 +44,4 @@ A lot of effort was saved by using the following technologies, available on the 
 
 # Deployment 
 
-Visit the [Influences, Deaths, and Mediums of Renowned Artists](https://eisen.github.io/dataviscourse-pr-influences-of-reknown-artists) page to see this project in action. The screencast video can be watched on [YouTube](https://www.youtube.com/watch?v=P-stOChQhec). Our Process Book can be downloaded [here](https://eisen.github.io/dataviscourse-pr-influences-of-reknown-artists//Influences_of_Renowned_Artists_Process_Book.pdf).
+Visit the [Influences, Deaths, and Mediums of Renowned Artists](https://eisen.github.io/dataviscourse-pr-influences-of-reknown-artists) page to see this project in action. The screencast video can be watched on [YouTube](https://www.youtube.com/watch?v=P-stOChQhec). Our Process Book can be downloaded [here](https://eisen.github.io/dataviscourse-pr-influences-of-reknown-artists//Influences_of_Renowned_Artists_Process_Book.pdf). Our original data files before converting to JSON, are located on [Google Sheets](https://docs.google.com/spreadsheets/d/1VOjt7ltFV0H-gcgeA2VPJ0hgNXPrfT8TfuOc9Js_Mj8/edit#gid=1944082120)
