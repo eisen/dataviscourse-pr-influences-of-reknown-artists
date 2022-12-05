@@ -275,7 +275,6 @@
     highlight_medium = true
     let idx = gtMediums.indexOf(category)
     // idx = 5
-    console.log("idx", idx)
 
     // X SCALE
     var xScale = d3
@@ -317,9 +316,7 @@
       .attr("x1", xScale(size_years! - 1)) // why -1 needed? some issue in area
       .attr("y1", yScale(area_lines[idx][size_years! - 1]))
       .attr("x2", xScale(size_years! - 1))
-      .attr(
-        "y2",
-        !idx ? height * 0.05 : yScale(area_lines[idx - 1][size_years! - 1])
+      .attr("y2", !idx ? height * 0.05 : yScale(area_lines[idx - 1][size_years! - 1])
       )
       .attr("fill", "none")
       .style("stroke", "black")
@@ -348,10 +345,11 @@
       .attr("opacity", "1.0")
 
     // Draw lower line
+    area_line_values = []
     if (idx !== 0) {
       area_line_values = area_lines_percentage[idx - 1]
     } else {
-      for (var j = 0; j < area_line_values.length; j++) {
+      for (var j = 0; j < size_years!; j++) {
         area_line_values[j] = 0
       }
     }
