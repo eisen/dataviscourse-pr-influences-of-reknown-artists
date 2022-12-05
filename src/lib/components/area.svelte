@@ -319,7 +319,9 @@
       .attr("x1", xScale(size_years! - 1)) // why -1 needed? some issue in area
       .attr("y1", yScale(area_lines[idx][size_years! - 1]))
       .attr("x2", xScale(size_years! - 1))
-      .attr("y2", !idx ? height * 0.05 : yScale(area_lines[idx - 1][size_years! - 1])
+      .attr(
+        "y2",
+        !idx ? height * 0.05 : yScale(area_lines[idx - 1][size_years! - 1])
       )
       .attr("fill", "none")
       .style("stroke", "black")
@@ -711,6 +713,8 @@
         blurb_x = (width - box.width) / 2
         blurb_y = (height - box.height) / 2
       })
+    } else {
+      display_blurb = false
     }
   }
 
@@ -732,10 +736,10 @@
     show_artifacts = true
     console.log("Chord medium is no longer highlighted on chord.")
 
+    HideBlurb()
     if (!selected_medium && !selected_century) {
       ClearHover()
       RestoreAfterHover()
-      HideBlurb()
     }
 
     // SetYears(youngestYear, oldestYear)
@@ -768,10 +772,10 @@
     // Will implement logic for removing highlights from medium area and indication of century time frame on x axis
     console.log("That ribbon is no longer highlighted...")
     show_artifacts = true
+    HideBlurb()
     if (!selected_medium && !selected_century) {
       ClearHover()
       RestoreAfterHover()
-      HideBlurb()
     }
   }
 
