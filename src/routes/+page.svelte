@@ -23,37 +23,30 @@
   const horizontalPadding = 24
   const verticalPadding = 6
   const header_height = 72
-  const footer_height = 24
 
   $: area_width = Math.abs(width - horizontalPadding) / 2
-  $: area_height = Math.abs(
-    (height - verticalPadding - header_height - footer_height) * 0.8
-  )
+  $: area_height = Math.abs((height - verticalPadding - header_height) * 0.8)
 
   $: network_width = width
-  $: network_height =
-    Math.abs(height - verticalPadding - header_height - footer_height) / 2
+  $: network_height = Math.abs(height - verticalPadding - header_height) / 2
 
   $: chord_width = Math.abs(width - horizontalPadding) / 2
-  $: chord_height = Math.abs(
-    (height - verticalPadding - header_height - footer_height) * 0.8
-  )
+  $: chord_height = Math.abs((height - verticalPadding - header_height) * 0.8)
 
   $: matrix_width = Math.abs(width - horizontalPadding) / 2
-  $: matrix_height =
-    Math.abs(height - verticalPadding - header_height - footer_height) / 2
+  $: matrix_height = Math.abs(height - verticalPadding - header_height) / 2
 
   $: map_width = Math.abs(width - horizontalPadding) / 2
-  $: map_height =
-    Math.abs(height - verticalPadding - header_height - footer_height) / 2
+  $: map_height = Math.abs(height - verticalPadding - header_height) / 2
 
   $: scatter_width = Math.abs(width - horizontalPadding) / 2
-  $: scatter_height = Math.abs(
-    (height - verticalPadding - header_height - footer_height) * 0.8
-  )
+  $: scatter_height = Math.abs((height - verticalPadding - header_height) * 0.8)
 
   $: legend_width = width
   $: legend_height = height / 9
+
+  $: show_info = false
+  $: show_screencast = false
 
   let allLocations: Types.LocationGroup[]
   $: allLocations = []
@@ -388,6 +381,22 @@
     area.ResetAreaChart()
   }
 
+  const ShowInfoDialog = () => {
+    show_info = true
+  }
+
+  const HideInfoDialog = () => {
+    show_info = false
+  }
+
+  const ShowScreencastDialog = () => {
+    show_screencast = true
+  }
+
+  const HideScreencastDialog = () => {
+    show_screencast = false
+  }
+
   onMount(async () => {
     const features: any = await d3.json(`${Config.server_url}/data/world.json`)
     const locs: Types.ArtistLocation[] | undefined = await d3.json(
@@ -435,6 +444,7 @@
     scatter.Initialize(locs!, artist_data!)
 
     data_loaded = true
+    // show_info = true
   })
 </script>
 
@@ -544,7 +554,7 @@
 
         <div
           class="text-gray-500 hover:text-gray-700 group relative min-w-0 overflow-hidden bg-white py-2 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
-          on:click={() => OpenInNewTab("https://www.youtube.com")}
+          on:click={ShowScreencastDialog}
         >
           <span class="pointer-events-none"
             ><svg
@@ -714,8 +724,160 @@
     </div>
   </div>
 {/if}
-<footer class="flex fixed justify-center bottom-0 w-full">
-  <span
-    >Team members: Nishita Kharche, Nick Lord-Ender-Laing, Eisen Montalvo</span
+<div
+  class="flex fixed justify-center bottom-4 left-4 w-8 h-8"
+  on:click={ShowInfoDialog}
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#c00"
+    ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+      d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-144c-17.7 0-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32z"
+    /></svg
   >
-</footer>
+</div>
+
+{#if show_info}
+  <div
+    class="fixed inset-0 z-20"
+    style="background-color: rgba(0, 0, 0, 0.25);"
+    transition:fade
+    on:click={HideInfoDialog}
+  >
+    <div
+      class="overflow-hidden bg-white shadow sm:rounded-lg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4"
+    >
+      <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg font-medium leading-6 text-utah-red">
+          Influences, Deaths, and Mediums of Renowned Artists
+        </h3>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+          A visualization project to fullfill the requirements of CS-6630
+        </p>
+      </div>
+      <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+        <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Team Members</dt>
+            <dd class="mt-1 text-sm text-gray-900">Nishita Kharche</dd>
+            <dd class="mt-1 text-sm text-gray-900">Nick Lord-Elder-Laing</dd>
+            <dd class="mt-1 text-sm text-gray-900">Eisen Montalvo</dd>
+          </div>
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Visualization for</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              CS-6630: Visualization for Data Sciences
+            </dd>
+          </div>
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Professor</dt>
+            <dd class="mt-1 text-sm text-gray-900">Dr. Alexander Lex</dd>
+          </div>
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Built with</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <a
+                class="underline underline-offset-1 text-utah-red"
+                href="https://kit.svelte.dev"
+                target="_blank"
+                >SvelteKit<svg
+                  class="w-4 h-4 inline-block pl-1 -mt-1/2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill="#c00"
+                  ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+                    d="M312 144H156.7c-13.25 0-24 10.75-24 24S143.5 192 156.7 192h97.34l-135 135c-9.375 9.375-9.375 24.56 0 33.94C123.7 365.7 129.8 368 136 368s12.28-2.344 16.97-7.031L288 225.9v97.34c0 13.25 10.75 24 24 24s24-10.75 24-24V168C336 154.8 325.3 144 312 144zM384 32H64C28.65 32 0 60.66 0 96v320c0 35.34 28.65 64 64 64h320c35.35 0 64-28.66 64-64V96C448 60.66 419.3 32 384 32zM400 416c0 8.82-7.178 16-16 16H64c-8.822 0-16-7.18-16-16V96c0-8.82 7.178-16 16-16h320c8.822 0 16 7.18 16 16V416z"
+                  /></svg
+                ></a
+              >,
+              <a
+                class="underline underline-offset-1 text-utah-red"
+                href="https://d3js.org"
+                target="_blank"
+                >D3.js<svg
+                  class="w-4 h-4 inline-block pl-1 -mt-1/2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill="#c00"
+                  ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+                    d="M312 144H156.7c-13.25 0-24 10.75-24 24S143.5 192 156.7 192h97.34l-135 135c-9.375 9.375-9.375 24.56 0 33.94C123.7 365.7 129.8 368 136 368s12.28-2.344 16.97-7.031L288 225.9v97.34c0 13.25 10.75 24 24 24s24-10.75 24-24V168C336 154.8 325.3 144 312 144zM384 32H64C28.65 32 0 60.66 0 96v320c0 35.34 28.65 64 64 64h320c35.35 0 64-28.66 64-64V96C448 60.66 419.3 32 384 32zM400 416c0 8.82-7.178 16-16 16H64c-8.822 0-16-7.18-16-16V96c0-8.82 7.178-16 16-16h320c8.822 0 16 7.18 16 16V416z"
+                  /></svg
+                ></a
+              >,
+              <a
+                class="underline underline-offset-1 text-utah-red"
+                href="https://tailwindcss.com"
+                target="_blank"
+                >TailwindCSS<svg
+                  class="w-4 h-4 inline-block pl-1 -mt-1/2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill="#c00"
+                  ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+                    d="M312 144H156.7c-13.25 0-24 10.75-24 24S143.5 192 156.7 192h97.34l-135 135c-9.375 9.375-9.375 24.56 0 33.94C123.7 365.7 129.8 368 136 368s12.28-2.344 16.97-7.031L288 225.9v97.34c0 13.25 10.75 24 24 24s24-10.75 24-24V168C336 154.8 325.3 144 312 144zM384 32H64C28.65 32 0 60.66 0 96v320c0 35.34 28.65 64 64 64h320c35.35 0 64-28.66 64-64V96C448 60.66 419.3 32 384 32zM400 416c0 8.82-7.178 16-16 16H64c-8.822 0-16-7.18-16-16V96c0-8.82 7.178-16 16-16h320c8.822 0 16 7.18 16 16V416z"
+                  /></svg
+                ></a
+              >,
+              <a
+                class="underline underline-offset-1 text-utah-red"
+                href="https://www.typescriptlang.org"
+                target="_blank"
+                >Typescript<svg
+                  class="w-4 h-4 inline-block pl-1 -mt-1/2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill="#c00"
+                  ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+                    d="M312 144H156.7c-13.25 0-24 10.75-24 24S143.5 192 156.7 192h97.34l-135 135c-9.375 9.375-9.375 24.56 0 33.94C123.7 365.7 129.8 368 136 368s12.28-2.344 16.97-7.031L288 225.9v97.34c0 13.25 10.75 24 24 24s24-10.75 24-24V168C336 154.8 325.3 144 312 144zM384 32H64C28.65 32 0 60.66 0 96v320c0 35.34 28.65 64 64 64h320c35.35 0 64-28.66 64-64V96C448 60.66 419.3 32 384 32zM400 416c0 8.82-7.178 16-16 16H64c-8.822 0-16-7.18-16-16V96c0-8.82 7.178-16 16-16h320c8.822 0 16 7.18 16 16V416z"
+                  /></svg
+                ></a
+              >, and
+              <a
+                class="underline underline-offset-1 text-utah-red"
+                href="https://nodejs.dev/en/"
+                target="_blank"
+                >Node.js<svg
+                  class="w-4 h-4 inline-block pl-1 -mt-1/2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill="#c00"
+                  ><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+                    d="M312 144H156.7c-13.25 0-24 10.75-24 24S143.5 192 156.7 192h97.34l-135 135c-9.375 9.375-9.375 24.56 0 33.94C123.7 365.7 129.8 368 136 368s12.28-2.344 16.97-7.031L288 225.9v97.34c0 13.25 10.75 24 24 24s24-10.75 24-24V168C336 154.8 325.3 144 312 144zM384 32H64C28.65 32 0 60.66 0 96v320c0 35.34 28.65 64 64 64h320c35.35 0 64-28.66 64-64V96C448 60.66 419.3 32 384 32zM400 416c0 8.82-7.178 16-16 16H64c-8.822 0-16-7.18-16-16V96c0-8.82 7.178-16 16-16h320c8.822 0 16 7.18 16 16V416z"
+                  /></svg
+                ></a
+              >
+            </dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="text-sm font-medium text-gray-500">About</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              In Influences, Deaths, and Mediums of Renowned Artists, we wanted
+              to explore three areas: How do artistic influences transcend time
+              and location? Is it true the common belief that artists suffer a
+              lot and have tragic deaths? And how the different mediums
+              available to artists changed over time.
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+{/if}
+
+{#if show_screencast}
+  <div
+    class="fixed inset-0 z-20"
+    style="background-color: rgba(0, 0, 0, 0.25);"
+    transition:fade
+    on:click={HideScreencastDialog}
+  >
+    <iframe
+      width={width / 2}
+      height={height / 2}
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      src="https://www.youtube.com/embed/6DOzObyCYlY"
+      title="Screencast"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    />
+  </div>
+{/if}
