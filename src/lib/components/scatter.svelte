@@ -2,6 +2,7 @@
   import * as d3 from "d3"
   import { Config, Helpers, Types } from "$lib/utilities"
   import { createEventDispatcher } from "svelte"
+  import { transition } from "d3";
 
   const dispatch = createEventDispatcher()
 
@@ -84,6 +85,7 @@
 
   // Handler functions
   export const chordGroupingFocus = (chordGroup: string) => {
+    console.log(chordGroup)
     if (dbBusy) {
       console.log("sorry. the points are busy moving right now...")
     } else {
@@ -119,6 +121,8 @@
         .attr("stroke", (d, i) =>
           !deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)] ? "none" : "#3C1900"
         )
+        d3.selectAll('.storyText').remove()
+      
     }
   }
   // Takes in chord group and century that the ribbon maps to
@@ -140,6 +144,101 @@
         .attr("stroke", "#3C1900")
         .attr("stroke-width", 2)
       // }
+      if((chordGroup == 'murder' && !clickLock) || (chordGroup == 'murder' && centClicked == '1400'))
+      {
+        d3.select(scatterViz)
+          .append('text')
+          .attr('x', scatterWidth / 2)
+          .attr('y', scatterHeight * 0.8)
+          .attr('font-size', attrFontSize * 0.55)
+          .style('fontStyle', 'italic')
+          .attr('text-anchor', 'middle')
+          .classed('storyText', true)
+          .text('According to legend, Masaccio was poisoned by a jealous rival')
+          .style('opacity', 0.0)
+        d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+      }
+      else if((chordGroup == 'suicide' && !clickLock && chordTime == '1800') || (chordGroup == 'suicide' && centClicked == '1800'))
+      {
+        console.log('mo')
+        d3.select(scatterViz)
+          .append('text')
+          .attr('x', scatterWidth / 2)
+          .attr('y', scatterHeight * 0.8)
+          .attr('font-size', attrFontSize * 0.55)
+          .style('fontStyle', 'italic')
+          .attr('text-anchor', 'middle')
+          .classed('storyText', true)
+          .text('van Gogh\'s gun that he used to kill himself sold for $182,000')
+          .style('opacity', 0.0)
+        d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+      }
+      else if((chordGroup == 'natural' && !clickLock && chordTime == '2000') || (chordGroup == 'natural' && centClicked == '2000'))
+      {
+        d3.select(scatterViz)
+          .append('text')
+          .attr('x', scatterWidth / 2)
+          .attr('y', scatterHeight * 0.8)
+          .attr('font-size', attrFontSize * 0.55)
+          .style('fontStyle', 'italic')
+          .attr('text-anchor', 'middle')
+          .classed('storyText', true)
+          .text('S.H. Raza\'s wish to be burried next to his father in Mandla, India was fulfilled')
+          .style('opacity', 0.0)
+        d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+      }
+      else if((chordGroup == 'illness' && !clickLock && chordTime == '2000') || (chordGroup == 'illness' && centClicked == '2000'))
+      {
+        d3.select(scatterViz)
+          .append('text')
+          .attr('x', scatterWidth / 2)
+          .attr('y', scatterHeight * 0.8)
+          .attr('font-size', attrFontSize * 0.55)
+          .style('fontStyle', 'italic')
+          .attr('text-anchor', 'middle')
+          .classed('storyText', true)
+          .text('Antoni Tàpiez\'s died from health issues. He was married and had 3 kids')
+          .style('opacity', 0.0)
+        d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+      }
+      else if((chordGroup == 'illness' && !clickLock && chordTime == '1700') || (chordGroup == 'illness' && centClicked == '1700'))
+      {
+        d3.select(scatterViz)
+          .append('text')
+          .attr('x', scatterWidth / 2)
+          .attr('y', scatterHeight * 0.8)
+          .attr('font-size', attrFontSize * 0.55)
+          .style('fontStyle', 'italic')
+          .attr('text-anchor', 'middle')
+          .classed('storyText', true)
+          .text('Antoine Watteau\'s lost 1718 painting was found nearly 300 years after he died')
+          .style('opacity', 0.0)
+        d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+      }
+      else if((chordGroup == 'no-mention' && !clickLock && chordTime == '1300') || (chordGroup == 'no-mention' && centClicked == '1300'))
+      {
+        d3.select(scatterViz)
+          .append('text')
+          .attr('x', scatterWidth / 2)
+          .attr('y', scatterHeight * 0.75)
+          .attr('font-size', attrFontSize * 0.55)
+          .style('fontStyle', 'italic')
+          .attr('text-anchor', 'middle')
+          .classed('storyText', true)
+          .text('Giotto\'s bones were found in the 1970\'s, and they suggest that')
+          .style('opacity', 0.0)
+          d3.select(scatterViz)
+          .append('text')
+          .attr('x', scatterWidth / 2)
+          .attr('y', scatterHeight * 0.8)
+          .attr('font-size', attrFontSize * 0.55)
+          .style('fontStyle', 'italic')
+          .attr('text-anchor', 'middle')
+          .classed('storyText', true)
+          .text('he often held a paint brush between his teeth')
+          .style('opacity', 0.0)
+        d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+      }
     }
     // positionCompare = Number(d3.select('.allPoints').attr('cx'))
   }
@@ -154,6 +253,7 @@
         .attr("stroke", (d, i) =>
           !deathTypeLocks[gtDeaths.indexOf(d.typeOfDeath)] ? "none" : "#3C1900"
         )
+      d3.selectAll('.storyText').remove()
     }
     // positionCompare = Number(d3.select('.allPoints').attr('cx'))
   }
@@ -229,7 +329,6 @@
             : [Number(chordTime), Number(chordTime) + 100]
         )
         .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
-      console.log("updating to: ", scatterWidth)
       scatterXAxisG
         .transition()
         .duration(1000)
@@ -263,7 +362,7 @@
           )
       }
       // delay(2200).then(() => d3.selectAll('.allPoints').classed('busy', false))
-      delay(2000).then(() => (dbBusy = false))
+      delay(1200).then(() => (dbBusy = false))
 
       // d3.selectAll('.allPoints').transition().duration(1500).classed('busy', false)
       // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => updatedHorizYearScale(d.finalYear) + horizontalAdjust)
@@ -303,7 +402,7 @@
           .attr("cx", (d, i) => horizYearScale(d.finalYear) + horizontalAdjust)
       }
       // delay(2200).then(() => d3.selectAll('.allPoints').classed('busy', false))
-      delay(2000).then(() => (dbBusy = false))
+      delay(1200).then(() => (dbBusy = false))
       // d3.selectAll('.allPoints').transition().duration(1000).attr('cx', (d, i) => horizYearScale(d.finalYear) + horizontalAdjust)
     }
   }
@@ -366,7 +465,7 @@
             name: allLocations[i][0],
             age: ageCalc,
             finalYear: yearCalc,
-            // finalCent: String(Math.floor(yearCalc/100) * 100),
+            finalCent: String(Math.floor(yearCalc/100) * 100),
             typeOfDeath: deathDeriv,
           })
         }
@@ -395,7 +494,6 @@
         .scaleLinear()
         .domain([minYear, maxYear])
         .range([horizontalAdjust, scatterWidth - horizontalAdjust * 2])
-      console.log("original: ", scatterWidth)
       // Vertical scale: deatt age
       verticalAgeScale = d3
         .scaleLinear()
@@ -447,7 +545,6 @@
         .classed("allPoints", true)
         .on("mouseover", function (e, d, boolL = dbBusy) {
           if (!boolL) {
-            console.log("oh yeah oh yeah mario oh yeah")
             d3.selectAll(".allPoints")
               .transition()
               .duration(fastTransitionDur)
@@ -466,6 +563,104 @@
               .attr("stroke", "#3C1900")
               .attr("stroke-width", 2)
             // .attr('r', (d3.min([scatterWidth, scatterHeight]) * 0.02))
+
+            // Minor storytelling:
+
+            if((d.typeOfDeath == 'murder' && !clickLock) || (d.typeOfDeath == 'murder' && centClicked == '1400'))
+            {
+              d3.select(scatterViz)
+                .append('text')
+                .attr('x', scatterWidth / 2)
+                .attr('y', scatterHeight * 0.8)
+                .attr('font-size', attrFontSize * 0.55)
+                .style('fontStyle', 'italic')
+                .attr('text-anchor', 'middle')
+                .classed('storyText', true)
+                .text('According to legend, Masaccio was poisoned by a jealous rival')
+                .style('opacity', 0.0)
+              d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+            }
+            else if((d.typeOfDeath == 'suicide' && !clickLock && d.finalCent == '1800') || (d.typeOfDeath == 'suicide' && centClicked == '1800'))
+            {
+              console.log('mo')
+              d3.select(scatterViz)
+                .append('text')
+                .attr('x', scatterWidth / 2)
+                .attr('y', scatterHeight * 0.8)
+                .attr('font-size', attrFontSize * 0.55)
+                .style('fontStyle', 'italic')
+                .attr('text-anchor', 'middle')
+                .classed('storyText', true)
+                .text('van Gogh\'s gun that he used to kill himself sold for $182,000')
+                .style('opacity', 0.0)
+              d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+            }
+            else if((d.typeOfDeath == 'natural' && !clickLock && d.finalCent == '2000') || (d.typeOfDeath == 'natural' && centClicked == '2000'))
+            {
+              d3.select(scatterViz)
+                .append('text')
+                .attr('x', scatterWidth / 2)
+                .attr('y', scatterHeight * 0.8)
+                .attr('font-size', attrFontSize * 0.55)
+                .style('fontStyle', 'italic')
+                .attr('text-anchor', 'middle')
+                .classed('storyText', true)
+                .text('S.H. Raza\'s wish to be burried next to his father in Mandla, India was fulfilled')
+                .style('opacity', 0.0)
+              d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+            }
+            else if((d.typeOfDeath == 'illness' && !clickLock && d.finalCent == '2000') || (d.typeOfDeath == 'illness' && centClicked == '2000'))
+            {
+              d3.select(scatterViz)
+                .append('text')
+                .attr('x', scatterWidth / 2)
+                .attr('y', scatterHeight * 0.8)
+                .attr('font-size', attrFontSize * 0.55)
+                .style('fontStyle', 'italic')
+                .attr('text-anchor', 'middle')
+                .classed('storyText', true)
+                .text('Antoni Tàpiez\'s died from health issues. He was married and had 3 kids')
+                .style('opacity', 0.0)
+              d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+            }
+            else if((d.typeOfDeath == 'illness' && !clickLock && d.finalCent == '1700') || (d.typeOfDeath == 'illness' && centClicked == '1700'))
+            {
+              d3.select(scatterViz)
+                .append('text')
+                .attr('x', scatterWidth / 2)
+                .attr('y', scatterHeight * 0.8)
+                .attr('font-size', attrFontSize * 0.55)
+                .style('fontStyle', 'italic')
+                .attr('text-anchor', 'middle')
+                .classed('storyText', true)
+                .text('Antoine Watteau\'s lost 1718 painting was found nearly 300 years after he died')
+                .style('opacity', 0.0)
+              d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+            }
+            else if((d.typeOfDeath == 'no-mention' && !clickLock && d.finalCent == '1300') || (d.typeOfDeath == 'no-mention' && centClicked == '1300'))
+            {
+              d3.select(scatterViz)
+                .append('text')
+                .attr('x', scatterWidth / 2)
+                .attr('y', scatterHeight * 0.75)
+                .attr('font-size', attrFontSize * 0.55)
+                .style('fontStyle', 'italic')
+                .attr('text-anchor', 'middle')
+                .classed('storyText', true)
+                .text('Giotto\'s bones were found in the 1970\'s, and they suggest that')
+                .style('opacity', 0.0)
+                d3.select(scatterViz)
+                .append('text')
+                .attr('x', scatterWidth / 2)
+                .attr('y', scatterHeight * 0.8)
+                .attr('font-size', attrFontSize * 0.55)
+                .style('fontStyle', 'italic')
+                .attr('text-anchor', 'middle')
+                .classed('storyText', true)
+                .text('he often held a paint brush between his teeth')
+                .style('opacity', 0.0)
+              d3.selectAll('.storyText').transition().duration(300).style('opacity', 1.0)
+            }
 
             // Adding tooltip text/rect:
             d3.selectAll(".tempTextT").remove()
@@ -565,8 +760,7 @@
               .attr("id", () => Helpers.ArtistID(d.name) + "-name")
               .style(
                 "font-size",
-                d.name.length >= 15 &&
-                  (d.finalYear - newMinYear) / (newMaxYear - newMinYear) >= 0.8
+                d.name.length >= 15 
                   ? attrFontSize * 0.52
                   : attrFontSize * 0.6
               )
@@ -665,6 +859,10 @@
               .remove()
             // d3.selectAll('.tempTextT').transition().duration(fastTransitionDur + 10000).remove()
             OnMouseLeaveDots()
+            // if((d.typeOfDeath == 'murder' && !clickLock) || (d.typeOfDeath == 'murder' && centClicked == '1400'))
+            // {
+              d3.selectAll('.storyText').remove()
+            // }
           }
         })
 
@@ -747,7 +945,6 @@
       console.error("Unable to load Artist Locations!")
     }
 
-    console.log(scatterData)
     scatterData = scatterData
   }
 </script>

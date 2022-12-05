@@ -37,15 +37,11 @@
     },
     {
         "artist": "Andy Warhol",
-        "medium": "photography"
+        "medium": "photography-film"
     },
     {
         "artist": "Andy Warhol",
         "medium": "printmaker"
-    },
-    {
-        "artist": "Andy Warhol",
-        "medium": "film"
     },
     {
         "artist": "Antoni Tàpies",
@@ -57,11 +53,11 @@
     },
     {
         "artist": "Arpita Singh",
-        "medium": "watercolourist"
+        "medium": "painter"
     },
     {
         "artist": "Arpita Singh",
-        "medium": "oilpainter"
+        "medium": "painter"
     },
     {
         "artist": "Brett Whiteley",
@@ -85,7 +81,7 @@
     },
     {
         "artist": "Constantin Brancusi",
-        "medium": "photography"
+        "medium": "photography-film"
     },
     {
         "artist": "Damien Hirst",
@@ -121,7 +117,7 @@
     },
     {
         "artist": "Edgar Degas",
-        "medium": "oilpainter"
+        "medium": "painter"
     },
     {
         "artist": "Edgar Degas",
@@ -169,7 +165,7 @@
     },
     {
         "artist": "Emil Nolde",
-        "medium": "watercolourist"
+        "medium": "painter"
     },
     {
         "artist": "Emil Nolde",
@@ -189,11 +185,11 @@
     },
     {
         "artist": "Frida Kahlo",
-        "medium": "oilpainter"
+        "medium": "painter"
     },
     {
         "artist": "Georges Seurat",
-        "medium": "oilpainter"
+        "medium": "painter"
     },
     {
         "artist": "Giorgio de Chirico",
@@ -201,7 +197,7 @@
     },
     {
         "artist": "Giorgio de Chirico",
-        "medium": "oilpainter"
+        "medium": "painter"
     },
     {
         "artist": "Giorgio de Chirico",
@@ -209,7 +205,7 @@
     },
     {
         "artist": "Gustav Klimt",
-        "medium": "oilpainter"
+        "medium": "painter"
     },
     {
         "artist": "Gustav Klimt",
@@ -217,7 +213,7 @@
     },
     {
         "artist": "Gustav Klimt",
-        "medium": "watercolourist"
+        "medium": "painter"
     },
     {
         "artist": "Henri de Toulouse-Lautrec",
@@ -253,11 +249,11 @@
     },
     {
         "artist": "J.M.W Turner",
-        "medium": "oilpainter"
+        "medium": "painter"
     },
     {
         "artist": "J.M.W Turner",
-        "medium": "watercolourist"
+        "medium": "painter"
     },
     {
         "artist": "J.M.W Turner",
@@ -289,22 +285,6 @@
     },
     {
         "artist": "Jean-Antoine Watteau",
-        "medium": "draughtsman"
-    },
-    {
-        "artist": "Jeong Seon",
-        "medium": "painter"
-    },
-    {
-        "artist": "Jeong Seon",
-        "medium": "ink"
-    },
-    {
-        "artist": "Jeong Seon",
-        "medium": "watercolourist"
-    },
-    {
-        "artist": "Jeong Seon",
         "medium": "draughtsman"
     },
     {
@@ -337,11 +317,7 @@
     },
     {
         "artist": "John Baldessari",
-        "medium": "film"
-    },
-    {
-        "artist": "John Baldessari",
-        "medium": "photography"
+        "medium": "photography-film"
     },
     {
         "artist": "John Baldessari",
@@ -365,7 +341,7 @@
     },
     {
         "artist": "Julian Schnabel",
-        "medium": "film"
+        "medium": "photography-film"
     },
     {
         "artist": "Katsushika Hokusai",
@@ -413,7 +389,7 @@
     },
     {
         "artist": "Marcel Duchamp",
-        "medium": "film"
+        "medium": "photography-film"
     },
     {
         "artist": "Margaret Rose Preston",
@@ -449,7 +425,7 @@
     },
     {
         "artist": "Max Ernst",
-        "medium": "oilpainter"
+        "medium": "painter"
     },
     {
         "artist": "Max Ernst",
@@ -462,14 +438,6 @@
     {
         "artist": "Max Jacob",
         "medium": "painter"
-    },
-    {
-        "artist": "Mi Fu",
-        "medium": "painter"
-    },
-    {
-        "artist": "Mi Fu",
-        "medium": "calligrapher"
     },
     {
         "artist": "Michelangelo",
@@ -545,7 +513,7 @@
     },
     {
         "artist": "Paul Klee",
-        "medium": "watercolourist"
+        "medium": "painter"
     },
     {
         "artist": "Paul Klee",
@@ -601,15 +569,11 @@
     },
     {
         "artist": "Salvador Dali",
-        "medium": "photography"
+        "medium": "photography-film"
     },
     {
         "artist": "Salvador Dali",
         "medium": "sculptor"
-    },
-    {
-        "artist": "Salvador Dali",
-        "medium": "film"
     },
     {
         "artist": "Satish Gujral",

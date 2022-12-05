@@ -68,7 +68,6 @@
   //   .range(Helpers.ColorScheme)
 
   function ribbonBasket(d) {
-    console.log("Here we are. Subspace.")
     var buffer,
       sr = chartRad * 0.9125, // source radius
       sa0 = (d.startAngle * 180) / Math.PI - 90, // start angle source
@@ -211,8 +210,34 @@
 
   export const ClickGrouping = (chordGroup: string) => {
     // ...
-    clickedArcs[selectedG.indexOf(chordGroup)] =
+    if(grouping == 'Death')
+    {
+      clickedArcs[selectedG.indexOf(chordGroup)] =
       !clickedArcs[selectedG.indexOf(chordGroup)]
+    }
+    else{
+      for(let i = 0; i < clickedArcs.length; i++)
+      {
+        if(i == selectedG.indexOf(chordGroup))
+        {
+          clickedArcs[i] =
+          !clickedArcs[i]
+        }
+        else{
+          clickedArcs[i] = false
+        }
+      }
+      d3.selectAll(".arcPaths" + grouping)
+          .transition()
+          .duration(slowTransitionDur)
+          // .style("opacity", (d, i) => 1.0)
+          .style("stroke", (d, i) =>
+            clickedArcs[selectedG.indexOf(d.slice)] == false
+              ? "white"
+              : "#3C1900"
+          )
+          .style("stroke-width", 1)
+    }
   }
 
   export const ClickRibbon = (chordGroup: string, chordTime: string) => {
@@ -574,17 +599,11 @@
       let rolledUp
       if (grouping == "Medium") {
         rolledUp = d3.groups(groupLocs, (d) => d.medium)
-        console.log("rolledUp")
-        console.log(rolledUp)
-        console.log(rolledUp.length)
         // selectedG = gtMediums
         selectedColorScheme = d3.schemePaired
         gtCents = gtCentsMedium
       } else {
         rolledUp = d3.groups(groupLocs, (d) => d.death_type)
-        console.log("rolledUp")
-        console.log(rolledUp)
-        console.log(rolledUp.length)
         // selectedG = gtDeaths
         selectedColorScheme = d3.schemePaired
         gtCents = gtCentsDeath
@@ -593,13 +612,10 @@
         selectedG.push(rolledUp[i][0])
       }
       selectedG.sort(d3.ascending)
-      console.log("mediums over here for chord: ", selectedG)
       allGroupings = d3.groups(groupLocs, (d) => d.artist)
 
       allLocations = d3.groups(locs, (d) => d.artist)
       // console.log(allLocations)
-
-      console.log("selectedG 1: ", selectedG)
 
       clickLocks = new Array(gtCents.length).fill(false)
 
@@ -723,8 +739,6 @@
         .outerRadius(chartRad)
         .cornerRadius(3)
 
-      console.log("aight. So far so good whats good?")
-
       d3.select(chordViz).datum(function (d, i) {
         let sortedGroupedArr = groupedData.sort(function (a, b) {
           let totA = 0
@@ -745,8 +759,6 @@
 
         let retArr = []
         let n = groupedData.length
-        console.log("Bir!")
-        console.log(groupedData)
 
         let angleR = (angleD * Math.PI) / 180
         let totalAngle = 2 * angleD
@@ -761,7 +773,6 @@
         let otherSide = false
         let rTallyInt = 0
         let nowGoOver = false
-        // console.log(groupedData)
 
         let padCheck = false
         for (let i = 0; i < n; i++) {
@@ -851,10 +862,9 @@
             }
           }
         }
-        console.log(retArr)
         return retArr
       })
-      console.log("Whatsaaauuuup?")
+
       let deathArr = [
         "Natural Causes",
         "Unknown",
@@ -902,13 +912,16 @@
         .style("opacity", 0.5)
         .on("mouseover", function (e, d) {
           OnMouseOverRibbons(d.slice, d.defIndex, chordCentScale(d.cent))
+          if(d.slice == 'murder')
+          {
+            console.log('aha!')
+          }
           // d3.select(this).style('opacity', 0.95)
         })
         .on("mouseout", (e, d) =>
           OnMouseLeaveRibbons(d.slice, d.defIndex, d.cent)
         )
         .on("click", (e, d) => OnClickRibbons(d.slice, chordCentScale(d.cent)))
-      console.log("Ribbons are....epiiiiic?")
 
       // Group for everything but the ribbons
       let groupChord = d3

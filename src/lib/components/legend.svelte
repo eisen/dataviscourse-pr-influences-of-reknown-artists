@@ -10,7 +10,7 @@
   export let width: number = 0
   export let height: number = 0
   export let grouping: string
-  export let topOffset
+  export let topOffset: number
 
   $: attrFontSize = (width / 370) * 6 < 15 ? 15 : (width / 370) * 5
   // height <= width ? (height / 270) * 15 : (width / 370) * 15
@@ -91,6 +91,18 @@
     dispatch("reset_mediums", {})
   }
 
+  const OnMouseOverElement = (element: string) => {
+    dispatch("highlight_element", {
+      chordGroup: element,
+    })
+  }
+
+  const OnMouseLeaveElement = (element: string) => {
+    dispatch("restore_elements", {
+      chordGroup: element,
+    })
+  }
+
   export const Initialize = (
     groupLocs: Types.ArtistMedium[] | Types.ArtistData[]
   ) => {
@@ -112,7 +124,6 @@
       selectedG.push(rolledUpG[i][0])
     }
     selectedG.sort(d3.ascending)
-    console.log("alright. here we are again.")
     // Append Legend Rect:
     d3.select(legendViz)
       .append("rect")
@@ -150,6 +161,9 @@
       .data(selectedG)
       .enter()
       .append("g")
+      .on("mouseover", (el, d) => OnMouseOverElement(d))
+      .on("mouseleave", (el, d) => OnMouseLeaveElement(d))
+
     colorGroup
       .append("rect")
       .attr("rx", 4)
@@ -176,6 +190,7 @@
       // .attr('stroke', "#DBE2E9")
       .attr("stroke", "black")
       .attr("id", (d, i) => "legendaryRect_" + grouping + "_" + d)
+
     colorGroup
       .append("text")
       .attr(

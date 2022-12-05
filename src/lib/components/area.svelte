@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Types, Helpers } from "$lib/utilities"
+  import { Types } from "$lib/utilities"
   import type { ArtistLocation, ArtistMedium } from "$lib/utilities/types"
   import * as d3 from "d3"
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher, tick } from "svelte"
+  import { fade } from "svelte/transition"
 
   const dispatch = createEventDispatcher()
 
   export let width: number = 0
   export let height: number = 0
-  export let topOffset: number = 0
 
   const PADDING = { left: 0.05, right: 0.05, top: 0.05, bottom: 0.05 }
 
@@ -26,9 +26,7 @@
   $: youngestYear = 2100
   $: max_year = 0
   let tickEvery = 50
-  const yearEvery = 100
   const yearEverySingle = 10
-  const title_length = 80
 
   let tl_x_scale: d3.ScaleLinear<number, number, never>
   $: tl_x_scale
@@ -41,7 +39,6 @@
   let years = new Array<number>(size_years!)
 
   let group_artists: any = []
-  let artists_alive: any = []
   let num_categories = new Array<number>(5)
   $: num_categories = []
 
@@ -64,6 +61,11 @@
   $: current_century = 0
   $: passed_century = "0"
 
+  $: blurb_x = width / 2
+  $: blurb_y = height / 2
+  $: blurb_text = ""
+  $: display_blurb = false
+
   let chordColorScale
   let gtMediums: any = []
 
@@ -71,7 +73,12 @@
   let selected_medium: boolean
   let selected_medium_category: string
 
-  let xAxisGroup
+  let blurbs: any = {
+    painter: "Painting is the most consistent form of art across centuries",
+    calligrapher: "Calligraphy was a prominent art form in older centuries",
+    "photography-film":
+      "Photography and film came into existence in the later centuries as technology developed",
+  }
 
   let manualColors: any = []
   for (let i = d3.schemePaired.length - 1; i >= 0; i--) {
@@ -187,8 +194,6 @@
     // Draw all in category
     let num = 0
     for (var category of gtMediums) {
-      console.log("whiich category we on? " + category)
-      // console.log(gtMediums.length - 1 - num)
       let area_line_values = area_lines_percentage[gtMediums.length - 1 - num]
       let area_line_values_prev: any = []
       if (num < gtMediums.length - 1) {
@@ -208,7 +213,6 @@
         each_area_line.push(each_pair)
       }
       let area_id = "area-chart-" + (gtMediums.length - num).toString()
-      // console.log(area_id)
       d3.select("#all-area-chart")
         .append("path")
         .attr("id", area_id)
@@ -216,7 +220,6 @@
         .attr("d", areaGenerator1)
         .style("fill", manualColors[num - 1])
         .attr("opacity", "1.0")
-      console.log("heyoooo which num tell me please " + (num - 1))
     }
   }
 
@@ -698,11 +701,27 @@
     d3.select("#hover-rect-century").attr("opacity", "0")
   }
 
+  const ShowBlurb = (category: string) => {
+    if (category in blurbs) {
+      display_blurb = true
+      blurb_text = blurbs[category]
+      tick().then(() => {
+        const node = d3.select("#blurb_node").node()! as Element
+        const box = node!.getBoundingClientRect()!
+        blurb_x = (width - box.width) / 2
+        blurb_y = (height - box.height) / 2
+      })
+    }
+  }
+
+  const HideBlurb = () => (display_blurb = false)
+
   // Receiving sign from chord that a medium arc was highlighted/is no longer highlighted
   export const chordMedGroupFocus = (chordMedium: string) => {
     // Will implement logic for highlighting area in this component that corresponds to chordMedium
     console.log("Chord medium was highlighted on chord: ", chordMedium)
     show_artifacts = false
+    ShowBlurb(chordMedium)
     if (!selected_medium && !selected_century) {
       HighlightCategoryOnHover(chordMedium)
     }
@@ -716,6 +735,7 @@
     if (!selected_medium && !selected_century) {
       ClearHover()
       RestoreAfterHover()
+      HideBlurb()
     }
 
     // SetYears(youngestYear, oldestYear)
@@ -738,6 +758,7 @@
       chordCentury
     )
     show_artifacts = false
+    ShowBlurb(chordMedium)
     if (!selected_medium && !selected_century) {
       HighlightCategoryOnHover(chordMedium)
     }
@@ -750,6 +771,7 @@
     if (!selected_medium && !selected_century) {
       ClearHover()
       RestoreAfterHover()
+      HideBlurb()
     }
   }
 
@@ -801,7 +823,6 @@
 
   // Clicking on medium in arc
   export const chordArcMedButtonClick = (chordMedium: string) => {
-
     if (selected_medium) {
       if (selected_medium_category === chordMedium) {
         selected_medium = !selected_medium
@@ -889,7 +910,6 @@
       gtMediums.push(mediumRoll[l][0])
     }
     gtMediums.sort(d3.ascending)
-    console.log("mediums over here: ", gtMediums)
     chordColorScale = d3.scaleOrdinal().domain(gtMediums).range(d3.schemePaired)
 
     // Change to show all categories of area chart
@@ -985,4 +1005,14 @@
       {/if}
     </g>
   </svg>
+  {#if display_blurb}
+    <div
+      id="blurb_node"
+      class="absolute border border-black border-solid rounded-lg p-4 w-80 bg-white"
+      style="left: {blurb_x}px; top: {blurb_y}px;"
+      transition:fade
+    >
+      {blurb_text}
+    </div>
+  {/if}
 </div>

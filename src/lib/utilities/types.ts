@@ -55,6 +55,7 @@ export type ArtistData = {
   index?: number
   x?: number
   y?: number
+  blurb?: string
 }
 
 export type ArtistMedium = {
@@ -84,4 +85,10 @@ export enum InfluenceType {
   Influencer = 0,
   Influencee,
   Both,
+}
+
+export enum SortType {
+  SortDescending = 0,
+  SortAlpha,
+  SortAscending,
 }

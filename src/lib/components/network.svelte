@@ -47,6 +47,11 @@
 
   $: RADIUS = height / 37
 
+  $: blurb_x = 0
+  $: blurb_y = 0
+  $: blurb_text = ""
+  $: display_blurb = false
+
   const Translate = (x: number | undefined, y: number | undefined) =>
     `translate(${x! - OFFSET_X}, ${y! - OFFSET_Y})`
 
@@ -94,9 +99,9 @@
       .duration(DURATION)
       .attr("r", HIGHLIGHT_RADIUS)
 
+    const this_artist = artists.find((d) => d.artist === name)
     if (other) {
       let sign = 1
-      const this_artist = artists.find((d) => d.artist === name)
       const other_artist = artists.find((d) => d.artist === other)
       let distance = Helpers.Distance(
         this_artist!.x!,
@@ -122,6 +127,18 @@
             "transform",
             `translate(${translate[0] + (sign * width) / 2},${translate[1]})`
           )
+      }
+    } else {
+      if (this_artist!.blurb) {
+        display_blurb = true
+        blurb_text = this_artist!.blurb
+        blurb_x = width / 2 + this_artist!.x! + RADIUS * 1.5
+
+        tick().then(() => {
+          const node = d3.select("#blurb_node").node()! as Element
+          const box_height = node!.getBoundingClientRect()!.height
+          blurb_y = this_artist!.y! - box_height / 2
+        })
       }
     }
   }
@@ -155,6 +172,8 @@
       .transition()
       .duration(DURATION)
       .attr("r", RADIUS)
+
+    display_blurb = false
 
     if (other) {
       const this_artist = artists.find((d) => d.artist === name)
@@ -395,7 +414,8 @@
             cx="0"
             cy="0"
             r={RADIUS}
-            stroke="black"
+            stroke={artist.blurb ? "#c00" : "black"}
+            stroke-width={artist.blurb ? "3" : "1"}
             fill="none"
           />
           <rect
@@ -442,4 +462,14 @@
       {/each}
     </g>
   </svg>
+  {#if display_blurb}
+    <div
+      id="blurb_node"
+      class="absolute border border-black border-solid rounded-lg p-4 w-80 bg-white"
+      style="top: {blurb_y}px; left: {blurb_x}px;"
+      transition:fade
+    >
+      {blurb_text}
+    </div>
+  {/if}
 </div>

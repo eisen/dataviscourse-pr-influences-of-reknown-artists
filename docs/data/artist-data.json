@@ -12,12 +12,14 @@
     {
         "artist": "Amrita Sher-Gil",
         "death_type": "illness",
-        "thumbnail": "/thumbnails/amrita_sher-gil.png"
+        "thumbnail": "/thumbnails/amrita_sher-gil.png",
+        "blurb": "Amrita brought European art influences to India"
     },
     {
         "artist": "Andy Warhol",
         "death_type": "illness",
-        "thumbnail": "/thumbnails/andy_warhol.png"
+        "thumbnail": "/thumbnails/andy_warhol.png",
+        "blurb": "The biggest gap in years (476) of influence was between Andy Warhol and Leonardo da Vinci"
     },
     {
         "artist": "Antoni Tàpies",
@@ -122,7 +124,8 @@
     {
         "artist": "Frida Kahlo",
         "death_type": "suicide",
-        "thumbnail": "/thumbnails/frida_kahlo.png"
+        "thumbnail": "/thumbnails/frida_kahlo.png",
+        "blurb": " Before Frida, female artists used her initials on their artworks to avoid negative gender bias"
     },
     {
         "artist": "Georges Braque",
@@ -190,11 +193,6 @@
         "thumbnail": "/thumbnails/jean-antoine_watteau.png"
     },
     {
-        "artist": "Jeong Seon",
-        "death_type": "no-mention",
-        "thumbnail": "/thumbnails/jeong_seon.png"
-    },
-    {
         "artist": "Joan Miró",
         "death_type": "heartattack",
         "thumbnail": "/thumbnails/joan_miro.png"
@@ -232,12 +230,14 @@
     {
         "artist": "Katsushika Hokusai",
         "death_type": "no-mention",
-        "thumbnail": "/thumbnails/katsushika_hokusai.png"
+        "thumbnail": "/thumbnails/katsushika_hokusai.png",
+        "blurb": "The invention of air travel made it easier to bring Japanese art influence to the rest of the world"
     },
     {
         "artist": "Kitagawa Utamaro",
         "death_type": "no-mention",
-        "thumbnail": "/thumbnails/kitagawa-utamaro.png"
+        "thumbnail": "/thumbnails/kitagawa-utamaro.png",
+        "blurb": "The invention of air travel made it easier to bring Japanese art influence to the rest of the world"
     },
     {
         "artist": "Leonardo da Vinci",
@@ -247,7 +247,8 @@
     {
         "artist": "Lorenzo Ghiberti",
         "death_type": "illness",
-        "thumbnail": "/thumbnails/lorenzo_ghiberti.png"
+        "thumbnail": "/thumbnails/lorenzo_ghiberti.png",
+        "blurb": "During the 14th century, the art influence was localized"
     },
     {
         "artist": "Marcel Duchamp",
@@ -280,14 +281,10 @@
         "thumbnail": "/thumbnails/max_jacob.png"
     },
     {
-        "artist": "Mi Fu",
-        "death_type": "no-mention",
-        "thumbnail": "/thumbnails/mi_fu.png"
-    },
-    {
         "artist": "Michelangelo",
         "death_type": "natural",
-        "thumbnail": "/thumbnails/michelangelo.png"
+        "thumbnail": "/thumbnails/michelangelo.png",
+        "blurb": "Micheangelo was able to project his influence beyond Italy."
     },
     {
         "artist": "Oscar-Claude Monet",
@@ -347,7 +344,8 @@
     {
         "artist": "René François Ghislain Magritte",
         "death_type": "illness",
-        "thumbnail": "/thumbnails/rene_francois_ghislain_magritte.png"
+        "thumbnail": "/thumbnails/rene_francois_ghislain_magritte.png",
+        "blurb": "René Magritte had the biggest influential network"
     },
     {
         "artist": "Richard Wentworth",
@@ -367,7 +365,8 @@
     {
         "artist": "Salvador Dali",
         "death_type": "illness",
-        "thumbnail": "/thumbnails/salvador_dali.png"
+        "thumbnail": "/thumbnails/salvador_dali.png",
+        "blurb": "Salvador Dalí used medieval influences"
     },
     {
         "artist": "Satish Gujral",
@@ -397,7 +396,8 @@
     {
         "artist": "Utagawa Hiroshige",
         "death_type": "illness",
-        "thumbnail": "/thumbnails/utagawa_hiroshige.png"
+        "thumbnail": "/thumbnails/utagawa_hiroshige.png",
+        "blurb": "The invention of air travel made it easier to bring Japanese art influence to the rest of the world"
     },
     {
         "artist": "Vincent Willem van Gogh",
