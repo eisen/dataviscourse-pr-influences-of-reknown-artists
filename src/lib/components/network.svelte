@@ -350,7 +350,7 @@
           cx={position.x + width / 2 - OFFSET_X}
           cy={position.y}
           r={RADIUS * 1.75}
-          fill="#F93B3B"
+          fill="#c00"
           transition:fade
         />
       {/each}
@@ -366,7 +366,7 @@
                 y1={link.source.y - OFFSET_Y}
                 x2={link.target.x + width / 2 - OFFSET_X}
                 y2={link.target.y - OFFSET_Y}
-                stroke="#F93B3B"
+                stroke="#c00"
                 stroke-width={RADIUS * 1.5}
                 transition:fade
               />

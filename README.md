@@ -1,10 +1,15 @@
-# CS 6660 Project: Influences of Reknown Artists
+# CS 6660 Project: Influences, Deaths, and Mediums of Renowned Artists
 ## Project for Visualization for Data Sciences - Fall 2022
 
 Team Members:
 * Nishita Karcher - nishita.karcher@utah.edu
 * Nick Lord-Ender-Laing - u1368438@utah.edu
 * Eisen Montalvo - eisen.montalvo@utah.edu
+
+
+# Overview
+
+In Influences, Deaths, and Mediums of Renowned Artists, we wanted to explore three areas: How do artistic influences transcend time and location? How true is the stereotype of the tortured artist with a tragic death? And how the prevalence of different artistic mediums change over time?
 
 # Setup
 
@@ -24,18 +29,19 @@ npm run dev
 
 ```
 
+# Technologies used
+
+A lot of effort was saved by using the following technologies, available on the internet by amazing contributors:
+
+* [SvelteKit](https://kit.svelte.dev)
+* [D3.js](https://d3js.org)
+* [Font Awesome](https://fontawesome.com)
+* [Tailwind CSS](https://tailwindcss.com)
+* [Tailwind UI](https://tailwindui.com)
+* [Typescript](https://www.typescriptlang.org)
+* [Node.js](https://nodejs.dev/en)
+
+
 # Deployment 
 
-Visit the [Influences of Reknown Artists](https://eisen.github.io/dataviscourse-pr-influences-of-reknown-artists) page to see this project in action.
-
-
-# Process Book Status
-- Link (viewable by U of U Google accounts - not Umail) https://docs.google.com/document/d/1pWQ1KEFdhdG1r8V7CD4VAs2AHBpNyOr1zbGuqaEyzcA/edit#
-- [X] Overview & Motivation
-- [X] Related Work
-- [X] Questions
-- [X] Data
-- [X] Exploratory Data Analysis
-- [X] Design Evolution
-- [X] Implementation
-- [X] Evaluation
+Visit the [Influences, Deaths, and Mediums of Renowned Artists](https://eisen.github.io/dataviscourse-pr-influences-of-reknown-artists) page to see this project in action. The screencast video can be watched on [YouTube](https://www.youtube.com/watch?v=P-stOChQhec). Our Process Book can be downloaded [here](https://eisen.github.io/dataviscourse-pr-influences-of-reknown-artists//Influences_of_Renowned_Artists_Process_Book.pdf). Our original data files before converting to JSON, are located on [Google Sheets](https://docs.google.com/spreadsheets/d/1VOjt7ltFV0H-gcgeA2VPJ0hgNXPrfT8TfuOc9Js_Mj8/edit#gid=1944082120)

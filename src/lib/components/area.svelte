@@ -278,7 +278,6 @@
     highlight_medium = true
     let idx = gtMediums.indexOf(category)
     // idx = 5
-    console.log("idx", idx)
 
     // X SCALE
     var xScale = d3
@@ -351,10 +350,11 @@
       .attr("opacity", "1.0")
 
     // Draw lower line
+    area_line_values = []
     if (idx !== 0) {
       area_line_values = area_lines_percentage[idx - 1]
     } else {
-      for (var j = 0; j < area_line_values.length; j++) {
+      for (var j = 0; j < size_years!; j++) {
         area_line_values[j] = 0
       }
     }
@@ -713,6 +713,8 @@
         blurb_x = (width - box.width) / 2
         blurb_y = (height - box.height) / 2
       })
+    } else {
+      display_blurb = false
     }
   }
 
@@ -734,10 +736,10 @@
     show_artifacts = true
     console.log("Chord medium is no longer highlighted on chord.")
 
+    HideBlurb()
     if (!selected_medium && !selected_century) {
       ClearHover()
       RestoreAfterHover()
-      HideBlurb()
     }
 
     // SetYears(youngestYear, oldestYear)
@@ -770,10 +772,10 @@
     // Will implement logic for removing highlights from medium area and indication of century time frame on x axis
     console.log("That ribbon is no longer highlighted...")
     show_artifacts = true
+    HideBlurb()
     if (!selected_medium && !selected_century) {
       ClearHover()
       RestoreAfterHover()
-      HideBlurb()
     }
   }
 

@@ -10,6 +10,7 @@ onmessage = (event) => {
   const RADIUS = event.data.radius
   const HEIGHT = event.data.height
   const FORCE_FACTOR = 1.75
+  const DISTANCE_FACTOR = 1.5
 
   let sim = d3
     .forceSimulation(nodes)
@@ -18,10 +19,10 @@ onmessage = (event) => {
       d3
         .forceLink()
         .id((d) => d["artist"])
-        .distance(RADIUS * FORCE_FACTOR)
-        .strength(1)
+        .distance(RADIUS * DISTANCE_FACTOR)
+        .strength(2)
     )
-    .force("charge", d3.forceManyBody().strength(-5))
+    .force("charge", d3.forceManyBody().strength(5))
     .force("y", d3.forceY(HEIGHT / 2))
     .force(
       "collide",
