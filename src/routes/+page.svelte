@@ -851,9 +851,9 @@
             <dd class="mt-1 text-sm text-gray-900">
               In Influences, Deaths, and Mediums of Renowned Artists, we wanted
               to explore three areas: How do artistic influences transcend time
-              and location? Is it true the common belief that artists suffer a
-              lot and have tragic deaths? And how the different mediums
-              available to artists changed over time.
+              and location? How true is the stereotype of the tortured artist
+              with a tragic death? And how the prevalence of different artistic
+              mediums change over time?
             </dd>
           </div>
         </dl>
