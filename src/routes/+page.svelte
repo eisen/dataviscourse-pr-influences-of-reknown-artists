@@ -758,7 +758,7 @@
           <div class="sm:col-span-1">
             <dt class="text-sm font-medium text-gray-500">Team Members</dt>
             <dd class="mt-1 text-sm text-gray-900">Nishita Kharche</dd>
-            <dd class="mt-1 text-sm text-gray-900">Nick Lord-Elder-Laing</dd>
+            <dd class="mt-1 text-sm text-gray-900">Nick Lord-Ender-Laing</dd>
             <dd class="mt-1 text-sm text-gray-900">Eisen Montalvo</dd>
           </div>
           <div class="sm:col-span-1">
