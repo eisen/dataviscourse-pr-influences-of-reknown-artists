@@ -30,7 +30,7 @@ Visit the [Influences of Reknown Artists](https://eisen.github.io/dataviscourse-
 
 
 # Process Book Status
-
+- Link (viewable by U of U Google accounts - not Umail) https://docs.google.com/document/d/1pWQ1KEFdhdG1r8V7CD4VAs2AHBpNyOr1zbGuqaEyzcA/edit#
 - [X] Overview & Motivation
 - [X] Related Work
 - [X] Questions
